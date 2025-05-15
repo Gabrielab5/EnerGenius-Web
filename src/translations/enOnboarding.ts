@@ -1,0 +1,58 @@
+
+export const enOnboardingTranslations = {
+  // Device Selection
+  'onboarding.devices.header': 'Select Your Devices',
+  'onboarding.devices.description': 'Tell us about your electrical appliances to get accurate forecasts',
+  'onboarding.devices.formTitle': 'Add a Device',
+  'onboarding.devices.formDescription': 'Enter information about each electrical device in your home',
+  'onboarding.devices.typeLabel': 'Device Type',
+  'onboarding.devices.typePlaceholder': 'Select a device',
+  'onboarding.devices.ageLabel': 'Device Age (years)',
+  'onboarding.devices.agePlaceholder': 'Enter device age',
+  'onboarding.devices.ageHelp': 'Older devices typically consume more electricity',
+  'onboarding.devices.efficiencyLabel': 'Energy Efficiency Rating',
+  'onboarding.devices.efficiencyHelp': 'A is the most efficient, C is the least efficient',
+  'onboarding.devices.powerLabel': 'Power (watts)',
+  'onboarding.devices.powerPlaceholder': 'Enter device power',
+  'onboarding.devices.knownKwhLabel': 'Known kWh',
+  'onboarding.devices.knownKwhPlaceholder': 'Enter known kWh if available',
+  'onboarding.devices.knownKwhHelp': 'Optional: Enter if you know the device\'s kilowatt-hour usage',
+  'onboarding.devices.addButton': 'Add Device',
+  'onboarding.devices.continueButton': 'Continue',
+  'onboarding.devices.noDevices': 'No devices added yet',
+  
+  // Device Types
+  'onboarding.deviceTypes.refrigerator': 'Refrigerator',
+  'onboarding.deviceTypes.washingMachine': 'Washing Machine',
+  'onboarding.deviceTypes.dryer': 'Dryer',
+  'onboarding.deviceTypes.dishwasher': 'Dishwasher',
+  'onboarding.deviceTypes.oven': 'Oven',
+  'onboarding.deviceTypes.microwave': 'Microwave',
+  'onboarding.deviceTypes.tv': 'TV',
+  'onboarding.deviceTypes.computer': 'Computer',
+  'onboarding.deviceTypes.airconditioner': 'Air Conditioner',
+  'onboarding.deviceTypes.waterHeater': 'Water Heater',
+  'onboarding.deviceTypes.lighting': 'Lighting',
+  'onboarding.deviceTypes.other': 'Other',
+  
+  // Efficiency Ratings
+  'onboarding.efficiency.A': 'A (Most Efficient)',
+  'onboarding.efficiency.B': 'B (Efficient)',
+  'onboarding.efficiency.C': 'C (Standard)',
+  'onboarding.efficiency.D': 'D (Below Average)',
+  'onboarding.efficiency.E': 'E (Inefficient)',
+  'onboarding.efficiency.F': 'F (Very Inefficient)',
+  'onboarding.efficiency.unknown': 'Unknown',
+  
+  // File Upload
+  'onboarding.upload.header': 'Upload Energy Data',
+  'onboarding.upload.description': 'Upload your energy consumption data to get personalized insights',
+  'onboarding.upload.dragDrop': 'Drag and drop files here, or click to select',
+  'onboarding.upload.formats': 'Accepts CSV, XLS, or XLSX files',
+  'onboarding.upload.maxSize': 'Maximum file size: 10MB',
+  'onboarding.upload.loading': 'Uploading your data...',
+  'onboarding.upload.success': 'File uploaded successfully',
+  'onboarding.upload.error': 'Error uploading file',
+  'onboarding.upload.button': 'Upload File',
+  'onboarding.upload.skip': 'Skip this step',
+};

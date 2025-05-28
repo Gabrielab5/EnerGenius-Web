@@ -11,8 +11,8 @@ interface PageHeaderProps {
 
 export const PageHeader = ({ title, description, helpText }: PageHeaderProps) => {
   return (
-    <div className="mb-6">
-      <div className="flex items-center">
+    <div className="mb-6 text-center">
+      <div className="flex items-center justify-center">
         <h1 className="text-2xl font-bold text-app-gray-800">{title}</h1>
         {helpText && (
           <Tooltip>

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { DeviceSelectionForm } from '@/components/devices/DeviceSelectionForm';
 import { FileUpload } from '@/components/upload/FileUpload';
@@ -42,36 +43,12 @@ const OnboardingPage = () => {
     }, 2000);
   };
 
-  // If user skips the upload step, still mark onboarding as complete
-  const handleSkipUpload = () => {
-    console.log("Skip button clicked, marking onboarding as complete");
-    if (user) {
-      localStorage.setItem(`onboarding-${user.id}`, 'completed');
-    }
-    
-    // Add a delay of 2 seconds and then refresh the page
-    setTimeout(() => {
-      console.log("Refreshing page after skip button 2-second timeout");
-      window.location.href = '/'; // Force a full page refresh to the root route
-    }, 2000);
-  };
-
   return (
     <div className="mobile-page">
       {step === 'devices' ? (
         <DeviceSelectionForm onComplete={handleDeviceStepComplete} />
       ) : (
-        <div className="space-y-4">
-          <FileUpload onComplete={handleUploadStepComplete} />
-          <div className="flex justify-center">
-            <button 
-              onClick={handleSkipUpload}
-              className="text-sm text-gray-500 hover:text-gray-700"
-            >
-              Skip this step
-            </button>
-          </div>
-        </div>
+        <FileUpload onComplete={handleUploadStepComplete} />
       )}
     </div>
   );

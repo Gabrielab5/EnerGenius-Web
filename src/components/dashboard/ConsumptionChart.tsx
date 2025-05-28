@@ -5,6 +5,7 @@ import { useConsumption } from '@/contexts/ConsumptionContext';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, TooltipProps } from 'recharts';
 import { LoadingSpinner } from '@/components/ui-components/LoadingSpinner';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { CircleDollarSign } from 'lucide-react';
 
 const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
   if (active && payload && payload.length) {
@@ -17,10 +18,10 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>)
           <span className="font-medium">Usage: </span>
           {data.kwh} kWh
         </p>
-        {data.cost && (
+        {(data.cost || data.price_ils) && (
           <p className="text-app-green-600">
-            <span className="font-medium">Cost: </span>
-            ${data.cost.toFixed(2)}
+            <span className="font-medium">Price: </span>
+            {data.price_ils ? `₪${data.price_ils.toFixed(2)}` : `$${data.cost.toFixed(2)}`}
           </p>
         )}
       </div>
@@ -38,38 +39,61 @@ const formatMonth = (dateStr: string) => {
 
 // Helper function to format month strings
 const formatMonthString = (monthStr: string) => {
+  if (!monthStr) return '';
   const [year, month] = monthStr.split('-');
   const date = new Date(parseInt(year), parseInt(month) - 1);
   return date.toLocaleDateString(undefined, { month: 'short', year: '2-digit' });
 };
 
 interface ConsumptionChartProps {
-  monthlyForecast?: Array<{month: string; kwh: number}>;
+  monthlyForecast?: Array<{month: string; kwh: number; price_ils?: number}>;
+  historicalMonthly?: Array<{month: string; kwh: number; price_ils?: number}>;
 }
 
-export const ConsumptionChart = ({ monthlyForecast }: ConsumptionChartProps) => {
+export const ConsumptionChart = ({ monthlyForecast, historicalMonthly }: ConsumptionChartProps) => {
   const { historicalData, forecastData, isLoading } = useConsumption();
   
-  if (isLoading && !monthlyForecast) {
+  if (isLoading && !monthlyForecast && !historicalMonthly) {
     return <LoadingSpinner message="Loading consumption data..." />;
   }
+  
+  // Ensure we have arrays to work with, even if empty
+  const safeMonthlyForecast = monthlyForecast || [];
+  const safeHistoricalMonthly = historicalMonthly || [];
   
   // If we have the new monthly forecast data, use it
   let combinedData;
   
-  if (monthlyForecast) {
+  if (safeHistoricalMonthly.length > 0 && safeMonthlyForecast.length > 0) {
+    combinedData = [
+      ...safeHistoricalMonthly.map(item => ({
+        ...item,
+        source: 'historical',
+        date: formatMonthString(item.month)
+      })),
+      ...safeMonthlyForecast.map(item => ({
+        date: formatMonthString(item.month),
+        kwh: item.kwh,
+        price_ils: item.price_ils,
+        source: 'forecast'
+      }))
+    ];
+    console.log("Using historical and monthly forecast data", combinedData);
+  } else if (safeMonthlyForecast.length > 0) {
     combinedData = [
       ...historicalData.map(item => ({
         ...item,
         source: 'historical',
         date: formatMonth(item.date)
       })),
-      ...monthlyForecast.map(item => ({
+      ...safeMonthlyForecast.map(item => ({
         date: formatMonthString(item.month),
         kwh: item.kwh,
+        price_ils: item.price_ils,
         source: 'forecast'
       }))
     ];
+    console.log("Using context historical and monthly forecast data", combinedData);
   } else {
     // Fall back to original data structure if no monthly forecast
     combinedData = [
@@ -84,6 +108,7 @@ export const ConsumptionChart = ({ monthlyForecast }: ConsumptionChartProps) => 
         date: formatMonth(item.date)
       }))
     ];
+    console.log("Using fallback data structure", combinedData);
   }
 
   // Create a configuration for our chart
@@ -129,8 +154,13 @@ export const ConsumptionChart = ({ monthlyForecast }: ConsumptionChartProps) => 
                   tick={{ fontSize: 12 }}
                   ticks={(function() {
                     const ticks = [];
-                    for (let i = 0; i < combinedData.length; i += 2) {
-                      ticks.push(combinedData[i].date);
+                    // Ensure there's data before attempting to access it
+                    if (combinedData && combinedData.length > 0) {
+                      for (let i = 0; i < combinedData.length; i += 2) {
+                        if (combinedData[i] && combinedData[i].date) {
+                          ticks.push(combinedData[i].date);
+                        }
+                      }
                     }
                     return ticks;
                   })()}

@@ -1,21 +1,50 @@
 
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, TooltipProps } from 'recharts';
+import { ChartContainer, ChartTooltip } from '@/components/ui/chart';
 
 type HourlyData = {
   hour: number;
   kwh: number;
+  price_ils?: number;
 };
 
 interface HourlyConsumptionChartProps {
   hourlyData: HourlyData[];
 }
 
+// Custom tooltip component
+const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    
+    return (
+      <div className="bg-white p-3 border border-app-gray-200 rounded-md shadow-lg">
+        <p className="font-medium">{`Hour: ${label}`}</p>
+        <p className="text-primary">
+          <span className="font-medium">Usage: </span>
+          {data.kwh} kWh
+        </p>
+        {data.price_ils !== undefined && (
+          <p className="text-app-green-600">
+            <span className="font-medium">Price: </span>
+            ₪{data.price_ils.toFixed(2)}
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  return null;
+};
+
 export const HourlyConsumptionChart = ({ hourlyData }: HourlyConsumptionChartProps) => {
+  // Ensure hourlyData is always an array, even if empty
+  const safeHourlyData = Array.isArray(hourlyData) ? hourlyData : [];
+  
   // Format the data to display hour in 12-hour format with AM/PM
-  const formattedData = hourlyData.map(item => ({
+  const formattedData = safeHourlyData.map(item => ({
     ...item,
     formattedHour: formatHour(item.hour),
   }));
@@ -58,13 +87,7 @@ export const HourlyConsumptionChart = ({ hourlyData }: HourlyConsumptionChartPro
                   ticks={[0, 6, 12, 18, 23].map(hour => formatHour(hour))}
                 />
                 <YAxis tick={{ fontSize: 12 }} unit=" kWh" />
-                <ChartTooltip
-                  content={
-                    <ChartTooltipContent 
-                      formatter={(value: number) => [`${value.toFixed(2)} kWh`, 'Usage']}
-                    />
-                  }
-                />
+                <Tooltip content={<CustomTooltip />} />
                 <defs>
                   <linearGradient id="hourlyGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#37A662" stopOpacity={0.8}/>

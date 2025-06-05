@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,6 +8,7 @@ import { useToast } from '@/components/ui/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { FileUploadArea } from './FileUploadArea';
 import { CSVPreview } from './CSVPreview';
 import { MultipleFilesList } from './MultipleFilesList';
@@ -45,6 +47,7 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
   const { uploadData, lastUploadDate } = useConsumption();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   // Generate year options (current year and 5 years back)
   const currentYear = new Date().getFullYear();
@@ -94,8 +97,8 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
       
       // Show toast notification
       toast({
-        title: "Upload successful",
-        description: `Extracted ${data.length} rows from ${file.name} for year ${selectedYear}.`,
+        title: t('success.upload'),
+        description: t('onboarding.upload.uploadSuccess').replace('{rows}', data.length.toString()).replace('{fileName}', file.name).replace('{year}', selectedYear),
         duration: 3000,
       });
       
@@ -112,8 +115,8 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
       } else {
         // Show toast notification for error
         toast({
-          title: "Upload failed",
-          description: error.message || "There was an error processing your file. Please try again.",
+          title: t('error.upload'),
+          description: error.message || t('onboarding.upload.uploadFailed'),
           variant: "destructive",
           duration: 5000,
         });
@@ -140,8 +143,8 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
       
       // Show toast notification
       toast({
-        title: "File added",
-        description: `Added ${file.name} for year ${selectedYear}. ${data.length} rows extracted.`,
+        title: t('onboarding.upload.fileAdded'),
+        description: t('onboarding.upload.fileAdded').replace('{fileName}', file.name).replace('{year}', selectedYear).replace('{rows}', data.length.toString()),
         duration: 3000,
       });
       
@@ -152,8 +155,8 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
       setIsUploading(false);
       
       toast({
-        title: "File processing failed",
-        description: error.message || "There was an error processing your file. Please try again.",
+        title: t('error.upload'),
+        description: error.message || t('onboarding.upload.fileProcessingFailed'),
         variant: "destructive",
         duration: 5000,
       });
@@ -185,8 +188,8 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
       
       // Show toast notification
       toast({
-        title: "Multiple files uploaded",
-        description: `Successfully uploaded ${uploadedFiles.length} files.`,
+        title: t('onboarding.upload.multipleFilesSuccess'),
+        description: t('onboarding.upload.multipleFilesSuccess').replace('{count}', uploadedFiles.length.toString()),
         duration: 3000,
       });
       
@@ -201,8 +204,8 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
         onError(error);
       } else {
         toast({
-          title: "Upload failed",
-          description: error.message || "There was an error uploading your files. Please try again.",
+          title: t('error.upload'),
+          description: error.message || t('onboarding.upload.uploadError'),
           variant: "destructive",
           duration: 5000,
         });
@@ -238,9 +241,9 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
   return (
     <div className="space-y-6">
       <PageHeader 
-        title="Upload Your Electricity Data" 
-        description="Upload your electricity bill summary to see detailed consumption analysis and forecasts."
-        helpText="We accept CSV files with columns for date, kWh usage, and cost. Your data remains private and is only used for generating your forecasts."
+        title={t('onboarding.upload.header')} 
+        description={t('onboarding.upload.description')}
+        helpText={t('onboarding.upload.helpText')}
       />
       
       <div className="flex justify-center mb-4">
@@ -250,15 +253,15 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
           className="flex items-center gap-2"
         >
           <Play className="h-4 w-4" />
-          Show me how
+          {t('onboarding.upload.showMeHow')}
         </Button>
       </div>
       
       <Card>
         <CardHeader>
-          <CardTitle className="text-xl">Upload File</CardTitle>
+          <CardTitle className="text-xl">{t('onboarding.upload.uploadFileTitle')}</CardTitle>
           <CardDescription>
-            Select CSV files from your electricity provider
+            {t('onboarding.upload.uploadFileDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -272,20 +275,20 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
                 className="rounded"
               />
               <Label htmlFor="multiple-files" className="text-sm">
-                Upload multiple files
+                {t('onboarding.upload.multipleFiles')}
               </Label>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="year">Select Year for this Upload</Label>
+            <Label htmlFor="year">{t('onboarding.upload.selectYear')}</Label>
             <Select
               value={selectedYear}
               onValueChange={setSelectedYear}
               disabled={isUploading}
             >
               <SelectTrigger id="year" className="h-12">
-                <SelectValue placeholder="Select a year" />
+                <SelectValue placeholder={t('onboarding.upload.selectYearPlaceholder')} />
               </SelectTrigger>
               <SelectContent>
                 {yearOptions.map((year) => (
@@ -321,7 +324,7 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
           
           {lastUploadDate && (
             <p className="text-sm text-app-gray-500 text-center">
-              Last upload: {formatDate(lastUploadDate)}
+              {t('onboarding.upload.lastUpload').replace('{date}', formatDate(lastUploadDate))}
             </p>
           )}
         </CardContent>
@@ -333,7 +336,7 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
               variant="default"
               onClick={handleUploadMultipleFiles}
             >
-              {isUploading ? 'Processing...' : `Upload ${uploadedFiles.length} Files`}
+              {isUploading ? t('onboarding.upload.processing') : t('onboarding.upload.uploadMultipleButton').replace('{count}', uploadedFiles.length.toString())}
             </Button>
           ) : (
             <Button
@@ -342,7 +345,7 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
               variant="default"
               onClick={handleContinue}
             >
-              {isUploading ? 'Processing...' : 'Continue'}
+              {isUploading ? t('onboarding.upload.processing') : t('onboarding.upload.continueButton')}
             </Button>
           )}
         </CardFooter>

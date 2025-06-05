@@ -1,6 +1,7 @@
 
 import React, { useRef } from 'react';
 import { FileText, Upload } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface FileUploadAreaProps {
   fileName: string | null;
@@ -18,6 +19,7 @@ export const FileUploadArea = ({
   isMultipleMode = false
 }: FileUploadAreaProps) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const { t } = useLanguage();
 
   const handleButtonClick = () => {
     // Trigger the hidden file input
@@ -45,25 +47,25 @@ export const FileUploadArea = ({
       
       {fileName && !isMultipleMode ? (
         <>
-          <p className="mt-2 text-sm font-medium text-app-gray-900">{fileName}</p>
+          <p className="mt-2 text-sm font-medium text-app-gray-900">{t('onboarding.upload.fileName').replace('{fileName}', fileName)}</p>
           <p className="mt-1 text-xs text-app-gray-500">
-            {isUploading ? 'Processing...' : 'File ready'}
+            {isUploading ? t('onboarding.upload.processing') : t('onboarding.upload.fileReady')}
           </p>
           <p className="mt-1 text-xs text-app-gray-500">
-            Year: {selectedYear}
+            {t('onboarding.upload.year').replace('{year}', selectedYear)}
           </p>
         </>
       ) : (
         <>
           <p className="mt-2 text-base font-medium text-app-gray-900">
-            {isMultipleMode ? 'Add another file' : 'Drag and drop or click to select'}
+            {isMultipleMode ? t('onboarding.upload.dragDropMultiple') : t('onboarding.upload.dragDropSingle')}
           </p>
           <p className="mt-1 text-sm text-app-gray-500">
-            Support for CSV files
+            {t('onboarding.upload.supportedFormats')}
           </p>
           {isMultipleMode && (
             <p className="mt-1 text-xs text-app-gray-500">
-              Selected year: {selectedYear}
+              {t('onboarding.upload.selectedYear').replace('{year}', selectedYear)}
             </p>
           )}
         </>

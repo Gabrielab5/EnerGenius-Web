@@ -1,0 +1,58 @@
+
+export const devicesTranslations = {
+  // Device Types
+  'devices.types.refrigerator': 'Refrigerator',
+  'devices.types.freezer': 'Freezer',
+  'devices.types.washingMachine': 'Washing Machine',
+  'devices.types.dryer': 'Dryer',
+  'devices.types.dishwasher': 'Dishwasher',
+  'devices.types.airConditioner': 'Air Conditioner',
+  'devices.types.electricHeater': 'Electric Heater',
+  'devices.types.waterHeater': 'Water Heater',
+  'devices.types.television': 'Television',
+  'devices.types.computer': 'Computer',
+  'devices.types.microwave': 'Microwave',
+  'devices.types.electricOven': 'Electric Oven',
+  'devices.types.coffeeMaker': 'Coffee Maker',
+  'devices.types.lightingLED': 'Lighting (LED)',
+  'devices.types.lightingCFL': 'Lighting (CFL)',
+  'devices.types.lightingIncandescent': 'Lighting (Incandescent)',
+  
+  // Age Options
+  'devices.age.1year': '1 year',
+  'devices.age.2years': '2 years',
+  'devices.age.3years': '3 years',
+  'devices.age.4years': '4 years',
+  'devices.age.5years': '5 years',
+  'devices.age.6plus': '6+ years',
+  
+  // Efficiency Ratings
+  'devices.efficiency.A': 'A (Most Efficient)',
+  'devices.efficiency.B': 'B (Medium Efficiency)',
+  'devices.efficiency.C': 'C (Least Efficient)',
+  
+  // Devices
+  'devices.header': 'Your Devices',
+  'devices.addNew': 'Add New Device',
+  'devices.noDevices': 'No devices added yet',
+  'devices.age': 'Age',
+  'devices.efficiency': 'Efficiency',
+  'devices.power': 'Power',
+  'devices.edit': 'Edit',
+  'devices.delete': 'Delete',
+  'devices.years': 'years',
+  'devices.watts': 'watts',
+  'devices.selectionHeader': 'Select Your Devices',
+  'devices.selectionDescription': 'Tell us about your electrical appliances to get accurate forecasts',
+  'devices.selectionFormTitle': 'Add a Device',
+  'devices.selectionFormDescription': 'Enter information about each electrical device in your home',
+  'devices.typeLabel': 'Device Type',
+  'devices.typePlaceholder': 'Select a device',
+  'devices.ageLabel': 'Device Age (years)',
+  'devices.agePlaceholder': 'Enter device age',
+  'devices.ageHelp': 'Older devices typically consume more electricity',
+  'devices.efficiencyLabel': 'Energy Efficiency Rating',
+  'devices.efficiencyHelp': 'A is the most efficient, C is the least efficient',
+  'devices.addButton': 'Add Device',
+  'devices.continueButton': 'Continue',
+};

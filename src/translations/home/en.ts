@@ -1,0 +1,36 @@
+
+export const homeTranslations = {
+  // Homepage
+  'home.analyticsTitle': 'Electricity Analytics',
+  'home.analyticsDescription': 'Comprehensive analysis of your electricity consumption',
+  'home.dashboardTitle': 'Electricity Dashboard',
+  'home.dashboardDescription': 'Analyze your electricity consumption patterns',
+  'home.generateForecast': 'Generate Device Forecast',
+  'home.viewPreviousForecasts': 'View Previous Forecasts',
+  'home.generateNewTips': 'Generate New Tips',
+  'home.smartAnalyticsTitle': 'Smart Energy Analytics',
+  'home.smartAnalyticsDescription': 'Get comprehensive electricity consumption analysis based on your uploaded bill data.',
+  'home.analyzeButton': 'Analyze Electricity Data',
+  'home.analyzingProgress': 'Analyzing your data...',
+  'home.loadingData': 'Loading electricity data...',
+  'home.loadingTips': 'Loading personalized tips...',
+  'home.generatingTips': 'Generating Tips...',
+  'home.analysisNote': 'The system will analyze your uploaded electricity bill data to generate insights and visualizations.',
+  'home.loginRequired': 'You must be logged in to use this feature.',
+  'home.analysisSuccess': 'Electricity analysis completed successfully.',
+  'home.analysisError': 'Failed to analyze electricity data. Please try again later.',
+  'home.tipsSuccess': 'New electricity tips generated successfully.',
+  'home.tipsError': 'Failed to generate new tips. Please try again later.',
+  
+  // Dashboard Stats
+  'home.stats.annualTotal': 'Annual Total',
+  'home.stats.monthlyAverage': 'Monthly Average',
+  'home.stats.dailyAverage': 'Daily Average',
+  'home.stats.highestMonth': 'Highest Month',
+  'home.stats.totalCost': 'total cost',
+  'home.stats.avgCost': 'avg cost',
+  
+  // Dashboard Sections
+  'home.charts.monthlyOverview': 'Monthly Overview',
+  'home.charts.dailyConsumption': 'Daily Consumption',
+};

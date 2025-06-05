@@ -1,0 +1,58 @@
+
+export const devicesTranslations = {
+  // Device Types
+  'devices.types.refrigerator': 'מקרר',
+  'devices.types.freezer': 'מקפיא',
+  'devices.types.washingMachine': 'מכונת כביסה',
+  'devices.types.dryer': 'מייבש כביסה',
+  'devices.types.dishwasher': 'מדיח כלים',
+  'devices.types.airConditioner': 'מזגן',
+  'devices.types.electricHeater': 'תנור חימום חשמלי',
+  'devices.types.waterHeater': 'דוד חשמלי',
+  'devices.types.television': 'טלוויזיה',
+  'devices.types.computer': 'מחשב',
+  'devices.types.microwave': 'מיקרוגל',
+  'devices.types.electricOven': 'תנור חשמלי',
+  'devices.types.coffeeMaker': 'מכונת קפה',
+  'devices.types.lightingLED': 'תאורה (LED)',
+  'devices.types.lightingCFL': 'תאורה (CFL)',
+  'devices.types.lightingIncandescent': 'תאורה (ליבון)',
+  
+  // Age Options
+  'devices.age.1year': 'שנה',
+  'devices.age.2years': 'שנתיים',
+  'devices.age.3years': '3 שנים',
+  'devices.age.4years': '4 שנים',
+  'devices.age.5years': '5 שנים',
+  'devices.age.6plus': '6+ שנים',
+  
+  // Efficiency Ratings
+  'devices.efficiency.A': 'A (הכי יעיל)',
+  'devices.efficiency.B': 'B (יעילות בינונית)',
+  'devices.efficiency.C': 'C (הכי פחות יעיל)',
+  
+  // Devices (additional Hebrew translations)
+  'devices.header': 'המכשירים שלכם',
+  'devices.addNew': 'הוסף מכשיר חדש',
+  'devices.noDevices': 'עדיין לא נוספו מכשירים',
+  'devices.age': 'גיל',
+  'devices.efficiency': 'יעילות',
+  'devices.power': 'כוח',
+  'devices.edit': 'ערוך',
+  'devices.delete': 'מחק',
+  'devices.years': 'שנים',
+  'devices.watts': 'ואט',
+  'devices.selectionHeader': 'בחירת המכשירים שלכם',
+  'devices.selectionDescription': 'ספרו לנו על המכשירים החשמליים כדי לקבל תחזיות מדויקות',
+  'devices.selectionFormTitle': 'הוספת מכשיר',
+  'devices.selectionFormDescription': 'הזינו מידע על כל מכשיר חשמלי בבית',
+  'devices.typeLabel': 'סוג המכשיר',
+  'devices.typePlaceholder': 'בחרו מכשיר',
+  'devices.ageLabel': 'גיל המכשיר (שנים)',
+  'devices.agePlaceholder': 'הזינו גיל המכשיר',
+  'devices.ageHelp': 'מכשירים ישנים יותר צורכים יותר חשמל',
+  'devices.efficiencyLabel': 'דירוג יעילות אנרגטית',
+  'devices.efficiencyHelp': 'A הוא הכי יעיל, C הוא הכי פחות יעיל',
+  'devices.addButton': 'הוסף מכשיר',
+  'devices.continueButton': 'המשך',
+};

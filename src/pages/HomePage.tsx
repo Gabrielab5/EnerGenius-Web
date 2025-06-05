@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { PageHeader } from '@/components/ui-components/PageHeader';
 import { Button } from '@/components/ui/button';
@@ -20,7 +21,7 @@ import { useSavedForecasts } from '@/hooks/useSavedForecasts';
 
 const HomePage = () => {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [tips, setTips] = useState(null);
@@ -70,8 +71,8 @@ const HomePage = () => {
   const handleAnalysisRequest = async () => {
     if (!user) {
       toast({
-        title: "Error",
-        description: "You must be logged in to use this feature.",
+        title: t('error.generic'),
+        description: t('home.loginRequired'),
         variant: "destructive",
       });
       return;
@@ -98,8 +99,8 @@ const HomePage = () => {
         }
 
         toast({
-          title: "Success",
-          description: "Electricity analysis completed successfully.",
+          title: t('success.upload'),
+          description: t('home.analysisSuccess'),
         });
         
         // Refresh the page to show the new data
@@ -109,8 +110,8 @@ const HomePage = () => {
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to analyze electricity data. Please try again later.",
+        title: t('error.generic'),
+        description: t('home.analysisError'),
         variant: "destructive",
       });
       console.error("Electricity analysis error:", error);
@@ -122,8 +123,8 @@ const HomePage = () => {
   const handleGenerateNewTips = async () => {
     if (!user) {
       toast({
-        title: "Error",
-        description: "You must be logged in to use this feature.",
+        title: t('error.generic'),
+        description: t('home.loginRequired'),
         variant: "destructive",
       });
       return;
@@ -137,16 +138,16 @@ const HomePage = () => {
       if (tipsResponse.success) {
         setTips(tipsResponse.tips);
         toast({
-          title: "Success",
-          description: "New electricity tips generated successfully.",
+          title: t('success.upload'),
+          description: t('home.tipsSuccess'),
         });
       } else {
         throw new Error("Tips generation failed");
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to generate new tips. Please try again later.",
+        title: t('error.generic'),
+        description: t('home.tipsError'),
         variant: "destructive",
       });
       console.error("Tips generation error:", error);
@@ -159,7 +160,7 @@ const HomePage = () => {
   if (isFetching) {
     return (
       <div className="mobile-page flex items-center justify-center h-[70vh]">
-        <LoadingSpinner size="lg" message="Loading electricity data..." />
+        <LoadingSpinner size="lg" message={t('home.loadingData')} />
       </div>
     );
   }
@@ -169,8 +170,8 @@ const HomePage = () => {
     return (
       <div className="mobile-page pb-20">
         <PageHeader 
-          title="Electricity Analytics" 
-          description="Comprehensive analysis of your electricity consumption"
+          title={t('home.analyticsTitle')} 
+          description={t('home.analyticsDescription')}
         />
         
         {/* Main Forecast Action Buttons - Moved to top */}
@@ -182,7 +183,7 @@ const HomePage = () => {
             className="w-full bg-green-600 hover:bg-green-700 text-white"
             size="lg"
           >
-            <TrendingUp className="h-5 w-5 mr-2" /> Generate Device Forecast
+            <TrendingUp className="h-5 w-5 mr-2" /> {t('home.generateForecast')}
           </Button>
           
           {/* View Previous Forecasts Button - Secondary Green */}
@@ -194,7 +195,7 @@ const HomePage = () => {
               className="w-full border-green-600 text-green-600 hover:bg-green-50"
               size="lg"
             >
-              <History className="h-5 w-5 mr-2" /> View Previous Forecasts
+              <History className="h-5 w-5 mr-2" /> {t('home.viewPreviousForecasts')}
             </Button>
           )}
         </div>
@@ -210,7 +211,7 @@ const HomePage = () => {
           {loadingTips && (
             <Card>
               <CardContent className="flex items-center justify-center p-8">
-                <LoadingSpinner size="md" message="Loading personalized tips..." />
+                <LoadingSpinner size="md" message={t('home.loadingTips')} />
               </CardContent>
             </Card>
           )}
@@ -234,11 +235,11 @@ const HomePage = () => {
             >
               {generatingNewTips ? (
                 <>
-                  <LoadingSpinner size="sm" /> Generating Tips...
+                  <LoadingSpinner size="sm" /> {t('home.generatingTips')}
                 </>
               ) : (
                 <>
-                  <Lightbulb className="h-4 w-4 mr-2" /> Generate New Tips
+                  <Lightbulb className="h-4 w-4 mr-2" /> {t('home.generateNewTips')}
                 </>
               )}
             </Button>
@@ -265,17 +266,17 @@ const HomePage = () => {
   return (
     <div className="mobile-page pb-20">
       <PageHeader 
-        title="Electricity Dashboard" 
-        description="Analyze your electricity consumption patterns"
+        title={t('home.dashboardTitle')} 
+        description={t('home.dashboardDescription')}
       />
       
       <div className="flex flex-col items-center justify-center h-[70vh] px-4">
         <Card className="w-full max-w-md bg-gradient-to-br from-blue-50 to-green-50 overflow-hidden relative border-blue-200">
           <CardContent className="flex flex-col items-center justify-center p-8">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold text-primary mb-2">Smart Energy Analytics</h2>
+              <h2 className="text-2xl font-bold text-primary mb-2">{t('home.smartAnalyticsTitle')}</h2>
               <p className="text-muted-foreground">
-                Get comprehensive electricity consumption analysis based on your uploaded bill data.
+                {t('home.smartAnalyticsDescription')}
               </p>
             </div>
             
@@ -287,19 +288,19 @@ const HomePage = () => {
             >
               {isProcessing ? (
                 <>
-                  <LoadingSpinner size="md" /> Analyzing your data...
+                  <LoadingSpinner size="md" /> {t('home.analyzingProgress')}
                 </>
               ) : (
                 <>
                   <Lightbulb className="h-5 w-5 mr-2 group-hover:animate-pulse" />
-                  <span>Analyze Electricity Data</span>
+                  <span>{t('home.analyzeButton')}</span>
                 </>
               )}
               <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent w-[200%] translate-x-[-100%] group-hover:translate-x-[50%] transition-transform duration-1000"></div>
             </Button>
             
             <p className="text-xs text-muted-foreground mt-6 text-center">
-              The system will analyze your uploaded electricity bill data to generate insights and visualizations.
+              {t('home.analysisNote')}
             </p>
           </CardContent>
         </Card>
@@ -309,3 +310,4 @@ const HomePage = () => {
 };
 
 export default HomePage;
+

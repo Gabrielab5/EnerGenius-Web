@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,41 +11,43 @@ import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip
 import { HelpCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // Common device types with typical power consumption
 const deviceOptions = [
-  { name: 'Refrigerator', type: 'Large Appliance', powerConsumption: 150 },
-  { name: 'Freezer', type: 'Large Appliance', powerConsumption: 200 },
-  { name: 'Washing Machine', type: 'Large Appliance', powerConsumption: 500 },
-  { name: 'Dryer', type: 'Large Appliance', powerConsumption: 3000 },
-  { name: 'Dishwasher', type: 'Large Appliance', powerConsumption: 1200 },
-  { name: 'Air Conditioner', type: 'Climate Control', powerConsumption: 1500 },
-  { name: 'Electric Heater', type: 'Climate Control', powerConsumption: 1500 },
-  { name: 'Water Heater', type: 'Large Appliance', powerConsumption: 4000 },
-  { name: 'Television', type: 'Electronics', powerConsumption: 100 },
-  { name: 'Computer', type: 'Electronics', powerConsumption: 200 },
-  { name: 'Microwave', type: 'Kitchen Appliance', powerConsumption: 1000 },
-  { name: 'Electric Oven', type: 'Kitchen Appliance', powerConsumption: 2000 },
-  { name: 'Coffee Maker', type: 'Kitchen Appliance', powerConsumption: 800 },
-  { name: 'Lighting (LED)', type: 'Lighting', powerConsumption: 10 },
-  { name: 'Lighting (CFL)', type: 'Lighting', powerConsumption: 15 },
-  { name: 'Lighting (Incandescent)', type: 'Lighting', powerConsumption: 60 },
+  { name: 'Refrigerator', type: 'Large Appliance', powerConsumption: 150, translationKey: 'devices.types.refrigerator' },
+  { name: 'Freezer', type: 'Large Appliance', powerConsumption: 200, translationKey: 'devices.types.freezer' },
+  { name: 'Washing Machine', type: 'Large Appliance', powerConsumption: 500, translationKey: 'devices.types.washingMachine' },
+  { name: 'Dryer', type: 'Large Appliance', powerConsumption: 3000, translationKey: 'devices.types.dryer' },
+  { name: 'Dishwasher', type: 'Large Appliance', powerConsumption: 1200, translationKey: 'devices.types.dishwasher' },
+  { name: 'Air Conditioner', type: 'Climate Control', powerConsumption: 1500, translationKey: 'devices.types.airConditioner' },
+  { name: 'Electric Heater', type: 'Climate Control', powerConsumption: 1500, translationKey: 'devices.types.electricHeater' },
+  { name: 'Water Heater', type: 'Large Appliance', powerConsumption: 4000, translationKey: 'devices.types.waterHeater' },
+  { name: 'Television', type: 'Electronics', powerConsumption: 100, translationKey: 'devices.types.television' },
+  { name: 'Computer', type: 'Electronics', powerConsumption: 200, translationKey: 'devices.types.computer' },
+  { name: 'Microwave', type: 'Kitchen Appliance', powerConsumption: 1000, translationKey: 'devices.types.microwave' },
+  { name: 'Electric Oven', type: 'Kitchen Appliance', powerConsumption: 2000, translationKey: 'devices.types.electricOven' },
+  { name: 'Coffee Maker', type: 'Kitchen Appliance', powerConsumption: 800, translationKey: 'devices.types.coffeeMaker' },
+  { name: 'Lighting (LED)', type: 'Lighting', powerConsumption: 10, translationKey: 'devices.types.lightingLED' },
+  { name: 'Lighting (CFL)', type: 'Lighting', powerConsumption: 15, translationKey: 'devices.types.lightingCFL' },
+  { name: 'Lighting (Incandescent)', type: 'Lighting', powerConsumption: 60, translationKey: 'devices.types.lightingIncandescent' },
 ];
 
 // Age options for device dropdown
 const ageOptions = [
-  { label: '1 year', value: '1' },
-  { label: '2 years', value: '2' },
-  { label: '3 years', value: '3' },
-  { label: '4 years', value: '4' },
-  { label: '5 years', value: '5' },
-  { label: '6+ years', value: '6' },
+  { label: '1 year', value: '1', translationKey: 'devices.age.1year' },
+  { label: '2 years', value: '2', translationKey: 'devices.age.2years' },
+  { label: '3 years', value: '3', translationKey: 'devices.age.3years' },
+  { label: '4 years', value: '4', translationKey: 'devices.age.4years' },
+  { label: '5 years', value: '5', translationKey: 'devices.age.5years' },
+  { label: '6+ years', value: '6', translationKey: 'devices.age.6plus' },
 ];
 
 export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) => {
   const { addDevice } = useDevices();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [selectedDevices, setSelectedDevices] = useState<Array<{
     deviceName: string;
     age: number;
@@ -62,8 +65,8 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
   const handleAddDevice = () => {
     if (!currentDevice || !currentAge) {
       toast({
-        title: "Error",
-        description: "Please select a device and its age.",
+        title: t('error.generic'),
+        description: t('onboarding.devices.selectDeviceError'),
         variant: "destructive",
       });
       return;
@@ -73,8 +76,8 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
     
     if (!deviceInfo) {
       toast({
-        title: "Error",
-        description: "Please select a valid device.",
+        title: t('error.generic'),
+        description: t('onboarding.devices.validDeviceError'),
         variant: "destructive",
       });
       return;
@@ -106,8 +109,8 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
   const handleComplete = async () => {
     if (selectedDevices.length === 0) {
       toast({
-        title: "No devices added",
-        description: "Please add at least one device to continue.",
+        title: t('onboarding.devices.noDevicesError'),
+        description: t('onboarding.devices.noDevicesError'),
         variant: "destructive",
       });
       return;
@@ -132,14 +135,14 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
       await Promise.all(promises);
       
       toast({
-        title: "Devices saved",
-        description: "Your devices have been saved successfully.",
+        title: t('onboarding.devices.devicesSaved'),
+        description: t('onboarding.devices.devicesSaved'),
       });
     } catch (error) {
       console.error("Error saving devices:", error);
       toast({
-        title: "Error",
-        description: "Failed to save your devices. Please try again.",
+        title: t('error.generic'),
+        description: t('onboarding.devices.saveError'),
         variant: "destructive",
       });
     } finally {
@@ -151,32 +154,32 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
   return (
     <div className="space-y-6">
       <PageHeader 
-        title="Select Your Devices" 
-        description="Tell us about your electrical appliances to get accurate forecasts."
-        helpText="Adding your devices helps us calculate more accurate energy consumption forecasts. The more devices you add, the better your forecasts will be."
+        title={t('onboarding.devices.header')} 
+        description={t('onboarding.devices.description')}
+        helpText={t('onboarding.devices.helpText')}
       />
       
       <Card>
         <CardHeader>
-          <CardTitle className="text-xl">Add a Device</CardTitle>
+          <CardTitle className="text-xl">{t('onboarding.devices.formTitle')}</CardTitle>
           <CardDescription>
-            Enter information about each electrical device in your home
+            {t('onboarding.devices.formDescription')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="device">Device Type</Label>
+            <Label htmlFor="device">{t('onboarding.devices.typeLabel')}</Label>
             <Select
               value={currentDevice}
               onValueChange={setCurrentDevice}
             >
               <SelectTrigger id="device" className="h-12">
-                <SelectValue placeholder="Select a device" />
+                <SelectValue placeholder={t('onboarding.devices.typePlaceholder')} />
               </SelectTrigger>
               <SelectContent>
                 {deviceOptions.map((device) => (
                   <SelectItem key={device.name} value={device.name}>
-                    {device.name}
+                    {t(device.translationKey)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -185,7 +188,7 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
           
           <div className="space-y-2">
             <div className="flex items-center">
-              <Label htmlFor="age">Device Age</Label>
+              <Label htmlFor="age">{t('onboarding.devices.ageLabel')}</Label>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button className="tooltip-trigger" aria-label="Help">
@@ -193,7 +196,7 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
                   </button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="text-sm">Older devices typically consume more electricity.</p>
+                  <p className="text-sm">{t('onboarding.devices.ageHelp')}</p>
                 </TooltipContent>
               </Tooltip>
             </div>
@@ -202,12 +205,12 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
               onValueChange={setCurrentAge}
             >
               <SelectTrigger id="age" className="h-12">
-                <SelectValue placeholder="Select device age" />
+                <SelectValue placeholder={t('onboarding.devices.agePlaceholder')} />
               </SelectTrigger>
               <SelectContent>
                 {ageOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
-                    {option.label}
+                    {t(option.translationKey)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -216,7 +219,7 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
           
           <div className="space-y-2">
             <div className="flex items-center">
-              <Label htmlFor="efficiency">Energy Efficiency Rating</Label>
+              <Label htmlFor="efficiency">{t('onboarding.devices.efficiencyLabel')}</Label>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button className="tooltip-trigger" aria-label="Help">
@@ -224,7 +227,7 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
                   </button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="text-sm">A is the most efficient, C is the least efficient.</p>
+                  <p className="text-sm">{t('onboarding.devices.efficiencyHelp')}</p>
                 </TooltipContent>
               </Tooltip>
             </div>
@@ -233,19 +236,19 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
               onValueChange={(value) => setCurrentEfficiency(value as 'A' | 'B' | 'C')}
             >
               <SelectTrigger id="efficiency" className="h-12">
-                <SelectValue placeholder="Select efficiency rating" />
+                <SelectValue placeholder={t('onboarding.devices.typePlaceholder')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="A">A (Most Efficient)</SelectItem>
-                <SelectItem value="B">B (Medium Efficiency)</SelectItem>
-                <SelectItem value="C">C (Least Efficient)</SelectItem>
+                <SelectItem value="A">{t('devices.efficiency.A')}</SelectItem>
+                <SelectItem value="B">{t('devices.efficiency.B')}</SelectItem>
+                <SelectItem value="C">{t('devices.efficiency.C')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
           
           <div className="space-y-2">
             <div className="flex items-center">
-              <Label htmlFor="knownKwh">Known kWh (Optional)</Label>
+              <Label htmlFor="knownKwh">{t('onboarding.devices.knownKwhLabel')}</Label>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button className="tooltip-trigger" aria-label="Help">
@@ -253,14 +256,14 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
                   </button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="text-sm">If you know how many kWh this device consumes, enter it here.</p>
+                  <p className="text-sm">{t('onboarding.devices.knownKwhHelp')}</p>
                 </TooltipContent>
               </Tooltip>
             </div>
             <Input
               id="knownKwh"
               type="number"
-              placeholder="Enter known kWh (optional)"
+              placeholder={t('onboarding.devices.knownKwhPlaceholder')}
               min="0"
               step="0.01"
               value={currentKnownKwh}
@@ -273,7 +276,7 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
             onClick={handleAddDevice}
             className="w-full h-12 mt-2"
           >
-            Add Device
+            {t('onboarding.devices.addButton')}
           </Button>
         </CardContent>
       </Card>
@@ -281,29 +284,32 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
       {selectedDevices.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-xl">Your Devices</CardTitle>
+            <CardTitle className="text-xl">{t('onboarding.devices.yourDevicesTitle')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {selectedDevices.map((device, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-app-gray-50 rounded-md">
-                  <div>
-                    <p className="font-medium">{device.deviceName}</p>
-                    <p className="text-sm text-app-gray-600">
-                      Age: {device.age} years • Rating: {device.efficiencyRating}
-                      {device.knownKwh && ` • Known kWh: ${device.knownKwh}`}
-                    </p>
+              {selectedDevices.map((device, index) => {
+                const deviceTranslationKey = deviceOptions.find(d => d.name === device.deviceName)?.translationKey;
+                return (
+                  <div key={index} className="flex items-center justify-between p-3 bg-app-gray-50 rounded-md">
+                    <div>
+                      <p className="font-medium">{deviceTranslationKey ? t(deviceTranslationKey) : device.deviceName}</p>
+                      <p className="text-sm text-app-gray-600">
+                        {t('onboarding.devices.deviceAge').replace('{age}', device.age.toString())} • {t('onboarding.devices.deviceRating').replace('{rating}', device.efficiencyRating)}
+                        {device.knownKwh && ` • ${t('onboarding.devices.deviceKnownKwh').replace('{kwh}', device.knownKwh.toString())}`}
+                      </p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRemoveDevice(index)}
+                      className="text-app-gray-500 hover:text-destructive"
+                    >
+                      {t('onboarding.devices.removeButton')}
+                    </Button>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleRemoveDevice(index)}
-                    className="text-app-gray-500 hover:text-destructive"
-                  >
-                    Remove
-                  </Button>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </CardContent>
           <CardFooter>
@@ -313,7 +319,7 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
               variant="default"
               disabled={isLoading}
             >
-              {isLoading ? 'Saving...' : 'Continue'}
+              {isLoading ? t('onboarding.devices.savingButton') : t('onboarding.devices.continueButton')}
             </Button>
           </CardFooter>
         </Card>

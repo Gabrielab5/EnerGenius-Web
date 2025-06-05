@@ -1,73 +1,97 @@
-# Welcome to your Lovable project
+EnerGenius ⚡
 
-## Project info
+EnerGenius is an electricity optimization app designed for homeowners and renters who want to take control of their electricity usage. The app helps users monitor their energy consumption, visualize it through interactive charts, and receive personalized insights to optimize costs and reduce waste.
 
-**URL**: https://lovable.dev/projects/c8a8a388-ea62-4817-89e5-ea79d16d5da6
+## 🌟 Key Features
 
-## How can I edit this code?
+- 📊 **Real-Time Consumption Visualization**: View your electricity usage over time in dynamic graphs (hourly, daily, etc.).
+- 🧠 **AI Forecasting**: Predict future consumption trends to plan more efficiently.
+- 💡 **Personalized Tips**: Get actionable suggestions for reducing your electricity bills based on actual usage patterns.
+- 🔐 **User Authentication**: Secure sign-in and access control to ensure your data is safe.
+- 📈 **Device-Level Breakdown**: Understand which appliances or areas of your home use the most energy.
 
-There are several ways of editing your application.
+## 🏗️ Tech Stack
 
-**Use Lovable**
+### Frontend
+- **Framework**: React (with support for modern hooks and modular components)
+- **UI Libraries**: shadcn/ui, lucide-react
+- **Charts**: Recharts or similar JS charting library
+- **State Management**: React Context API
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/c8a8a388-ea62-4817-89e5-ea79d16d5da6) and start prompting.
+### Backend (expected)
+- Django or FastAPI (for serving forecasts and historical consumption data)
+- PostgreSQL (as database)
+- Python ML Libraries (e.g., Prophet, LSTM for forecasting)
 
-Changes made via Lovable will be committed automatically to this repo.
+### DevOps
+- Git & GitHub for version control
+- GitHub Actions or similar CI/CD
+- Docker (for containerized deployments)
 
-**Use your preferred IDE**
+## 🚀 Getting Started
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prerequisites
+Make sure you have the following installed:
+- Node.js (>= 18)
+- npm / bun / yarn
+- Git
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Installation
 
-Follow these steps:
+```bash
+# Clone the repo
+git clone https://github.com/your-username/EnerGenius.git
+cd EnerGenius
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Install dependencies
+bun install  # or npm install / yarn install
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Start development server
+bun dev  # or npm run dev / yarn dev
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+
 ```
 
-**Edit a file directly in GitHub**
+> Make sure to also configure your backend and `.env` file with the proper API endpoints for user data and forecasts.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🧪 Testing
 
-**Use GitHub Codespaces**
+```bash
+bun test  # or npm test / yarn test
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 📂 Project Structure (Frontend)
 
-## What technologies are used for this project?
 
-This project is built with:
+```
+EnerGenius/
+├── components/         # Reusable UI components
+├── pages/              # App pages (e.g., Dashboard, Login)
+├── contexts/           # Auth and global state providers
+├── hooks/              # Custom React hooks
+├── lib/                # Utility functions
+├── public/             # Static assets
+├── styles/             # Global styles
+├── .gitignore
+├── bun.lockb
+└── package.json
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 🧠 AI Forecast Integration
 
-## How can I deploy this project?
+The backend is expected to run an AI service that performs forecasting using uploaded electricity data and returns structured JSON for graphs. You can configure this under `/lib/utils.js` and invoke endpoints like `/api/forecast`.
 
-Simply open [Lovable](https://lovable.dev/projects/c8a8a388-ea62-4817-89e5-ea79d16d5da6) and click on Share -> Publish.
 
-## Can I connect a custom domain to my Lovable project?
 
-Yes, you can!
+## 🤝 Contributing
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+Contributions are welcome! Please fork the repo and submit a PR with your changes. Don't forget to write clear commit messages and follow the project's coding style.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## 📃 License
+
+MIT License.
+
+---
+
+Built with passion to make homes smarter and greener. 🌍

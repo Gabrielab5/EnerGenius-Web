@@ -6,6 +6,7 @@ import { onboardingTranslations } from './onboarding/en';
 import { devicesTranslations } from './devices/en';
 import { homeTranslations } from './home/en';
 import { commonTranslations } from './common/en';
+import { loadingTranslations } from './loading/en';
 
 export const enTranslations = {
   ...authTranslations,
@@ -15,4 +16,5 @@ export const enTranslations = {
   ...devicesTranslations,
   ...homeTranslations,
   ...commonTranslations,
+  ...loadingTranslations,
 };

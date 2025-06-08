@@ -61,4 +61,15 @@ export const onboardingTranslations = {
   'onboarding.upload.csvPreviewColumnB': 'עמודה ב\'',
   'onboarding.upload.csvPreviewColumnC': 'עמודה ג\'',
   'onboarding.upload.csvPreviewShowing': 'מציג {shown} מתוך {total} שורות',
+
+  // Onboarding
+  'onboarding.welcome': 'ברוכים הבאים ל-EnerGenius',
+  'onboarding.step1.title': 'הוסיפו את המכשירים שלכם',
+  'onboarding.step1.description': 'ספרו לנו על המכשירים החשמליים שלכם',
+  'onboarding.step2.title': 'העלו את הנתונים שלכם',
+  'onboarding.step2.description': 'העלו את חשבון החשמל לניתוח',
+  'onboarding.continue': 'המשך',
+  'onboarding.skip': 'דלג',
+  'onboarding.complete': 'השלם הגדרה',
+  'onboarding.progress': 'שלב {current} מתוך {total}',
 };

@@ -32,4 +32,17 @@ export const homeTranslations = {
   // Dashboard Sections
   'home.charts.monthlyOverview': 'Monthly Overview',
   'home.charts.dailyConsumption': 'Daily Consumption',
+
+  // Home Page
+  'home.welcome': 'Добро пожаловать',
+  'home.dashboard': 'Панель управления',
+  'home.quickStats': 'Быстрая статистика',
+  'home.recentActivity': 'Недавняя активность',
+  'home.tips': 'Советы по экономии энергии',
+  'home.forecast': 'Прогноз на сегодня',
+  'home.consumption': 'Текущее потребление',
+  'home.cost': 'Текущая стоимость',
+  'home.efficiency': 'Оценка эффективности',
+  'home.noData': 'Данные отсутствуют. Загрузите счет за электричество для начала работы.',
+  'home.getStarted': 'Начать',
 };

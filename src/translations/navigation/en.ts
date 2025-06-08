@@ -2,10 +2,20 @@
 export const navigationTranslations = {
   // Navigation
   'nav.home': 'Home',
-  'nav.settings': 'Settings',
+  'nav.dashboard': 'Dashboard',
+  'nav.devices': 'Devices',
+  'nav.forecast': 'Forecast',
   'nav.upload': 'Upload',
+  'nav.settings': 'Settings',
+  'nav.analytics': 'Analytics',
   'nav.profile': 'Profile',
-  'nav.login': 'Login',
   'nav.logout': 'Logout',
-  'nav.onboarding': 'Onboarding',
+  
+  // Page Titles
+  'nav.title.home': 'Dashboard',
+  'nav.title.devices': 'Device Management',
+  'nav.title.forecast': 'Electricity Forecast',
+  'nav.title.upload': 'Upload Data',
+  'nav.title.settings': 'Settings',
+  'nav.title.analytics': 'Analytics',
 };

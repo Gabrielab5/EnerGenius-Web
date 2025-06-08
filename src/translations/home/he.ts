@@ -33,4 +33,17 @@ export const homeTranslations = {
   // Dashboard Sections
   'home.charts.monthlyOverview': 'סקירה חודשית',
   'home.charts.dailyConsumption': 'צריכה יומית',
+
+  // Home Page
+  'home.welcome': 'ברוכים השבים',
+  'home.dashboard': 'לוח בקרה',
+  'home.quickStats': 'סטטיסטיקות מהירות',
+  'home.recentActivity': 'פעילות אחרונה',
+  'home.tips': 'טיפים לחיסכון באנרגיה',
+  'home.forecast': 'תחזית היום',
+  'home.consumption': 'צריכה נוכחית',
+  'home.cost': 'עלות נוכחית',
+  'home.efficiency': 'ציון יעילות',
+  'home.noData': 'אין נתונים זמינים. העלו את חשבון החשמל כדי להתחיל.',
+  'home.getStarted': 'התחל',
 };

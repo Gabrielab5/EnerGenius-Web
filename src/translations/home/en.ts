@@ -21,6 +21,17 @@ export const homeTranslations = {
   'home.analysisError': 'Failed to analyze electricity data. Please try again later.',
   'home.tipsSuccess': 'New electricity tips generated successfully.',
   'home.tipsError': 'Failed to generate new tips. Please try again later.',
+  'home.welcome': 'Welcome back',
+  'home.dashboard': 'Dashboard',
+  'home.quickStats': 'Quick Statistics',
+  'home.recentActivity': 'Recent Activity',
+  'home.tips': 'Energy Saving Tips',
+  'home.forecast': 'Today\'s Forecast',
+  'home.consumption': 'Current Consumption',
+  'home.cost': 'Current Cost',
+  'home.efficiency': 'Efficiency Score',
+  'home.noData': 'No data available. Upload your electricity bill to get started.',
+  'home.getStarted': 'Get Started',
   
   // Dashboard Stats
   'home.stats.annualTotal': 'Annual Total',

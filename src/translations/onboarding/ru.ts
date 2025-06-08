@@ -1,5 +1,5 @@
 export const onboardingTranslations = {
-  // Onboarding translations (keeping English placeholder)
+  // Onboarding translations 
   'onboarding.devices.header': 'Select Your Devices',
   'onboarding.devices.description': 'Tell us about your electrical appliances to get accurate forecasts.',
   'onboarding.devices.helpText': 'Adding your devices helps us calculate more accurate energy consumption forecasts. The more devices you add, the better your forecasts will be.',
@@ -60,4 +60,15 @@ export const onboardingTranslations = {
   'onboarding.upload.csvPreviewColumnB': 'Column B',
   'onboarding.upload.csvPreviewColumnC': 'Column C',
   'onboarding.upload.csvPreviewShowing': 'Showing {shown} of {total} rows',
+
+    // Onboarding
+  'onboarding.welcome': 'Добро пожаловать в EnerGenius',
+  'onboarding.step1.title': 'Добавьте ваши устройства',
+  'onboarding.step1.description': 'Расскажите нам о ваших электроприборах',
+  'onboarding.step2.title': 'Загрузите ваши данные',
+  'onboarding.step2.description': 'Загрузите счет за электричество для анализа',
+  'onboarding.continue': 'Продолжить',
+  'onboarding.skip': 'Пропустить',
+  'onboarding.complete': 'Завершить настройку',
+  'onboarding.progress': 'Шаг {current} из {total}',
 };

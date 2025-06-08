@@ -1,10 +1,20 @@
 export const navigationTranslations = {
   // Navigation (Hebrew translations would go here - keeping English for now)
-  'nav.home': 'בית',
-  'nav.settings': 'הגדרות',
+'nav.home': 'בית',
+  'nav.dashboard': 'לוח בקרה',
+  'nav.devices': 'מכשירים',
+  'nav.forecast': 'תחזית',
   'nav.upload': 'העלאה',
+  'nav.settings': 'הגדרות',
+  'nav.analytics': 'אנליטיקה',
   'nav.profile': 'פרופיל',
-  'nav.login': 'התחברות',
-  'nav.logout': 'התנתקות',
-  'nav.onboarding': 'הכנה',
+  'nav.logout': 'התנתק',
+  
+  // Page Titles
+  'nav.title.home': 'לוח בקרה',
+  'nav.title.devices': 'ניהול מכשירים',
+  'nav.title.forecast': 'תחזית חשמל',
+  'nav.title.upload': 'העלאת נתונים',
+  'nav.title.settings': 'הגדרות',
+  'nav.title.analytics': 'אנליטיקה',
 };

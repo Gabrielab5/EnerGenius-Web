@@ -7,6 +7,9 @@ import { devicesTranslations } from './devices/en';
 import { homeTranslations } from './home/en';
 import { commonTranslations } from './common/en';
 import { loadingTranslations } from './loading/en';
+import { notificationsTranslations } from './notifications/en';
+import { chartsTranslations } from './charts/en';
+import { forecastTranslations } from './forecast/en';
 
 export const enTranslations = {
   ...authTranslations,
@@ -17,4 +20,8 @@ export const enTranslations = {
   ...homeTranslations,
   ...commonTranslations,
   ...loadingTranslations,
+  ...notificationsTranslations,
+  ...chartsTranslations,
+  ...forecastTranslations,
 };
+ 

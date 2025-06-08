@@ -5,12 +5,14 @@ import { FileUpload } from '@/components/upload/FileUpload';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDevices } from '@/contexts/DeviceContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const OnboardingPage = () => {
   const [step, setStep] = useState<'devices' | 'upload'>('devices');
   const navigate = useNavigate();
   const { user } = useAuth();
   const { refreshDevices } = useDevices();
+  const { direction } = useLanguage();
 
   // Use useEffect to handle the case when user is null initially
   useEffect(() => {
@@ -44,7 +46,7 @@ const OnboardingPage = () => {
   };
 
   return (
-    <div className="mobile-page">
+    <div className="mobile-page" dir={direction}>
       {step === 'devices' ? (
         <DeviceSelectionForm onComplete={handleDeviceStepComplete} />
       ) : (

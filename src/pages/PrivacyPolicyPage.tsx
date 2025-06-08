@@ -3,25 +3,26 @@ import React from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const PrivacyPolicyPage = () => {
   const navigate = useNavigate();
-
+  const { t, direction } = useLanguage();
   const goBack = () => {
     navigate(-1);
   };
 
   return (
-    <div className="min-h-screen p-6" style={{ backgroundColor: 'hsl(43, 26%, 86%)' }}>
+    <div className="min-h-screen p-6" style={{ backgroundColor: 'hsl(43, 26%, 86%)' , direction}}>
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-6">
         <div className="flex items-center mb-6">
           <Button onClick={goBack} variant="ghost" className="mr-2">
             <ArrowLeft className="h-5 w-5" />
-            <span className="ml-2">Back</span>
+             <span className="ml-2">{t('misc.back', 'Back')}</span>
           </Button>
         </div>
         
-        <h1 className="text-2xl font-bold mb-6">Privacy Policy</h1>
+         <h1 className="text-2xl font-bold mb-6">{t('auth.privacyLink', 'Privacy Policy')}</h1>
         
         <div className="space-y-4">
           <p>Last updated: May 11, 2025</p>

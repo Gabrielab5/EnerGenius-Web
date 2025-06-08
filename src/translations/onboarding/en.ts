@@ -61,4 +61,15 @@ export const onboardingTranslations = {
   'onboarding.upload.csvPreviewColumnB': 'Column B',
   'onboarding.upload.csvPreviewColumnC': 'Column C',
   'onboarding.upload.csvPreviewShowing': 'Showing {shown} of {total} rows',
+
+  // Onboarding
+  'onboarding.welcome': 'Welcome to EnerGenius',
+  'onboarding.step1.title': 'Add Your Devices',
+  'onboarding.step1.description': 'Tell us about your electrical appliances',
+  'onboarding.step2.title': 'Upload Your Data',
+  'onboarding.step2.description': 'Upload your electricity bill for analysis',
+  'onboarding.continue': 'Continue',
+  'onboarding.skip': 'Skip',
+  'onboarding.complete': 'Complete Setup',
+  'onboarding.progress': 'Step {current} of {total}',
 };

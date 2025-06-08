@@ -1,4 +1,4 @@
-
+ 
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -15,7 +15,7 @@ export const LoginForm = () => {
   const [password, setPassword] = useState('');
   const { signIn, signUp, signInWithGoogle, status } = useAuth();
   const [currentTab, setCurrentTab] = useState<'login' | 'register'>('login');
-  const { t, direction } = useLanguage();
+  const { t, direction, isRTL} = useLanguage();
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,11 +37,12 @@ export const LoginForm = () => {
 
   const isLoading = status === 'loading';
   
-  // Class for text alignment based on language direction
-  const textAlignClass = direction === 'rtl' ? 'text-right' : 'text-left';
+   // RTL-aware classes
+  const textAlignClass = isRTL ? 'text-right' : 'text-left';
+  const flexDirectionClass = isRTL ? 'flex-row-reverse' : 'flex-row';
 
-  return (
-    <Card className="w-full max-w-md mx-auto">
+  return ( 
+    <Card className="w-full max-w-md mx-auto" dir={direction}>
       <CardHeader>
         <CardTitle className="text-center text-2xl">
           EnerGenius
@@ -78,10 +79,11 @@ export const LoginForm = () => {
                   required
                   disabled={isLoading}
                   className={`h-12 ${textAlignClass}`}
+                  dir={direction}
                 />
               </div>
               <div className="space-y-2">
-                <div className={`flex ${direction === 'rtl' ? 'flex-row-reverse' : ''} justify-between items-center`}>
+                  <div className={`flex ${flexDirectionClass} justify-between items-center`}>
                   <Label htmlFor="password" className={textAlignClass}>
                     {t('auth.passwordLabel')}
                   </Label>
@@ -98,6 +100,7 @@ export const LoginForm = () => {
                   required
                   disabled={isLoading}
                   className={`h-12 ${textAlignClass}`}
+                  dir={direction}
                 />
               </div>
               <Button 
@@ -125,6 +128,7 @@ export const LoginForm = () => {
                   required
                   disabled={isLoading}
                   className={`h-12 ${textAlignClass}`}
+                  dir={direction}
                 />
               </div>
               <div className="space-y-2">
@@ -140,6 +144,7 @@ export const LoginForm = () => {
                   required
                   disabled={isLoading}
                   className={`h-12 ${textAlignClass}`}
+                  dir={direction}
                 />
               </div>
               <Button 
@@ -165,7 +170,7 @@ export const LoginForm = () => {
           className="w-full mt-4 h-12 text-base"
           disabled={isLoading}
         >
-          <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
+               <svg className={`w-5 h-5 ${isRTL ? 'ml-2' : 'mr-2'}`} viewBox="0 0 24 24">
             <path
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
               fill="#4285F4"

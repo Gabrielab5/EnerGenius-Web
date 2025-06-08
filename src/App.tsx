@@ -8,6 +8,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { DeviceProvider } from "./contexts/DeviceContext";
 import { ConsumptionProvider } from "./contexts/ConsumptionContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import { LanguageLoader } from "./components/ui-components/LanguageLoader";
 import { AppLayout } from "./components/layout/AppLayout";
 import { RequireAuth } from "./components/auth/RequireAuth";
 
@@ -28,7 +29,8 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <LanguageProvider>
-        <AuthProvider>
+         <LanguageLoader>
+          <AuthProvider>
           <DeviceProvider>
             <ConsumptionProvider>
               <Toaster />
@@ -79,6 +81,7 @@ const App = () => (
             </ConsumptionProvider>
           </DeviceProvider>
         </AuthProvider>
+        </LanguageLoader>
       </LanguageProvider>
     </TooltipProvider>
   </QueryClientProvider>

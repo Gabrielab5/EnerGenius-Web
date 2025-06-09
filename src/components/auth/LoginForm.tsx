@@ -45,7 +45,7 @@ export const LoginForm = () => {
     <Card className="w-full max-w-md mx-auto" dir={direction}>
       <CardHeader>
         <CardTitle className="text-center text-2xl">
-          EnerGenius
+          EnerGenius!!!!
         </CardTitle>
         <CardDescription className="text-center">
           {t('auth.loginSubheader')}

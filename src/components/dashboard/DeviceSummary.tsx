@@ -12,8 +12,11 @@ export const DeviceSummary = () => {
     return <LoadingSpinner message="Loading device data..." />;
   }
 
+   // Defensive check to ensure devices is an array
+  const safeDevices = Array.isArray(devices) ? devices : [];
+
   // Group devices by type and calculate total consumption
-  const devicesByType = devices.reduce<Record<string, { count: number; totalConsumption: number }>>(
+  const devicesByType = safeDevices.reduce<Record<string, { count: number; totalConsumption: number }>>(
     (acc, device) => {
       const { type, powerConsumption } = device;
       if (!acc[type]) {
@@ -43,7 +46,7 @@ export const DeviceSummary = () => {
         <CardDescription>Breakdown of your devices by type</CardDescription>
       </CardHeader>
       <CardContent>
-        {devices.length === 0 ? (
+        {safeDevices.length === 0 ? (
           <div className="text-center py-8">
             <p className="text-app-gray-500">No devices added yet.</p>
             <p className="text-sm mt-2">Add devices in the Settings page.</p>

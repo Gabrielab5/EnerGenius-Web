@@ -37,16 +37,20 @@ export const DeviceProvider = ({ children }: { children: React.ReactNode }) => {
       const savedDevices = localStorage.getItem('devices');
       if (savedDevices) {
         try {
-        const parsedDevices = JSON.parse(savedDevices);
-        if (Array.isArray(parsedDevices)) {
-          setDevices(parsedDevices);
-        } else {
-          setDevices([]); 
+          const parsedDevices = JSON.parse(savedDevices);
+          // Critical fix: Ensure parsedDevices is an array
+          if (Array.isArray(parsedDevices)) {
+            setDevices(parsedDevices);
+          } else {
+            console.warn('Invalid devices data in localStorage, resetting to empty array');
+            setDevices([]);
+            localStorage.removeItem('devices'); // Clear invalid data
+          }
+        } catch (error) {
+          console.error('Failed to parse devices from localStorage:', error);
+          setDevices([]);
+          localStorage.removeItem('devices'); // Clear corrupted data
         }
-      } catch (e) {
-        console.error("Failed to parse devices from localStorage", e);
-        setDevices([]); 
-      }
       } else {
         // Set to empty array as we're now using real data
         setDevices([]);
@@ -90,7 +94,17 @@ export const DeviceProvider = ({ children }: { children: React.ReactNode }) => {
       // Try to load from local storage if Firebase fetch fails
       const savedDevices = localStorage.getItem('devices');
       if (savedDevices) {
-        setDevices(JSON.parse(savedDevices));
+        try {
+          const parsedDevices = JSON.parse(savedDevices);
+          if (Array.isArray(parsedDevices)) {
+            setDevices(parsedDevices);
+          } else {
+            setDevices([]);
+          }
+        } catch (parseError) {
+          console.error('Failed to parse fallback devices from localStorage:', parseError);
+          setDevices([]);
+        }
       }
     } finally {
       setIsLoading(false);

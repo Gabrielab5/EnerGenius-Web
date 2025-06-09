@@ -36,7 +36,17 @@ export const DeviceProvider = ({ children }: { children: React.ReactNode }) => {
       // If no user is logged in, use local storage or defaults
       const savedDevices = localStorage.getItem('devices');
       if (savedDevices) {
-        setDevices(JSON.parse(savedDevices));
+        try {
+        const parsedDevices = JSON.parse(savedDevices);
+        if (Array.isArray(parsedDevices)) {
+          setDevices(parsedDevices);
+        } else {
+          setDevices([]); 
+        }
+      } catch (e) {
+        console.error("Failed to parse devices from localStorage", e);
+        setDevices([]); 
+      }
       } else {
         // Set to empty array as we're now using real data
         setDevices([]);

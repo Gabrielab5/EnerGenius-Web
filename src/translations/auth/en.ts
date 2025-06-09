@@ -19,6 +19,7 @@ export const authTranslations = {
   'auth.termsAgree': 'By signing up, you agree to our',
   'auth.termsLink': 'Terms of Service',
   'auth.privacyLink': 'Privacy Policy',
+  'auth.and': 'and',
   'auth.loginTab': 'Login',
   'auth.registerTab': 'Register',
 };

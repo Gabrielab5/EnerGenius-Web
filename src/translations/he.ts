@@ -1,18 +1,29 @@
-
-import { authTranslations } from './auth/he';
-import { navigationTranslations } from './navigation/he';
+import { authTranslations } from './auth/he';More actions
+import { commonTranslations } from './common/he';
+import { homeTranslations } from './home/he';
 import { languageTranslations } from './language/he';
+import { navigationTranslations } from './navigation/he';
 import { onboardingTranslations } from './onboarding/he';
 import { devicesTranslations } from './devices/he';
-import { homeTranslations } from './home/he';
-import { commonTranslations } from './common/he';
+import { loadingTranslations } from './loading/he';
+import { notificationsTranslations } from './notifications/he';
+import { chartsTranslations } from './charts/he';
+import { forecastTranslations } from './forecast/he';
+import { uploadTranslations } from './upload/he';
+import { legalTranslations } from './legal/he';
 
 export const heTranslations = {
   ...authTranslations,
-  ...navigationTranslations,
+  ...commonTranslations,
+  ...homeTranslations,
   ...languageTranslations,
+  ...navigationTranslations,
   ...onboardingTranslations,
   ...devicesTranslations,
-  ...homeTranslations,
-  ...commonTranslations,
+  ...loadingTranslations,
+  ...notificationsTranslations,
+  ...chartsTranslations,
+  ...forecastTranslations,
+  ...uploadTranslations,
+  ...legalTranslations,
 };

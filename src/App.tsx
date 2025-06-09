@@ -22,6 +22,7 @@ import SettingsPage from "./pages/SettingsPage";
 import NotFound from "./pages/NotFound";
 import TermsOfServicePage from "./pages/TermsOfServicePage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import ElectricityAnalyticsPage from "./pages/ElectricityAnalyticsPage";
 
 const queryClient = new QueryClient();
 
@@ -66,7 +67,14 @@ const App = () => (
                       </RequireAuth>
                     } 
                   />
-                  <Route 
+                  <Route                      
+                    path="/analytics" 
+                      element={
+                        <RequireAuth>
+                          <ElectricityAnalyticsPage />
+                        </RequireAuth>
+                      } 
+                    /> 
                     path="/settings" 
                     element={
                       <RequireAuth>

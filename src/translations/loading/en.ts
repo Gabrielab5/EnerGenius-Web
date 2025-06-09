@@ -1,4 +1,4 @@
-xport const loadingTranslations = {Add commentMore actions
+export const loadingTranslations = {
   // Loading Page
   'loading.pleaseWait': 'Please wait',
   'loading.preparingApp': 'We are preparing your electricity consumption forecast app',

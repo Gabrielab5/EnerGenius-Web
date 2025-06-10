@@ -1,4 +1,4 @@
-export const legalTranslations = {Add commentMore actions
+export const legalTranslations = {
   // Legal pages
   'legal.termsOfService': 'תנאי השימוש',
   'legal.privacyPolicy': 'מדיניות הפרטיות',

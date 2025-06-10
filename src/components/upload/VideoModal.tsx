@@ -13,7 +13,7 @@ export const VideoModal = ({ open, onOpenChange }: VideoModalProps) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[95vw] sm:max-w-md max-h-[90vh] p-0 overflow-hidden">
         <DialogHeader className="p-4 pb-2">
-          <DialogTitle className="text-center">How to Upload Your Data</DialogTitle>
+          <DialogTitle className="text-center"> m</DialogTitle>
         </DialogHeader>
         
         <div className="relative w-full" style={{ aspectRatio: '9/16' }}>

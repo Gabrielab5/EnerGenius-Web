@@ -1,4 +1,4 @@
-import { authTranslations } from './auth/en';More actions
+import { authTranslations } from './auth/en';
 import { navigationTranslations } from './navigation/en';
 import { languageTranslations } from './language/en';
 import { onboardingTranslations } from './onboarding/en';

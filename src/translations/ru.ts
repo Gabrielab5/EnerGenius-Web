@@ -1,4 +1,4 @@
-import { authTranslations } from './auth/ru';More actions
+import { authTranslations } from './auth/ru';
 import { commonTranslations } from './common/ru';
 import { homeTranslations } from './home/ru';
 import { languageTranslations } from './language/ru';

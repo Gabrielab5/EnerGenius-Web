@@ -22,7 +22,7 @@ const PrivacyPolicyPage = () => {
           </Button>
         </div>
         
-             <h1 className="text-2xl font-bold mb-6">{t('legal.privacyPolicy')}</h1>Add commentMore actions
+            <h1 className="text-2xl font-bold mb-6">{t('legal.privacyPolicy')}</h1>
 
         <div className="space-y-4">
           <p>{t('legal.lastUpdated')}: May 11, 2025</p>

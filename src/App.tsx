@@ -75,6 +75,7 @@ const App = () => (
                         </RequireAuth>
                       } 
                     /> 
+                    <Route 
                     path="/settings" 
                     element={
                       <RequireAuth>

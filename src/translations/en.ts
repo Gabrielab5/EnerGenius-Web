@@ -9,7 +9,6 @@ import { loadingTranslations } from './loading/en';
 import { notificationsTranslations } from './notifications/en';
 import { chartsTranslations } from './charts/en';
 import { forecastTranslations } from './forecast/en';
-import { uploadTranslations } from './upload/en';
 import { legalTranslations } from './legal/en';
 
 export const enTranslations = {
@@ -24,6 +23,5 @@ export const enTranslations = {
   ...notificationsTranslations,
   ...chartsTranslations,
   ...forecastTranslations,
-  ...uploadTranslations,
   ...legalTranslations,
 };

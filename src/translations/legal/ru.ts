@@ -1,4 +1,4 @@
-export const legalTranslations = {Add commentMore actions
+export const legalTranslations = {  
   // Legal pages
   'legal.termsOfService': 'Условия использования',
   'legal.privacyPolicy': 'Политика конфиденциальности',
@@ -34,5 +34,5 @@ export const legalTranslations = {Add commentMore actions
   'legal.privacy.changes.title': '7. Изменения в этой Политике',
   'legal.privacy.changes.content': 'Мы можем изменять эту политику конфиденциальности время от времени. Если мы внесем изменения, мы уведомим вас, обновив дату в верхней части политики, а в некоторых случаях можем предоставить вам дополнительное уведомление.',
   'legal.privacy.contact.title': '8. Свяжитесь с нами',
-  'legal.privacy.contact.content': 'Если у вас есть вопросы об этой Политике конфиденциальности, пожалуйста, свяжитесь с нами по адресу privacy@energenius.com.',Add commentMore actions
+  'legal.privacy.contact.content': 'Если у вас есть вопросы об этой Политике конфиденциальности, пожалуйста, свяжитесь с нами по адресу privacy@energenius.com.',  
 };

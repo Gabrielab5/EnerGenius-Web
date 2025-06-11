@@ -1,34 +1,30 @@
 
 import React from 'react';
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { HelpCircle } from "lucide-react";
 
 interface PageHeaderProps {
   title: string;
+  subtitle?: string;
   description?: string;
   helpText?: string;
 }
 
-export const PageHeader = ({ title, description, helpText }: PageHeaderProps) => {
+export const PageHeader: React.FC<PageHeaderProps> = ({ 
+  title, 
+  subtitle, 
+  description, 
+  helpText 
+}) => {
   return (
-    <div className="mb-6 text-center">
-      <div className="flex items-center justify-center">
-        <h1 className="text-2xl font-bold text-app-gray-800">{title}</h1>
-        {helpText && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button className="tooltip-trigger ml-2" aria-label="Help">
-                <HelpCircle className="h-4 w-4" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent className="max-w-xs">
-              <p className="text-sm">{helpText}</p>
-            </TooltipContent>
-          </Tooltip>
-        )}
-      </div>
+    <div className="text-center mb-8">
+      <h1 className="text-3xl font-bold text-foreground mb-2">{title}</h1>
+      {subtitle && (
+        <p className="text-lg text-muted-foreground mb-2">{subtitle}</p>
+      )}
       {description && (
-        <p className="text-app-gray-600 mt-1">{description}</p>
+        <p className="text-muted-foreground mb-2">{description}</p>
+      )}
+      {helpText && (
+        <p className="text-sm text-muted-foreground italic">{helpText}</p>
       )}
     </div>
   );

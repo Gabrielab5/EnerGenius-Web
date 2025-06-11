@@ -1,72 +1,55 @@
 
-import React from 'react';
-import { Globe, check } from 'lucide-react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Check, ChevronDown } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
-interface LanguageSelectorProps {
-  variant?: 'default' | 'compact' | 'settings';
-  showLabel?: boolean;
-}
+const languages = [
+  { code: 'en', name: 'English', nativeName: 'English' },
+  { code: 'he', name: 'Hebrew', nativeName: 'עברית' },
+  { code: 'ru', name: 'Russian', nativeName: 'Русский' },
+];
 
-export const LanguageSelector = ({ 
-  variant = 'default', 
-  showLabel = true 
-}: LanguageSelectorProps) => {
-  const { language, setLanguage, availableLanguages, isRTL } = useLanguage();
+export const LanguageSelector = () => {
+  const { language, setLanguage, t } = useLanguage();
+  const [isOpen, setIsOpen] = useState(false);
 
-  const currentLanguage = availableLanguages.find(lang => lang.code === language);
+  const currentLanguage = languages.find(lang => lang.code === language);
 
-  const buttonContent = () => {
-    if (variant === 'compact') {
-      return (
-        <>
-          <Globe className="h-4 w-4" />
-          <span className="text-xs font-medium">{currentLanguage?.code.toUpperCase()}</span>
-        </>
-      );
-    }
-
-    return (
-      <>
-        <Globe className="h-4 w-4" />
-        {showLabel && (
-          <span className="hidden md:inline">
-            {variant === 'settings' ? currentLanguage?.nativeName : currentLanguage?.name}
-          </span>
-        )}
-    </>
-    );
+  const handleLanguageChange = (langCode: string) => {
+    setLanguage(langCode as 'en' | 'he' | 'ru');
+    setIsOpen(false);
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <Button 
-          variant="ghost" 
-          size={variant === 'compact' ? 'sm' : 'default'}
-          className={`flex gap-2 items-center ${isRTL ? 'flex-row-reverse' : ''}`}
+        <Button
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-2 min-w-[120px]"
         >
-          {buttonContent()}
+          <span>{currentLanguage?.nativeName || 'Language'}</span>
+          <ChevronDown className="h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
-       <DropdownMenuContent 
-        align={isRTL ? 'start' : 'end'} 
-        className="w-[200px]"
-        side={variant === 'settings' ? 'right' : 'bottom'}
-      >
-        {availableLanguages.map((lang) => (
+      <DropdownMenuContent align="end" className="min-w-[150px]">
+        {languages.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
-            onClick={() => setLanguage(lang.code)}
-            className={`${language === lang.code ? 'bg-accent/50' : ''} ${isRTL ? 'flex-row-reverse' : ''} flex justify-between items-center`}
+            onClick={() => handleLanguageChange(lang.code)}
+            className="flex items-center justify-between cursor-pointer"
           >
-            <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-              <span className="font-medium">{lang.nativeName}</span>
-              <span className="text-xs text-muted-foreground">({lang.name})</span>
-            </div>
-            {language === lang.code && <Check className="h-4 w-4" />}
+            <span>{lang.nativeName}</span>
+            {language === lang.code && (
+              <Check className="h-4 w-4 text-primary" />
+            )}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

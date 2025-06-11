@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,9 +10,13 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { LoadingSpinner } from '@/components/ui-components/LoadingSpinner';
 import { Plus } from 'lucide-react';
 import { deviceOptions } from '@/lib/deviceOptions';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useRTLStyles } from '@/hooks/useRTLStyles';
 
 export const DeviceManagement = () => {
   const { devices, updateDevice, removeDevice, addDevice, isLoading, refreshDevices } = useDevices();
+  const { t } = useLanguage();
+  const rtl = useRTLStyles();
   const [editingDevice, setEditingDevice] = useState<Device | null>(null);
   const [deviceAge, setDeviceAge] = useState("");
   const [efficiencyRating, setEfficiencyRating] = useState<'A' | 'B' | 'C'>('A');
@@ -93,27 +96,27 @@ export const DeviceManagement = () => {
   };
 
   if (isLoading) {
-    return <LoadingSpinner message="Loading devices..." />;
+    return <LoadingSpinner message={t('settings.loading')} />;
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <div className={`flex ${rtl.conditionalClass('justify-start', 'justify-end')}`}>
         <Button 
           onClick={() => setIsAddDialogOpen(true)}
           className="mb-2"
         >
-          <Plus className="h-4 w-4 mr-2" />
-          Add Device
+          <Plus className={`h-4 w-4 ${rtl.iconSpacing}`} />
+          {t('settings.devices.add')}
         </Button>
       </div>
       
       {devices.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-8">
-            <p className="text-app-gray-500 mb-4">No devices added yet.</p>
-            <p className="text-sm text-center mb-4">
-              Adding devices helps us generate accurate forecasts for your electricity consumption.
+            <p className={`text-muted-foreground mb-4 ${rtl.textAlign}`}>{t('settings.devices.noDevices')}</p>
+            <p className={`text-sm text-center mb-4 ${rtl.textAlign}`}>
+              {t('settings.devices.addDevicesHelp')}
             </p>
           </CardContent>
         </Card>
@@ -121,19 +124,19 @@ export const DeviceManagement = () => {
         devices.map(device => (
           <Card key={device.id}>
             <CardHeader className="py-4">
-              <CardTitle className="text-lg">{device.name}</CardTitle>
-              <CardDescription className="text-app-gray-500">
-                {device.type} • {device.age} years old • Rating: {device.efficiencyRating}
-                {device.knownKwh !== undefined && ` • Known kWh: ${device.knownKwh}`}
+              <CardTitle className={`text-lg ${rtl.textAlign}`}>{device.name}</CardTitle>
+              <CardDescription className={`text-muted-foreground ${rtl.textAlign}`}>
+                {device.type} • {device.age} {t('settings.devices.yearsOld')} • {t('settings.devices.rating')}: {device.efficiencyRating}
+                {device.knownKwh !== undefined && ` • ${t('settings.devices.knownKwh')}: ${device.knownKwh}`}
               </CardDescription>
             </CardHeader>
-            <CardContent className="pt-0 flex justify-end gap-2">
+            <CardContent className={`pt-0 flex gap-2 ${rtl.conditionalClass('justify-start', 'justify-end')}`}>
               <Button 
                 variant="outline" 
                 size="sm"
                 onClick={() => handleEditClick(device)}
               >
-                Edit
+                {t('common.edit')}
               </Button>
               <Button 
                 variant="ghost" 
@@ -141,7 +144,7 @@ export const DeviceManagement = () => {
                 className="text-destructive hover:text-destructive/90"
                 onClick={() => handleDeleteDevice(device.id)}
               >
-                Remove
+                {t('common.remove')}
               </Button>
             </CardContent>
           </Card>
@@ -151,16 +154,16 @@ export const DeviceManagement = () => {
       {/* Edit Device Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Edit Device</DialogTitle>
+          <DialogHeader className={rtl.textAlign}>
+            <DialogTitle>{t('settings.devices.editDevice')}</DialogTitle>
             <DialogDescription>
-              Update information about your {editingDevice?.name}
+              {t('settings.devices.updateInfo')} {editingDevice?.name}
             </DialogDescription>
           </DialogHeader>
           
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="age">Device Age (years)</Label>
+              <Label htmlFor="age" className={rtl.textAlign}>{t('settings.devices.deviceAge')}</Label>
               <Input
                 id="age"
                 type="number"
@@ -173,24 +176,24 @@ export const DeviceManagement = () => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="rating">Energy Efficiency Rating</Label>
+              <Label htmlFor="rating" className={rtl.textAlign}>{t('settings.devices.efficiencyRating')}</Label>
               <Select
                 value={efficiencyRating}
                 onValueChange={(value) => setEfficiencyRating(value as 'A' | 'B' | 'C')}
               >
                 <SelectTrigger id="rating" className="h-12">
-                  <SelectValue placeholder="Select rating" />
+                  <SelectValue placeholder={t('settings.devices.selectRating')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="A">A (Most Efficient)</SelectItem>
-                  <SelectItem value="B">B (Medium Efficiency)</SelectItem>
-                  <SelectItem value="C">C (Least Efficient)</SelectItem>
+                  <SelectItem value="A">{t('settings.devices.ratingA')}</SelectItem>
+                  <SelectItem value="B">{t('settings.devices.ratingB')}</SelectItem>
+                  <SelectItem value="C">{t('settings.devices.ratingC')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="knownKwh">Known kWh (Optional)</Label>
+              <Label htmlFor="knownKwh" className={rtl.textAlign}>{t('settings.devices.knownKwhOptional')}</Label>
               <Input
                 id="knownKwh"
                 type="number"
@@ -198,20 +201,20 @@ export const DeviceManagement = () => {
                 onChange={(e) => setKnownKwh(e.target.value)}
                 min="0"
                 step="0.01"
-                placeholder="Enter known kWh if available"
+                placeholder={t('settings.devices.enterKnownKwh')}
                 className="h-12"
               />
             </div>
           </div>
           
-          <DialogFooter>
+          <DialogFooter className={rtl.conditionalClass('flex-row-reverse', 'flex-row')}>
             <Button 
               variant="outline" 
               onClick={() => setIsEditDialogOpen(false)}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
-            <Button onClick={handleSaveChanges}>Save Changes</Button>
+            <Button onClick={handleSaveChanges}>{t('common.saveChanges')}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -219,22 +222,22 @@ export const DeviceManagement = () => {
       {/* Add Device Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Add New Device</DialogTitle>
+          <DialogHeader className={rtl.textAlign}>
+            <DialogTitle>{t('settings.devices.addNewDevice')}</DialogTitle>
             <DialogDescription>
-              Enter information about your electrical device
+              {t('settings.devices.enterDeviceInfo')}
             </DialogDescription>
           </DialogHeader>
           
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="deviceName">Device Type</Label>
+              <Label htmlFor="deviceName" className={rtl.textAlign}>{t('settings.devices.deviceType')}</Label>
               <Select
                 value={newDeviceName}
                 onValueChange={setNewDeviceName}
               >
                 <SelectTrigger id="deviceName" className="h-12">
-                  <SelectValue placeholder="Select a device" />
+                  <SelectValue placeholder={t('settings.devices.selectDevice')} />
                 </SelectTrigger>
                 <SelectContent>
                   {deviceOptions.map((device) => (
@@ -246,89 +249,20 @@ export const DeviceManagement = () => {
               </Select>
             </div>
             
-            <div className="space-y-2">
-              <Label htmlFor="deviceType">Device Category</Label>
-              <Select
-                value={newDeviceType}
-                onValueChange={setNewDeviceType}
-              >
-                <SelectTrigger id="deviceType" className="h-12">
-                  <SelectValue placeholder="Select device category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Large Appliance">Large Appliance</SelectItem>
-                  <SelectItem value="Electronics">Electronics</SelectItem>
-                  <SelectItem value="Climate Control">Climate Control</SelectItem>
-                  <SelectItem value="Kitchen Appliance">Kitchen Appliance</SelectItem>
-                  <SelectItem value="Lighting">Lighting</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="deviceAge">Device Age (years)</Label>
-              <Select
-                value={newDeviceAge}
-                onValueChange={setNewDeviceAge}
-              >
-                <SelectTrigger id="deviceAge" className="h-12">
-                  <SelectValue placeholder="Select device age" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">1 year</SelectItem>
-                  <SelectItem value="2">2 years</SelectItem>
-                  <SelectItem value="3">3 years</SelectItem>
-                  <SelectItem value="4">4 years</SelectItem>
-                  <SelectItem value="5">5 years</SelectItem>
-                  <SelectItem value="6">6+ years</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="deviceEfficiency">Energy Efficiency Rating</Label>
-              <Select
-                value={newEfficiencyRating}
-                onValueChange={(value) => setNewEfficiencyRating(value as 'A' | 'B' | 'C')}
-              >
-                <SelectTrigger id="deviceEfficiency" className="h-12">
-                  <SelectValue placeholder="Select efficiency rating" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="A">A (Most Efficient)</SelectItem>
-                  <SelectItem value="B">B (Medium Efficiency)</SelectItem>
-                  <SelectItem value="C">C (Least Efficient)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="deviceKnownKwh">Known kWh (Optional)</Label>
-              <Input
-                id="deviceKnownKwh"
-                type="number"
-                value={newKnownKwh}
-                onChange={(e) => setNewKnownKwh(e.target.value)}
-                min="0"
-                step="0.01"
-                placeholder="Enter known kWh if available"
-                className="h-12"
-              />
-            </div>
           </div>
           
-          <DialogFooter>
+          <DialogFooter className={rtl.conditionalClass('flex-row-reverse', 'flex-row')}>
             <Button 
               variant="outline" 
               onClick={() => setIsAddDialogOpen(false)}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button 
               onClick={handleAddDevice}
               disabled={isAdding || !newDeviceName || !newDeviceAge}
             >
-              {isAdding ? 'Adding...' : 'Add Device'}
+              {isAdding ? t('settings.devices.adding') : t('settings.devices.addDevice')}
             </Button>
           </DialogFooter>
         </DialogContent>

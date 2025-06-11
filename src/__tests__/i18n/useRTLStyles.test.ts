@@ -1,22 +1,19 @@
+
 import { describe, it, expect } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useRTLStyles } from '@/hooks/useRTLStyles';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import React from 'react';
 
-// Mock the language context for testing
-const createWrapper = (language: 'en' | 'he' | 'ru') => {
-  return ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="language-wrapper" data-language={language}>
-      {children}
-    </div>
-  );
-};
+// Test wrapper component
+const TestWrapper = ({ children }: { children: React.ReactNode }) => (
+  <LanguageProvider>{children}</LanguageProvider>
+);
 
 describe('useRTLStyles Hook', () => {
-  it('should return LTR styles for English', () => {
+  it('should return LTR styles for English by default', () => {
     const { result } = renderHook(() => useRTLStyles(), {
-      wrapper: createWrapper('en')
+      wrapper: TestWrapper
     });
 
     expect(result.current.textAlign).toBe('text-left');
@@ -27,7 +24,7 @@ describe('useRTLStyles Hook', () => {
 
   it('should return correct margin utilities for LTR', () => {
     const { result } = renderHook(() => useRTLStyles(), {
-      wrapper: createWrapper('en')
+      wrapper: TestWrapper
     });
 
     expect(result.current.marginLeft('4')).toBe('ml-4');
@@ -38,7 +35,7 @@ describe('useRTLStyles Hook', () => {
 
   it('should return correct padding utilities for LTR', () => {
     const { result } = renderHook(() => useRTLStyles(), {
-      wrapper: createWrapper('en')
+      wrapper: TestWrapper
     });
 
     expect(result.current.paddingLeft('4')).toBe('pl-4');
@@ -49,7 +46,7 @@ describe('useRTLStyles Hook', () => {
 
   it('should return correct border utilities for LTR', () => {
     const { result } = renderHook(() => useRTLStyles(), {
-      wrapper: createWrapper('en')
+      wrapper: TestWrapper
     });
 
     expect(result.current.borderLeft('2')).toBe('border-l-2');
@@ -60,7 +57,7 @@ describe('useRTLStyles Hook', () => {
 
   it('should return correct flex classes', () => {
     const { result } = renderHook(() => useRTLStyles(), {
-      wrapper: createWrapper('en')
+      wrapper: TestWrapper
     });
 
     expect(result.current.getFlexClasses()).toBe('flex-row');
@@ -69,7 +66,7 @@ describe('useRTLStyles Hook', () => {
 
   it('should return correct spacing classes', () => {
     const { result } = renderHook(() => useRTLStyles(), {
-      wrapper: createWrapper('en')
+      wrapper: TestWrapper
     });
 
     expect(result.current.getSpacingClasses('start', '4')).toBe('ml-4');
@@ -80,7 +77,7 @@ describe('useRTLStyles Hook', () => {
 
   it('should return correct conditional classes', () => {
     const { result } = renderHook(() => useRTLStyles(), {
-      wrapper: createWrapper('en')
+      wrapper: TestWrapper
     });
 
     expect(result.current.conditionalClass('rtl-class', 'ltr-class')).toBe('ltr-class');
@@ -88,7 +85,7 @@ describe('useRTLStyles Hook', () => {
 
   it('should return correct style object', () => {
     const { result } = renderHook(() => useRTLStyles(), {
-      wrapper: createWrapper('en')
+      wrapper: TestWrapper
     });
 
     const styleObj = result.current.getStyleObject();

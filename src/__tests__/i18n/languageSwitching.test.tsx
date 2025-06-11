@@ -1,11 +1,28 @@
+
 import { describe, it, expect, beforeEach } from 'vitest';
-import { render } from '@testing-library/react';
-import { screen } from '@testing-library/dom';
+import { render, screen } from '@testing-library/react';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { ElectricityStats } from '@/components/dashboard/ElectricityStats';
 import { LanguageSelector } from '@/components/language/LanguageSelector';
 import React from 'react';
 import { ElectricityData } from '@/types';
+
+// Mock electricity data for testing
+const mockElectricityData: ElectricityData = {
+  annual_total_kwh: 1200,
+  annual_total_price: 2400,
+  avg_monthly_kwh: 100,
+  avg_monthly_price: 200,
+  monthly_totals: {
+    '2024-01': { kwh: 120, price: 240 },
+    '2024-02': { kwh: 110, price: 220 },
+    '2024-03': { kwh: 130, price: 260 }
+  },
+  daily_totals: {},
+  month_stats: {},
+  success: true,
+  userId: 'test-user-id'
+};
 
 describe('Language Switching Integration', () => {
   beforeEach(() => {

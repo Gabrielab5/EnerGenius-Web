@@ -5,8 +5,9 @@ import { LanguageSelector } from '@/components/language/LanguageSelector';
 import { useLanguage } from '@/contexts/LanguageContext';
 
 const LoginPage = () => {
-  const { direction } = useLanguage();
-  
+  const { direction , isRTL} = useLanguage();
+  const languageSelectorPosition = isRTL ? 'top-4 left-4' : 'top-4 right-4';
+
   return (
     <div 
       className="min-h-screen flex flex-col justify-center p-4" 
@@ -15,7 +16,7 @@ const LoginPage = () => {
         direction: direction
       }}
     >
-      <div className="absolute top-4 right-4">
+      <div className={`absolute ${languageSelectorPosition}`}>
         <LanguageSelector />
       </div>
       <div className="w-full max-w-md mx-auto mb-6 flex justify-center">

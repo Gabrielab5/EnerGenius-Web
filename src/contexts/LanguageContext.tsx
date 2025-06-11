@@ -68,9 +68,11 @@ const LANGUAGE_PREFERENCE_KEY = 'energenius_language_preference';
 // Detect browser language
 const detectBrowserLanguage = (): Language => {
   const browserLang = navigator.language.split('-')[0];
-  return (Object.keys(languageConfigs) as Language[]).includes(browserLang as Language) 
+  const detectedLang = (Object.keys(languageConfigs) as Language[]).includes(browserLang as Language) 
     ? (browserLang as Language) 
     : 'en';
+  console.log(`Browser language detected: ${browserLang}, mapped to: ${detectedLang}`);
+  return detectedLang;
 };
 
 // Get initial language
@@ -78,17 +80,21 @@ const getInitialLanguage = (): Language => {
   // First check localStorage
   const storedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY);
   if (storedLanguage && Object.keys(languageConfigs).includes(storedLanguage)) {
+    console.log(`Using stored language: ${storedLanguage}`);
     return storedLanguage as Language;
   }
   
   // Then check user preference (could be from backend/profile)
   const userPreference = localStorage.getItem(LANGUAGE_PREFERENCE_KEY);
   if (userPreference && Object.keys(languageConfigs).includes(userPreference)) {
+     console.log(`Using user preference language: ${userPreference}`);
     return userPreference as Language;
   }
   
   // Finally fallback to browser detection or English
-  return detectBrowserLanguage();
+  const browserLang = detectBrowserLanguage();
+  console.log(`Using browser-detected language: ${browserLang}`);
+  return browserLang;
 };
 
 // Provider component
@@ -99,6 +105,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   // Initialize language on mount
   useEffect(() => {
     const initialLanguage = getInitialLanguage();
+    console.log(`Initializing language context with: ${initialLanguage}`);
     setLanguage(initialLanguage);
     updateDocumentLanguage(initialLanguage);
     setIsLoading(false);
@@ -120,12 +127,15 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
     
     console.log(`Language set to: ${config.nativeName} (${lang}) - Direction: ${config.direction}`);
+    console.log(`Document direction: ${document.documentElement.dir}`);
+    console.log(`Document language: ${document.documentElement.lang}`);
   };
 
   // Update language and store preference
   const handleSetLanguage = (lang: Language) => {
     if (lang === language) return;
     
+    console.log(`Changing language from ${language} to ${lang}`);
     setLanguage(lang);
     updateDocumentLanguage(lang);
     

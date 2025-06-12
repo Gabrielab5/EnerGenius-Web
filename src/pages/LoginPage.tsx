@@ -15,6 +15,7 @@ const LoginPage = () => {
         backgroundColor: 'hsl(43, 26%, 86%)',
         direction: direction
       }}
+       dir={direction}
     >
       <div className={`absolute ${languageSelectorPosition}`}>
         <LanguageSelector />

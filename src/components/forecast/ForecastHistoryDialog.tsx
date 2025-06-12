@@ -5,6 +5,7 @@ import { useSavedForecasts } from '@/hooks/useSavedForecasts';
 import { ForecastCard } from './ForecastCard';
 import { LoadingSpinner } from '@/components/ui-components/LoadingSpinner';
 import { Card, CardContent } from '@/components/ui/card';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ForecastHistoryDialogProps {
   open: boolean;
@@ -14,7 +15,7 @@ interface ForecastHistoryDialogProps {
 
 export const ForecastHistoryDialog = ({ open, onOpenChange, refreshTrigger }: ForecastHistoryDialogProps) => {
   const { forecasts, isLoading, deleteForecast, refreshForecasts } = useSavedForecasts();
-
+  const { t } = useLanguage();
   // Refresh forecasts when refreshTrigger changes
   useEffect(() => {
     if (refreshTrigger && open) {
@@ -26,22 +27,22 @@ export const ForecastHistoryDialog = ({ open, onOpenChange, refreshTrigger }: Fo
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[95vw] sm:max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader className="text-center">
-          <DialogTitle>Saved Forecasts</DialogTitle>
+           <DialogTitle>{t('forecast.saved.title')}</DialogTitle>
           <DialogDescription>
-            View and manage your previously saved electricity forecasts
+             {t('forecast.saved.description')}
           </DialogDescription>
         </DialogHeader>
 
         <div className="mt-4">
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
-              <LoadingSpinner size="md" message="Loading forecasts..." />
+               <LoadingSpinner size="md" message={t('forecast.saved.loadingForecasts')} />
             </div>
           ) : forecasts.length === 0 ? (
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-8">
-                <p className="text-muted-foreground mb-2">No saved forecasts found.</p>
-                <p className="text-sm text-center">Create and save a forecast to see it here.</p>
+                <p className="text-muted-foreground mb-2">{t('forecast.saved.noForecasts')}</p>
+                <p className="text-sm text-center">{t('forecast.saved.createFirst')}</p>
               </CardContent>
             </Card>
           ) : (

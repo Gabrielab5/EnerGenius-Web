@@ -1,20 +1,19 @@
+
 import { Language } from '@/types/language';
-import { languageConfigs } from './languageDetection';
 
 export const updateDocumentLanguage = (language: Language): void => {
-  const config = languageConfigs[language];
+  const direction = language === 'he' ? 'rtl' : 'ltr';
   
-  // Update document direction
-  document.documentElement.dir = config.direction;
-  console.log(`Document direction: ${config.direction}`);
-  
-  // Update document language
+  // Update document attributes
   document.documentElement.lang = language;
-  console.log(`Document language: ${language}`);
+  document.documentElement.dir = direction;
   
-  // Update language in the body class for CSS targeting
-  document.body.className = document.body.className.replace(/lang-\w+/, '');
-  document.body.classList.add(`lang-${language}`);
+  // Update body class for any language-specific styling
+  document.body.className = document.body.className
+    .replace(/\blang-\w+\b/g, '')
+    .replace(/\bdir-\w+\b/g, '');
   
-  console.log(`Language set to: ${config.nativeName} (${language}) - Direction: ${config.direction}`);
+  document.body.classList.add(`lang-${language}`, `dir-${direction}`);
+  
+  console.log(`Updated document language to ${language} with direction ${direction}`);
 };

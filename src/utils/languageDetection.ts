@@ -1,46 +1,48 @@
+import { Language, LanguageConfig } from '@/types/language';
 
 export const languageConfigs: Record<Language, LanguageConfig> = {
   en: {
     code: 'en',
     name: 'English',
     nativeName: 'English',
+    flag: '🇺🇸',
     direction: 'ltr',
-    flag: '🇺🇸'
   },
   he: {
     code: 'he',
     name: 'Hebrew',
     nativeName: 'עברית',
+    flag: '🇮🇱',
     direction: 'rtl',
-    flag: '🇮🇱'
   },
   ru: {
     code: 'ru',
     name: 'Russian',
     nativeName: 'Русский',
+    flag: '🇷🇺',
     direction: 'ltr',
-    flag: '🇷🇺'
-  }
+  },
 };
 
 export const getInitialLanguage = (): Language => {
-  // Check for stored preference first
-  const stored = localStorage.getItem('energenius-language') as Language;
-  if (stored && Object.keys(languageConfigs).includes(stored)) {
-    console.log(`Using stored language: ${stored}`);
+  // Check stored preference first
+  const stored = localStorage.getItem('preferred-language') as Language;
+  if (stored && languageConfigs[stored]) {
+    console.log(`Found stored language preference: ${stored}`);
     return stored;
   }
 
-  // Fall back to browser language detection
+  // Check browser language
   const browserLang = navigator.language.toLowerCase();
+  console.log(`Browser language detected: ${browserLang}`);
   
   if (browserLang.startsWith('he')) {
-    console.log('Detected Hebrew browser language');
+    console.log('Setting language to Hebrew based on browser locale');
     return 'he';
   }
   
   if (browserLang.startsWith('ru')) {
-    console.log('Detected Russian browser language');
+    console.log('Setting language to Russian based on browser locale');
     return 'ru';
   }
   
@@ -49,6 +51,6 @@ export const getInitialLanguage = (): Language => {
 };
 
 export const storeLanguagePreference = (language: Language): void => {
-  localStorage.setItem('energenius-language', language);
+  localStorage.setItem('preferred-language', language);
   console.log(`Stored language preference: ${language}`);
 };

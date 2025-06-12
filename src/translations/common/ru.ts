@@ -1,4 +1,4 @@
-xport const commonTranslations = {
+export const commonTranslations = {
   // Common UI elements
   'common.loading': 'Загрузка...',
   'common.error': 'Ошибка',

@@ -1,4 +1,3 @@
-
 import { describe, it, expect } from 'vitest';
 import { enTranslations } from '@/translations/en';
 import { heTranslations } from '@/translations/he';
@@ -57,12 +56,52 @@ describe('Translation Coverage', () => {
       'common.',
       'auth.',
       'home.',
-      'navigation.'
+      'navigation.',
+      'onboarding.',
+      'devices.',
+      'loading.',
+      'notifications.',
+      'charts.',
+      'forecast.',
+      'legal.',
+      'language.'
     ];
 
     requiredNamespaces.forEach(namespace => {
       const hasNamespace = enKeys.some(key => key.startsWith(namespace));
       expect(hasNamespace).toBe(true);
+    });
+  });
+
+  it('should have consistent translation structure across languages', () => {
+    // Check that all translation objects have the same structure
+    const enStructure = JSON.stringify(Object.keys(enTranslations).sort());
+    const heStructure = JSON.stringify(Object.keys(heTranslations).sort());
+    const ruStructure = JSON.stringify(Object.keys(ruTranslations).sort());
+
+    expect(heStructure).toBe(enStructure);
+    expect(ruStructure).toBe(enStructure);
+  });
+
+  it('should have proper device-related translations', () => {
+    const deviceKeys = enKeys.filter(key => key.includes('device'));
+    expect(deviceKeys.length).toBeGreaterThan(0);
+    
+    // Ensure all device keys exist in all languages
+    deviceKeys.forEach(key => {
+      expect(heTranslations[key]).toBeDefined();
+      expect(ruTranslations[key]).toBeDefined();
+    });
+  });
+
+  it('should have proper settings-related translations', () => {
+    const settingsKeys = enKeys.filter(key => key.startsWith('settings.'));
+    expect(settingsKeys.length).toBeGreaterThan(0);
+    
+    // Ensure all settings keys exist in all languages
+    settingsKeys.forEach(key => {
+      expect(heTranslations[key]).toBeDefined();
+      expect(ruTranslations[key]).toBeDefined();
     });
   });
 });

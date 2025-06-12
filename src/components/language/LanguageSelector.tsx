@@ -1,55 +1,44 @@
 
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Check, ChevronDown } from 'lucide-react';
+import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+import { Button } from '@/components/ui/button';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
-
-const languages = [
-  { code: 'en', name: 'English', nativeName: 'English' },
-  { code: 'he', name: 'Hebrew', nativeName: 'עברית' },
-  { code: 'ru', name: 'Russian', nativeName: 'Русский' },
-];
+import { ChevronDown, Globe } from 'lucide-react';
 
 export const LanguageSelector = () => {
-  const { language, setLanguage, t } = useLanguage();
-  const [isOpen, setIsOpen] = useState(false);
-
-  const currentLanguage = languages.find(lang => lang.code === language);
-
-  const handleLanguageChange = (langCode: string) => {
-    setLanguage(langCode as 'en' | 'he' | 'ru');
-    setIsOpen(false);
-  };
-
+  const { language, setLanguage, availableLanguages, t, direction } = useLanguage();
+  
+  const currentLanguage = availableLanguages.find(lang => lang.code === language);
+  
   return (
-    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+    <DropdownMenu dir={direction}>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="flex items-center gap-2 min-w-[120px]"
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="flex items-center gap-2"
         >
-          <span>{currentLanguage?.nativeName || 'Language'}</span>
-          <ChevronDown className="h-4 w-4" />
+          <Globe className="w-4 h-4" />
+          <span>{currentLanguage?.flag} {currentLanguage?.nativeName}</span>
+          <ChevronDown className="w-4 h-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[150px]">
-        {languages.map((lang) => (
+        {availableLanguages.map((lang) => (
           <DropdownMenuItem
             key={lang.code}
-            onClick={() => handleLanguageChange(lang.code)}
-            className="flex items-center justify-between cursor-pointer"
+            onClick={() => setLanguage(lang.code)}
+            className={`flex items-center gap-2 cursor-pointer ${
+              language === lang.code ? 'bg-muted' : ''
+            }`}
           >
+            <span>{lang.flag}</span>
             <span>{lang.nativeName}</span>
-            {language === lang.code && (
-              <Check className="h-4 w-4 text-primary" />
-            )}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

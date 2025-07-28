@@ -15,7 +15,7 @@ export const navigationTranslations = {
   'nav.title.home': 'Dashboard',
   'nav.title.devices': 'Device Management',
   'nav.title.forecast': 'Electricity Forecast',
-  'nav.title.upload': 'Upload Data',
+  'nav.title.upload': 'Data Upload',
   'nav.title.settings': 'Settings',
   'nav.title.analytics': 'Analytics',
 };

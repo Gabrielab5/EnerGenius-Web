@@ -24,4 +24,5 @@ export const heTranslations = {
   ...chartsTranslations,
   ...forecastTranslations,
   ...legalTranslations,
+  'test.interpolation': 'בדיקה: הערך הוא {value}',
 };

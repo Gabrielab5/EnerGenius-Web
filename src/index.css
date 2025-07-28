@@ -102,11 +102,24 @@
   button, a, [role="button"], input[type="button"], input[type="submit"] {
     @apply min-h-[44px] min-w-[44px];
   }
+  
+  /* Improved responsive containers */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .mobile-page {
+      @apply max-w-4xl;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .mobile-page {
+      @apply max-w-5xl;
+    }
+  }
 }
 
 @layer components {
   .app-container {
-    @apply max-w-2xl mx-auto px-4 pb-20 min-h-screen;
+    @apply w-full max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 pb-20 min-h-screen;
   }
   
   .tooltip-trigger {
@@ -114,23 +127,23 @@
   }
 
   .mobile-page {
-    @apply px-4 py-6 max-w-md mx-auto;
+    @apply px-3 sm:px-4 lg:px-6 py-4 sm:py-6 w-full max-w-6xl mx-auto;
   }
   
   .mobile-nav {
-    @apply fixed bottom-0 left-0 right-0 bg-white border-t border-app-gray-200 px-4 py-2 flex justify-around items-center z-50;
+    @apply fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-2 sm:px-4 py-2 flex justify-around items-center z-50;
   }
   
   .nav-item {
-    @apply flex flex-col items-center justify-center p-2;
+    @apply flex flex-col items-center justify-center p-2 sm:p-3 min-h-[44px] min-w-[44px] rounded-lg transition-colors;
   }
   
   .nav-icon {
-    @apply h-6 w-6 mb-1 text-app-gray-500;
+    @apply h-5 w-5 sm:h-6 sm:w-6 mb-1 text-muted-foreground transition-colors;
   }
   
   .nav-text {
-    @apply text-xs text-app-gray-500;
+    @apply text-xs sm:text-sm text-muted-foreground transition-colors;
   }
   
   .nav-item.active .nav-icon,

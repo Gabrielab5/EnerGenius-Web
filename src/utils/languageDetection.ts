@@ -1,38 +1,38 @@
-import { Language, LanguageConfig } from '@/types/language';
+import { Language } from '@/types/language';
 
-export const languageConfigs: Record<Language, LanguageConfig> = {
+export const languageConfigs = {
   en: {
-    code: 'en',
+    code: 'en' as Language,
     name: 'English',
     nativeName: 'English',
     flag: '🇺🇸',
-    direction: 'ltr',
+    direction: 'ltr' as const,
   },
   he: {
-    code: 'he',
+    code: 'he' as Language,
     name: 'Hebrew',
     nativeName: 'עברית',
     flag: '🇮🇱',
-    direction: 'rtl',
+    direction: 'rtl' as const,
   },
   ru: {
-    code: 'ru',
+    code: 'ru' as Language,
     name: 'Russian',
     nativeName: 'Русский',
     flag: '🇷🇺',
-    direction: 'ltr',
+    direction: 'ltr' as const,
   },
 };
 
 export const getInitialLanguage = (): Language => {
-  // Check stored preference first
+  // Check localStorage first
   const stored = localStorage.getItem('preferred-language') as Language;
-  if (stored && languageConfigs[stored]) {
-    console.log(`Found stored language preference: ${stored}`);
+  if (stored && Object.keys(languageConfigs).includes(stored)) {
+    console.log(`Using stored language preference: ${stored}`);
     return stored;
   }
 
-  // Check browser language
+  // Detect from browser
   const browserLang = navigator.language.toLowerCase();
   console.log(`Browser language detected: ${browserLang}`);
   
@@ -40,7 +40,6 @@ export const getInitialLanguage = (): Language => {
     console.log('Setting language to Hebrew based on browser locale');
     return 'he';
   }
-  
   if (browserLang.startsWith('ru')) {
     console.log('Setting language to Russian based on browser locale');
     return 'ru';
@@ -52,5 +51,4 @@ export const getInitialLanguage = (): Language => {
 
 export const storeLanguagePreference = (language: Language): void => {
   localStorage.setItem('preferred-language', language);
-  console.log(`Stored language preference: ${language}`);
 };

@@ -3,6 +3,7 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { collection, query, orderBy, limit, getDocs, doc, getDoc } from "firebase/firestore"
 import { db } from "./firebase"
+import { API_ENDPOINTS } from "@/config/api"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -15,7 +16,7 @@ export function cn(...inputs: ClassValue[]) {
  */
 export async function convertXlsxToText(userId: string): Promise<any> {
   try {
-    const response = await fetch('https://xlsxtotext-160356915851.us-central1.run.app', {
+    const response = await fetch(API_ENDPOINTS.XLSX_TO_TEXT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -41,7 +42,7 @@ export async function convertXlsxToText(userId: string): Promise<any> {
  */
 export async function analyzeElectricityData(userId: string): Promise<any> {
   try {
-    const response = await fetch('https://electricalculation-160356915851.europe-west1.run.app', {
+    const response = await fetch(API_ENDPOINTS.ELECTRICITY_ANALYSIS, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -68,7 +69,7 @@ export async function analyzeElectricityData(userId: string): Promise<any> {
  */
 export async function getElectricityTips(userId: string, language: string): Promise<any> {
   try {
-    const response = await fetch('https://electricforcastai-160356915851.us-central1.run.app', {
+    const response = await fetch(API_ENDPOINTS.ELECTRICITY_FORECAST_AI, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

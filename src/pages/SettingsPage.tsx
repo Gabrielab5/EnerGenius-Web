@@ -9,10 +9,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useDevices } from '@/contexts/DeviceContext';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { RefreshCw } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const SettingsPage = () => {
-  const { signOut, user } = useAuth();
+  const { signOut, user, resetPassword } = useAuth();
   const { refreshDevices, isLoading } = useDevices();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   
   const handleSignOut = async () => {
@@ -23,21 +25,27 @@ const SettingsPage = () => {
   const handleRefreshDevices = async () => {
     await refreshDevices();
   };
+
+  const handleResetPassword = async () => {
+    if (user?.email) {
+      await resetPassword(user.email);
+    }
+  };
   
   return (
     <div className="mobile-page pb-20">
       <PageHeader 
-        title="Settings" 
-        description="Manage your devices and account"
+        title={t('settings.pageTitle')} 
+        description={t('settings.pageDescription')}
       />
       
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         <Card>
           <CardHeader className="pb-2">
             <div className="flex justify-between items-center">
               <div>
-                <CardTitle>Your Devices</CardTitle>
-                <CardDescription>Manage your connected electrical devices</CardDescription>
+                <CardTitle>{t('settings.devices.title')}</CardTitle>
+                <CardDescription>{t('settings.devices.description')}</CardDescription>
               </div>
               <Button 
                 variant="ghost" 
@@ -46,7 +54,7 @@ const SettingsPage = () => {
                 disabled={isLoading}
               >
                 <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-                Refresh
+                {t('settings.devices.refresh')}
               </Button>
             </div>
           </CardHeader>
@@ -57,26 +65,36 @@ const SettingsPage = () => {
         
         <Card>
           <CardHeader>
-            <CardTitle>Account</CardTitle>
-            <CardDescription>Manage your account settings</CardDescription>
+            <CardTitle>{t('settings.account.title')}</CardTitle>
+            <CardDescription>{t('settings.account.description')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {user && (
               <Alert>
-                <AlertTitle>Signed in as</AlertTitle>
+                <AlertTitle>{t('settings.account.signedInAs')}</AlertTitle>
                 <AlertDescription className="font-medium">
                   {user.email}
                 </AlertDescription>
               </Alert>
             )}
             
-            <Button 
-              variant="outline" 
-              className="w-full h-12"
-              onClick={handleSignOut}
-            >
-              Sign Out
-            </Button>
+            <div className="space-y-3">
+              <Button 
+                variant="secondary" 
+                className="w-full h-12"
+                onClick={handleResetPassword}
+              >
+                {t('settings.account.resetPassword')}
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                className="w-full h-12"
+                onClick={handleSignOut}
+              >
+                {t('settings.account.signOut')}
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>

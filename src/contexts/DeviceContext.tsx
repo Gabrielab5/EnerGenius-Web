@@ -1,10 +1,11 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Device } from '@/types';
 import { auth, db } from '@/lib/firebase';
 import { collection, doc, getDocs, addDoc, updateDoc, deleteDoc, query, orderBy } from 'firebase/firestore';
 import { useAuth } from './AuthContext';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { deviceOptions } from '@/lib/deviceOptions';
 
 interface DeviceContextType {
   devices: Device[];
@@ -27,35 +28,26 @@ export const useDevices = () => {
 
 export const DeviceProvider = ({ children }: { children: React.ReactNode }) => {
   const [devices, setDevices] = useState<Device[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
+  const { toast } = useToast();
+  const { t } = useLanguage();
 
   const fetchDevices = async () => {
     if (!user) {
-      // If no user is logged in, use local storage or defaults
+      // Try to load from local storage if no user
       const savedDevices = localStorage.getItem('devices');
       if (savedDevices) {
         try {
           const parsedDevices = JSON.parse(savedDevices);
-          // Critical fix: Ensure parsedDevices is an array
           if (Array.isArray(parsedDevices)) {
             setDevices(parsedDevices);
-          } else {
-            console.warn('Invalid devices data in localStorage, resetting to empty array');
-            setDevices([]);
-            localStorage.removeItem('devices'); // Clear invalid data
           }
-        } catch (error) {
-          console.error('Failed to parse devices from localStorage:', error);
+        } catch (parseError) {
+          console.error('Failed to parse devices from localStorage:', parseError);
           setDevices([]);
-          localStorage.removeItem('devices'); // Clear corrupted data
         }
-      } else {
-        // Set to empty array as we're now using real data
-        setDevices([]);
       }
-      setIsLoading(false);
       return;
     }
 
@@ -68,6 +60,7 @@ export const DeviceProvider = ({ children }: { children: React.ReactNode }) => {
       const fetchedDevices: Device[] = [];
       querySnapshot.forEach((doc) => {
         const deviceData = doc.data();
+        const deviceInfo = deviceOptions.find(d => d.name === deviceData.name);
         fetchedDevices.push({
           id: doc.id,
           name: deviceData.name,
@@ -76,18 +69,17 @@ export const DeviceProvider = ({ children }: { children: React.ReactNode }) => {
           efficiencyRating: deviceData.efficiencyRating,
           powerConsumption: deviceData.powerConsumption,
           knownKwh: deviceData.knownKwh,
+          translationKey: deviceInfo?.translationKey || deviceData.translationKey || '',
+          categoryTranslationKey: deviceInfo?.categoryTranslationKey || deviceData.categoryTranslationKey || '',
         });
       });
       
       setDevices(fetchedDevices);
-      
-      // Also store in local storage for offline access
       localStorage.setItem('devices', JSON.stringify(fetchedDevices));
     } catch (error) {
       console.error("Error fetching devices:", error);
       toast({
-        title: "Error",
-        description: "Failed to load your devices.",
+        description: t('notifications.device.loadError'),
         variant: "destructive",
       });
       
@@ -98,8 +90,6 @@ export const DeviceProvider = ({ children }: { children: React.ReactNode }) => {
           const parsedDevices = JSON.parse(savedDevices);
           if (Array.isArray(parsedDevices)) {
             setDevices(parsedDevices);
-          } else {
-            setDevices([]);
           }
         } catch (parseError) {
           console.error('Failed to parse fallback devices from localStorage:', parseError);
@@ -112,7 +102,25 @@ export const DeviceProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    fetchDevices();
+    let isMounted = true;
+    const abortController = new AbortController();
+
+    const loadDevices = async () => {
+      try {
+        await fetchDevices();
+      } catch (error) {
+        console.error("Error loading devices:", error);
+      }
+    };
+
+    if (isMounted) {
+      loadDevices();
+    }
+
+    return () => {
+      isMounted = false;
+      abortController.abort();
+    };
   }, [user]);
 
   const addDevice = async (device: Omit<Device, 'id'>) => {
@@ -127,8 +135,7 @@ export const DeviceProvider = ({ children }: { children: React.ReactNode }) => {
         setDevices(updatedDevices);
         localStorage.setItem('devices', JSON.stringify(updatedDevices));
         toast({
-          title: "Device added",
-          description: `${device.name} has been added successfully.`,
+          description: t('notifications.device.addedDescription', { deviceName: device.name }),
         });
         return;
       }
@@ -142,6 +149,8 @@ export const DeviceProvider = ({ children }: { children: React.ReactNode }) => {
         efficiencyRating: device.efficiencyRating,
         powerConsumption: device.powerConsumption,
         knownKwh: device.knownKwh,
+        translationKey: device.translationKey,
+        categoryTranslationKey: device.categoryTranslationKey,
         createdAt: new Date().toISOString()
       };
       
@@ -152,31 +161,29 @@ export const DeviceProvider = ({ children }: { children: React.ReactNode }) => {
         ...device
       };
       
-      setDevices([newDevice, ...devices]);
+      setDevices(prevDevices => [newDevice, ...prevDevices]);
       localStorage.setItem('devices', JSON.stringify([newDevice, ...devices]));
       
       toast({
-        title: "Device added",
-        description: `${device.name} has been added successfully.`,
+        description: t('notifications.device.addedDescription', { deviceName: device.name }),
       });
     } catch (error) {
       console.error("Error adding device:", error);
       toast({
-        title: "Error",
-        description: "Failed to add device. Please try again.",
+        description: t('notifications.device.addError'),
         variant: "destructive",
       });
+      throw error;
     }
   };
 
   const updateDevice = async (id: string, updates: Partial<Device>) => {
     try {
-      const updatedDevices = devices.map(device => 
-        device.id === id ? { ...device, ...updates } : device
+      setDevices(prevDevices => 
+        prevDevices.map(device => 
+          device.id === id ? { ...device, ...updates } : device
+        )
       );
-      
-      setDevices(updatedDevices);
-      localStorage.setItem('devices', JSON.stringify(updatedDevices));
       
       if (user) {
         // Update in Firestore
@@ -185,53 +192,58 @@ export const DeviceProvider = ({ children }: { children: React.ReactNode }) => {
           ...updates,
           updatedAt: new Date().toISOString()
         });
+        
+        // Update local storage after successful Firestore update
+        const updatedDevices = devices.map(device => 
+          device.id === id ? { ...device, ...updates } : device
+        );
+        localStorage.setItem('devices', JSON.stringify(updatedDevices));
       }
       
       toast({
-        title: "Device updated",
-        description: "Device information has been updated.",
+        description: t('notifications.device.updatedDescription'),
       });
     } catch (error) {
       console.error("Error updating device:", error);
       toast({
-        title: "Error",
-        description: "Failed to update device. Please try again.",
+        description: t('notifications.device.updateError'),
         variant: "destructive",
       });
       // Revert changes locally
       await fetchDevices();
+      throw error;
     }
   };
 
   const removeDevice = async (id: string) => {
     try {
       const deviceToRemove = devices.find(device => device.id === id);
-      const updatedDevices = devices.filter(device => device.id !== id);
-      
-      setDevices(updatedDevices);
-      localStorage.setItem('devices', JSON.stringify(updatedDevices));
+      setDevices(prevDevices => prevDevices.filter(device => device.id !== id));
       
       if (user) {
         // Remove from Firestore
         const deviceDocRef = doc(db, "users", user.id, "devices", id);
         await deleteDoc(deviceDocRef);
+        
+        // Update local storage after successful Firestore deletion
+        const updatedDevices = devices.filter(device => device.id !== id);
+        localStorage.setItem('devices', JSON.stringify(updatedDevices));
       }
       
       if (deviceToRemove) {
         toast({
-          title: "Device removed",
-          description: `${deviceToRemove.name} has been removed.`,
+          description: t('notifications.device.removedDescription'),
         });
       }
     } catch (error) {
       console.error("Error removing device:", error);
       toast({
-        title: "Error",
-        description: "Failed to remove device. Please try again.",
+        description: t('notifications.device.removeError'),
         variant: "destructive",
       });
       // Revert changes locally
       await fetchDevices();
+      throw error;
     }
   };
   

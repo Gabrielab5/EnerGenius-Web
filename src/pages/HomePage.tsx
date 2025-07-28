@@ -1,12 +1,11 @@
 
-
 import React, { useState, useEffect } from 'react';
 import { PageHeader } from '@/components/ui-components/PageHeader';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { analyzeElectricityData, getElectricityTips, fetchElectricityTipsFromFirestore } from '@/lib/utils';
-import { toast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { LoadingSpinner } from '@/components/ui-components/LoadingSpinner';
 import { Lightbulb, TrendingUp, History } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -22,6 +21,7 @@ import { useSavedForecasts } from '@/hooks/useSavedForecasts';
 const HomePage = () => {
   const { user } = useAuth();
   const { language, t } = useLanguage();
+  const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [tips, setTips] = useState(null);
@@ -41,21 +41,27 @@ const HomePage = () => {
     setIsFetching(isLoading);
   }, [isLoading]);
 
-  // Fetch tips when electricity data is available
+  // Fetch tips when electricity data, user, or language changes
   useEffect(() => {
     const fetchTips = async () => {
-      if (electricityData && user && !tips) {
+      if (electricityData && user) {
         try {
           setLoadingTips(true);
-          
-          // First, try to fetch existing tips from Firestore
-          const existingTips = await fetchElectricityTipsFromFirestore(user.id);
-          
-          if (existingTips && existingTips.tips) {
-            setTips(existingTips.tips);
-            console.log("Loaded tips from Firestore");
+          // Always fetch tips for the current language
+          const tipsResponse = await getElectricityTips(user.id, language);
+          if (tipsResponse && tipsResponse.success && tipsResponse.tips) {
+            setTips(tipsResponse.tips);
+            console.log("Loaded tips for language:", language);
           } else {
-            console.log("No existing tips found, will not generate automatically");
+            // fallback: try to fetch from Firestore
+            const existingTips = await fetchElectricityTipsFromFirestore(user.id);
+            if (existingTips && existingTips.tips) {
+              setTips(existingTips.tips);
+              console.log("Loaded tips from Firestore");
+            } else {
+              setTips(null);
+              console.log("No tips found");
+            }
           }
         } catch (error) {
           console.error('Failed to fetch tips:', error);
@@ -64,14 +70,12 @@ const HomePage = () => {
         }
       }
     };
-
     fetchTips();
-  }, [electricityData, user, tips]);
+  }, [electricityData, user, language]);
 
   const handleAnalysisRequest = async () => {
     if (!user) {
       toast({
-        title: t('error.generic'),
         description: t('home.loginRequired'),
         variant: "destructive",
       });
@@ -99,7 +103,6 @@ const HomePage = () => {
         }
 
         toast({
-          title: t('success.upload'),
           description: t('home.analysisSuccess'),
         });
         
@@ -110,7 +113,6 @@ const HomePage = () => {
       }
     } catch (error) {
       toast({
-        title: t('error.generic'),
         description: t('home.analysisError'),
         variant: "destructive",
       });
@@ -123,7 +125,6 @@ const HomePage = () => {
   const handleGenerateNewTips = async () => {
     if (!user) {
       toast({
-        title: t('error.generic'),
         description: t('home.loginRequired'),
         variant: "destructive",
       });
@@ -132,25 +133,26 @@ const HomePage = () => {
 
     try {
       setGeneratingNewTips(true);
+      toast({
+        description: t('home.generatingTips'),
+      });
       
       const tipsResponse = await getElectricityTips(user.id, language);
       
       if (tipsResponse.success) {
         setTips(tipsResponse.tips);
         toast({
-          title: t('success.upload'),
           description: t('home.tipsSuccess'),
         });
       } else {
         throw new Error("Tips generation failed");
       }
     } catch (error) {
+      console.error("Failed to generate new tips:", error);
       toast({
-        title: t('error.generic'),
         description: t('home.tipsError'),
         variant: "destructive",
       });
-      console.error("Tips generation error:", error);
     } finally {
       setGeneratingNewTips(false);
     }
@@ -175,7 +177,7 @@ const HomePage = () => {
         />
         
         {/* Main Forecast Action Buttons - Moved to top */}
-        <div className="space-y-3 mb-6">
+        <div className="space-y-3 mb-4 sm:mb-6">
           {/* Generate Device Forecast Button - Primary Green */}
           <Button 
             onClick={() => setForecastDialogOpen(true)} 
@@ -200,7 +202,7 @@ const HomePage = () => {
           )}
         </div>
         
-        <div className="space-y-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Monthly Overview Chart */}
           <MonthlyOverviewChart monthlyTotals={electricityData.monthly_totals} />
           
@@ -217,11 +219,11 @@ const HomePage = () => {
           )}
           
           {tips && !loadingTips && (
-            <ElectricityTips tips={tips} language={language} />
+            <ElectricityTips tips={tips} />
           )}
           
           {/* Statistics Overview */}
-          <ElectricityStats data={electricityData} />
+          <ElectricityStats data={electricityData} isLoading={isLoading} />
           
           {/* Secondary Action Buttons */}
           <div className="space-y-3">
@@ -310,4 +312,3 @@ const HomePage = () => {
 };
 
 export default HomePage;
-

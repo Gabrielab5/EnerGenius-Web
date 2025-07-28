@@ -13,22 +13,18 @@ const UploadPage = () => {
   const handleUploadComplete = () => {
     console.log("UploadPage: handleUploadComplete called");
     toast({
-     title: t('notifications.upload.complete', 'Upload completed'),
-      description: t('upload.success', 'Your data has been processed successfully.'),
+      description: t('upload.success', { defaultValue: 'Your data has been processed successfully.' }),
       duration: 3000,
     });
     
-    // Add a delay of 2 seconds and then refresh the page
-    setTimeout(() => {
-      window.location.href = '/'; // Force a full page refresh
-    }, 2000);
+    // Navigate immediately using React Router
+    navigate('/', { replace: true });
   };
   
   const handleUploadError = (error: Error) => {
     console.error("Upload error:", error);
     toast({
-      title: t('notifications.upload.error', 'Upload failed'),
-      description: error.message || t('upload.error', 'There was an error processing your file. Please try a smaller file or contact support.'),
+      description: error.message || t('upload.error', { defaultValue: 'There was an error processing your file. Please try a smaller file or contact support.' }),
       variant: "destructive",
       duration: 5000,
     });

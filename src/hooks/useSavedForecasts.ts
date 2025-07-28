@@ -39,7 +39,6 @@ export const useSavedForecasts = () => {
     } catch (error) {
       console.error('Error fetching forecasts:', error);
       toast({
-        title: "Error",
         description: "Failed to load saved forecasts.",
         variant: "destructive",
       });
@@ -55,13 +54,11 @@ export const useSavedForecasts = () => {
       await deleteDoc(doc(db, "users", user.id, "forecasts", forecastId));
       setForecasts(prev => prev.filter(f => f.id !== forecastId));
       toast({
-        title: "Success",
         description: "Forecast deleted successfully.",
       });
     } catch (error) {
       console.error('Error deleting forecast:', error);
       toast({
-        title: "Error",
         description: "Failed to delete forecast.",
         variant: "destructive",
       });

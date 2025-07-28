@@ -1,56 +1,83 @@
 
 import React from 'react';
-import { ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { PageHeader } from '@/components/ui-components/PageHeader';
+import { Card, CardContent } from '@/components/ui/card';
 
 const PrivacyPolicyPage = () => {
-  const navigate = useNavigate();
-  const { t, direction } = useLanguage();
-  const goBack = () => {
-    navigate(-1);
+  const { t, language } = useLanguage();
+
+  const containerStyle: React.CSSProperties = {
+    direction: language === 'he' ? 'rtl' : 'ltr'
   };
 
   return (
-    <div className="min-h-screen p-6" style={{ backgroundColor: 'hsl(43, 26%, 86%)' , direction}}>
-      <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-6">
-        <div className="flex items-center mb-6">
-          <Button onClick={goBack} variant="ghost" className="mr-2">
-            <ArrowLeft className="h-5 w-5" />
-             <span className="ml-2">{t('misc.back')}</span>
-          </Button>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <div className="max-w-4xl mx-auto" style={containerStyle}>
+        <PageHeader 
+          title={t('legal.privacy.title')}
+          subtitle={t('legal.privacy.subtitle')}
+        />
         
-            <h1 className="text-2xl font-bold mb-6">{t('legal.privacyPolicy')}</h1>
+        <Card className="mt-6">
+          <CardContent className="p-6 space-y-6">
+            <section>
+              <h2 className="text-xl font-semibold mb-3">{t('legal.privacy.introduction.title')}</h2>
+              <p className="text-gray-700 leading-relaxed">
+                {t('legal.privacy.introduction.content')}
+              </p>
+            </section>
 
-        <div className="space-y-4">
-          <p>{t('legal.lastUpdated')}: May 11, 2025</p>
+            <section>
+              <h2 className="text-xl font-semibold mb-3">{t('legal.privacy.informationCollected.title')}</h2>
+              <p className="text-gray-700 leading-relaxed">
+                {t('legal.privacy.informationCollected.content')}
+              </p>
+            </section>
 
-          <h2 className="text-xl font-semibold">{t('legal.privacy.introduction.title')}</h2>
-          <p>{t('legal.privacy.introduction.content')}</p>
+            <section>
+              <h2 className="text-xl font-semibold mb-3">{t('legal.privacy.howWeUse.title')}</h2>
+              <p className="text-gray-700 leading-relaxed">
+                {t('legal.privacy.howWeUse.content')}
+              </p>
+            </section>
 
-          <h2 className="text-xl font-semibold">{t('legal.privacy.informationCollected.title')}</h2>
-          <p>{t('legal.privacy.informationCollected.content')}</p>
+            <section>
+              <h2 className="text-xl font-semibold mb-3">{t('legal.privacy.dataSharing.title')}</h2>
+              <p className="text-gray-700 leading-relaxed">
+                {t('legal.privacy.dataSharing.content')}
+              </p>
+            </section>
 
-          <h2 className="text-xl font-semibold">{t('legal.privacy.howWeUse.title')}</h2>
-          <p>{t('legal.privacy.howWeUse.content')}</p>
+            <section>
+              <h2 className="text-xl font-semibold mb-3">{t('legal.privacy.dataSecurity.title')}</h2>
+              <p className="text-gray-700 leading-relaxed">
+                {t('legal.privacy.dataSecurity.content')}
+              </p>
+            </section>
 
-          <h2 className="text-xl font-semibold">{t('legal.privacy.dataSharing.title')}</h2>
-          <p>{t('legal.privacy.dataSharing.content')}</p>
+            <section>
+              <h2 className="text-xl font-semibold mb-3">{t('legal.privacy.yourRights.title')}</h2>
+              <p className="text-gray-700 leading-relaxed">
+                {t('legal.privacy.yourRights.content')}
+              </p>
+            </section>
 
-          <h2 className="text-xl font-semibold">{t('legal.privacy.dataSecurity.title')}</h2>
-          <p>{t('legal.privacy.dataSecurity.content')}</p>
+            <section>
+              <h2 className="text-xl font-semibold mb-3">{t('legal.privacy.changes.title')}</h2>
+              <p className="text-gray-700 leading-relaxed">
+                {t('legal.privacy.changes.content')}
+              </p>
+            </section>
 
-          <h2 className="text-xl font-semibold">{t('legal.privacy.yourRights.title')}</h2>
-          <p>{t('legal.privacy.yourRights.content')}</p>
-
-          <h2 className="text-xl font-semibold">{t('legal.privacy.changes.title')}</h2>
-          <p>{t('legal.privacy.changes.content')}</p>
-
-          <h2 className="text-xl font-semibold">{t('legal.privacy.contact.title')}</h2>
-          <p>{t('legal.privacy.contact.content')}</p>
-        </div>
+            <section>
+              <h2 className="text-xl font-semibold mb-3">{t('legal.privacy.contact.title')}</h2>
+              <p className="text-gray-700 leading-relaxed">
+                {t('legal.privacy.contact.content')}
+              </p>
+            </section>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

@@ -37,12 +37,8 @@ const OnboardingPage = () => {
       localStorage.setItem(`onboarding-${user.id}`, 'completed');
     }
     
-    // Add a delay of 2 seconds and then refresh the page
-    // This will force a complete reload and the RequireAuth component will handle redirection
-    setTimeout(() => {
-      console.log("Refreshing page after 2-second timeout");
-      window.location.href = '/'; // Force a full page refresh to the root route
-    }, 2000);
+    // Navigate immediately without delay using React Router
+    navigate('/', { replace: true });
   };
 
   return (

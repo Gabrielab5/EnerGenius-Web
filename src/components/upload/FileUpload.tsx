@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,7 +11,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { FileUploadArea } from './FileUploadArea';
 import { CSVPreview } from './CSVPreview';
 import { MultipleFilesList } from './MultipleFilesList';
-import { VideoModal } from './VideoModal';
+import { VideoPlayerDialog } from './VideoPlayerDialog';
 import { Play } from 'lucide-react';
 import { 
   extractCsvData, 
@@ -80,7 +79,7 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
       const mockData = generateConsumptionData(data, selectedYear);
       uploadData(mockData);
       
-      // Store the extracted data in Firestore if user is logged in
+      // Store the extracted data in Firestore if user is logged in (background task)
       if (user) {
         const fileInfo = {
           fileName: file.name,
@@ -89,15 +88,20 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
           uploadDate: new Date().toISOString()
         };
         
-        // Store the file as base64
-        const fileBase64 = await storeFileAsBase64(file);
-        
-        await storeExtractedData(data, fileInfo, fileBase64, user.id);
+        // Store data in background without blocking UI
+        Promise.all([
+          storeFileAsBase64(file),
+          Promise.resolve(data)
+        ]).then(([fileBase64, extractedData]) => {
+          return storeExtractedData(extractedData, fileInfo, fileBase64, user.id);
+        }).catch(error => {
+          console.error("Background storage error:", error);
+          // Don't show error to user since this is background operation
+        });
       }
       
       // Show toast notification
       toast({
-        title: t('success.upload'),
         description: t('onboarding.upload.uploadSuccess').replace('{rows}', data.length.toString()).replace('{fileName}', file.name).replace('{year}', selectedYear),
         duration: 3000,
       });
@@ -115,7 +119,6 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
       } else {
         // Show toast notification for error
         toast({
-          title: t('error.upload'),
           description: error.message || t('onboarding.upload.uploadFailed'),
           variant: "destructive",
           duration: 5000,
@@ -143,7 +146,6 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
       
       // Show toast notification
       toast({
-        title: t('onboarding.upload.fileAdded'),
         description: t('onboarding.upload.fileAdded').replace('{fileName}', file.name).replace('{year}', selectedYear).replace('{rows}', data.length.toString()),
         duration: 3000,
       });
@@ -155,7 +157,6 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
       setIsUploading(false);
       
       toast({
-        title: t('error.upload'),
         description: error.message || t('onboarding.upload.fileProcessingFailed'),
         variant: "destructive",
         duration: 5000,
@@ -174,21 +175,23 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
     
     try {
       if (user) {
-        // Check if multiple years are selected
-        const selectedYears = [...new Set(uploadedFiles.map(f => f.year))];
-        const useMultipleYearChunking = selectedYears.length > 1;
-        
-        await storeMultipleFilesData(uploadedFiles, user.id, useMultipleYearChunking);
-        
-        // Generate consumption data from the first file for the chart
+        // Generate consumption data from the first file for the chart immediately
         const firstFile = uploadedFiles[0];
         const mockData = generateConsumptionData(firstFile.extractedData, firstFile.year);
         uploadData(mockData);
+        
+        // Store data in background without blocking UI
+        const selectedYears = [...new Set(uploadedFiles.map(f => f.year))];
+        const useMultipleYearChunking = selectedYears.length > 1;
+        
+        storeMultipleFilesData(uploadedFiles, user.id, useMultipleYearChunking).catch(error => {
+          console.error("Background storage error:", error);
+          // Don't show error to user since this is background operation
+        });
       }
       
       // Show toast notification
       toast({
-        title: t('onboarding.upload.multipleFilesSuccess'),
         description: t('onboarding.upload.multipleFilesSuccess').replace('{count}', uploadedFiles.length.toString()),
         duration: 3000,
       });
@@ -204,7 +207,6 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
         onError(error);
       } else {
         toast({
-          title: t('error.upload'),
           description: error.message || t('onboarding.upload.uploadError'),
           variant: "destructive",
           duration: 5000,
@@ -214,7 +216,7 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
   };
 
   const handleContinue = () => {
-    // Only call onComplete when continue button is clicked
+    // Call onComplete immediately when continue button is clicked
     if (isUploadComplete && onComplete) {
       console.log("Continue button clicked, calling onComplete");
       onComplete();
@@ -239,7 +241,7 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-center">
       <PageHeader 
         title={t('onboarding.upload.header')} 
         description={t('onboarding.upload.description')}
@@ -258,14 +260,14 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
       </div>
       
       <Card>
-        <CardHeader>
+        <CardHeader className="text-center">
           <CardTitle className="text-xl">{t('onboarding.upload.uploadFileTitle')}</CardTitle>
           <CardDescription>
             {t('onboarding.upload.uploadFileDescription')}
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
+        <CardContent className="space-y-4 text-center">
+          <div className="flex items-center justify-center">
             <div className="flex items-center space-x-2">
               <input
                 type="checkbox"
@@ -280,14 +282,14 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="year">{t('onboarding.upload.selectYear')}</Label>
+          <div className="space-y-2 flex flex-col items-center">
+            <Label htmlFor="year" className="block">{t('onboarding.upload.selectYear')}</Label>
             <Select
               value={selectedYear}
               onValueChange={setSelectedYear}
               disabled={isUploading}
             >
-              <SelectTrigger id="year" className="h-12">
+              <SelectTrigger id="year" className="h-12 w-48">
                 <SelectValue placeholder={t('onboarding.upload.selectYearPlaceholder')} />
               </SelectTrigger>
               <SelectContent>
@@ -351,9 +353,12 @@ export const FileUpload = ({ onComplete, onError }: FileUploadProps) => {
         </CardFooter>
       </Card>
 
-      <VideoModal 
-        open={showVideoModal} 
-        onOpenChange={setShowVideoModal} 
+      <VideoPlayerDialog 
+        open={showVideoModal}
+        onOpenChange={setShowVideoModal}
+        videoSrc="/Energenious.mp4"
+        titleKey="onboarding.upload.videoDialog.title"
+        descriptionKey="onboarding.upload.videoDialog.description"
       />
     </div>
   );

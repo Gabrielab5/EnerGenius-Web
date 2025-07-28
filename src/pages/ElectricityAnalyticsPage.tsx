@@ -8,9 +8,11 @@ import { MonthlyOverviewChart } from '@/components/dashboard/MonthlyOverviewChar
 import { ElectricityStats } from '@/components/dashboard/ElectricityStats';
 import { Card, CardContent } from '@/components/ui/card';
 import { AlertCircle } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const ElectricityAnalyticsPage = () => {
   const { electricityData, isLoading, error } = useElectricityData();
+  const { t } = useLanguage();
 
   if (isLoading) {
     return (
@@ -24,15 +26,15 @@ const ElectricityAnalyticsPage = () => {
     return (
       <div className="mobile-page">
         <PageHeader 
-          title="Electricity Analytics" 
-          description="Analyze your electricity consumption patterns"
+          title={t('analytics.page.title')} 
+          description={t('analytics.page.description')}
         />
         <Card className="mt-6">
           <CardContent className="flex flex-col items-center justify-center p-8">
             <AlertCircle className="h-12 w-12 text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No Data Available</h3>
+            <h3 className="text-lg font-semibold mb-2">{t('analytics.error.noData')}</h3>
             <p className="text-muted-foreground text-center">
-              {error || 'No electricity consumption data found. Please upload your electricity bill data first.'}
+              {error || t('analytics.error.message')}
             </p>
           </CardContent>
         </Card>
@@ -43,13 +45,13 @@ const ElectricityAnalyticsPage = () => {
   return (
     <div className="mobile-page pb-20">
       <PageHeader 
-        title="Electricity Analytics" 
-        description="Comprehensive analysis of your electricity consumption"
+        title={t('analytics.page.title')} 
+        description={t('analytics.page.description')}
       />
       
       <div className="space-y-6">
         {/* Statistics Overview */}
-        <ElectricityStats data={electricityData} />
+        <ElectricityStats data={electricityData} isLoading={isLoading} />
         
         {/* Monthly Overview Chart */}
         <MonthlyOverviewChart monthlyTotals={electricityData.monthly_totals} />

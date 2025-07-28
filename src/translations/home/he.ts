@@ -1,4 +1,3 @@
-
 export const homeTranslations = {
   // Homepage
   'home.analyticsTitle': 'ניתוח חשמל',
@@ -44,6 +43,19 @@ export const homeTranslations = {
   'home.consumption': 'צריכה נוכחית',
   'home.cost': 'עלות נוכחית',
   'home.efficiency': 'ציון יעילות',
-  'home.noData': 'אין נתונים זמינים. העלו את חשבון החשמל כדי להתחיל.',
+  'home.noData': 'אין נתונים זמינים. העלה את חשבון החשמל שלך כדי להתחיל.',
   'home.getStarted': 'התחל',
+
+  'home.tips.deviceSpecific.title': 'טיפים למכשירים ספציפיים',
+  'home.tips.deviceSpecific.description': 'המלצות למכשירים שצריכת החשמל שלהם היא הגבוהה ביותר.',
+  'home.tips.general.title': 'טיפים כלליים לחיסכון',
+  'home.tips.general.description': 'אסטרטגיות שיעזרו לך לחסוך באנרגיה באופן כללי.',
+
+  // Dashboard Monthly Overview
+  'dashboard.monthlyOverview.title': 'סקירה חודשית',
+  'dashboard.monthlyOverview.description': 'מגמות צריכת חשמל חודשית ועלויות',
+
+  // Dashboard Daily Consumption
+  'dashboard.dailyConsumption.title': 'צריכה יומית',
+  'dashboard.dailyConsumption.description': 'שימוש יומי בחשמל ועלויות לפי חודש',
 };

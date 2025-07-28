@@ -1,8 +1,8 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { ConsumptionData } from '@/types';
 import { useDevices } from './DeviceContext';
+import { useLanguage } from '@/hooks/use-language';
 
 interface ConsumptionContextType {
   historicalData: ConsumptionData[];
@@ -57,6 +57,7 @@ export const ConsumptionProvider = ({ children }: { children: React.ReactNode })
   const [lastUploadDate, setLastUploadDate] = useState<string | null>(null);
   const { devices } = useDevices();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   // Load or generate initial data
   useEffect(() => {
@@ -164,8 +165,7 @@ export const ConsumptionProvider = ({ children }: { children: React.ReactNode })
     localStorage.setItem('lastUploadDate', now);
     
     toast({
-      title: "Data uploaded",
-      description: "Your consumption data has been uploaded and processed successfully.",
+      description: t('notifications.data.uploadedDescription'),
     });
   };
 

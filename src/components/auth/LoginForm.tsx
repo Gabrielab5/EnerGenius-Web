@@ -1,4 +1,4 @@
- 
+
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -9,10 +9,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { LoadingSpinner } from '@/components/ui-components/LoadingSpinner';
 import { Link } from 'react-router-dom';
+import { ResetPasswordDialog } from './ResetPasswordDialog';
 
 export const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isResetPasswordOpen, setIsResetPasswordOpen] = useState(false);
   const { signIn, signUp, signInWithGoogle, status } = useAuth();
   const [currentTab, setCurrentTab] = useState<'login' | 'register'>('login');
   const { t, direction, isRTL} = useLanguage();
@@ -87,9 +89,13 @@ export const LoginForm = () => {
                   <Label htmlFor="password" className={textAlignClass}>
                     {t('auth.passwordLabel')}
                   </Label>
-                  <a href="#" className="text-xs text-primary hover:underline">
+                  <button 
+                    type="button"
+                    onClick={() => setIsResetPasswordOpen(true)}
+                    className="text-xs text-primary hover:underline bg-transparent border-none p-0"
+                  >
                     {t('auth.forgotPassword')}
-                  </a>
+                  </button>
                 </div>
                 <Input
                   id="password"
@@ -203,6 +209,11 @@ export const LoginForm = () => {
           </Link>
         </p>
       </CardFooter>
+      
+      <ResetPasswordDialog 
+        open={isResetPasswordOpen} 
+        onOpenChange={setIsResetPasswordOpen} 
+      />
     </Card>
   );
 };

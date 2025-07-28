@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useSavedForecasts } from '@/hooks/useSavedForecasts';
@@ -15,7 +14,8 @@ interface ForecastHistoryDialogProps {
 
 export const ForecastHistoryDialog = ({ open, onOpenChange, refreshTrigger }: ForecastHistoryDialogProps) => {
   const { forecasts, isLoading, deleteForecast, refreshForecasts } = useSavedForecasts();
-  const { t } = useLanguage();
+  const { t, isRTL } = useLanguage();
+
   // Refresh forecasts when refreshTrigger changes
   useEffect(() => {
     if (refreshTrigger && open) {
@@ -25,24 +25,24 @@ export const ForecastHistoryDialog = ({ open, onOpenChange, refreshTrigger }: Fo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[95vw] sm:max-w-3xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader className="text-center">
-           <DialogTitle>{t('forecast.saved.title')}</DialogTitle>
-          <DialogDescription>
-             {t('forecast.saved.description')}
+      <DialogContent className="max-w-md sm:max-w-2xl md:max-w-3xl lg:max-w-4xl max-h-[90vh] flex flex-col">
+        <DialogHeader>
+          <DialogTitle className={isRTL ? 'text-right' : 'text-left'}>{t('forecast.saved.title')}</DialogTitle>
+          <DialogDescription className={isRTL ? 'text-right' : 'text-left'}>
+            {t('forecast.saved.description')}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="mt-4">
+        <div className="mt-4 overflow-y-auto">
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
-               <LoadingSpinner size="md" message={t('forecast.saved.loadingForecasts')} />
+              <LoadingSpinner size="md" message="Loading forecasts..." />
             </div>
           ) : forecasts.length === 0 ? (
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-8">
-                <p className="text-muted-foreground mb-2">{t('forecast.saved.noForecasts')}</p>
-                <p className="text-sm text-center">{t('forecast.saved.createFirst')}</p>
+                <p className="text-muted-foreground mb-2">{t('forecast.saved.noForecastsFound')}</p>
+                <p className="text-sm text-center">{t('forecast.saved.createAndSaveForecast')}</p>
               </CardContent>
             </Card>
           ) : (

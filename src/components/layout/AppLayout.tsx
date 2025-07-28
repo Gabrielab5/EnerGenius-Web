@@ -3,14 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { BottomNavigation } from './BottomNavigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLanguage } from '@/contexts/LanguageContext';
 
 export const AppLayout = () => {
   const { status, user } = useAuth();
   const location = useLocation();
   const [showNav, setShowNav] = useState(false);
-  const { direction } = useLanguage();
-
+  
   useEffect(() => {
     // Only show navigation when authenticated
     if (status === 'authenticated') {
@@ -29,7 +27,7 @@ export const AppLayout = () => {
   }, [status, location.pathname, user]);
   
   return (
-    <div className="app-container" dir={direction}>
+    <div className="app-container">
       <main>
         <Outlet />
       </main>

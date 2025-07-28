@@ -1,6 +1,12 @@
-
 export const onboardingTranslations = {
-  // Onboarding - Device Selection
+  // Onboarding Welcome
+  'onboarding.welcome.title': 'ברוכים הבאים ל-EnerGenius',
+  'onboarding.welcome.subtitle': 'בואו נגדיר את מעקב צריכת החשמל שלכם',
+  'onboarding.welcome.getStarted': 'התחילו',
+  'onboarding.welcome.skip': 'דלגו על ההגדרה',
+  'onboarding.progress': 'שלב {current} מתוך {total}',
+
+  // Device Selection
   'onboarding.devices.header': 'בחירת המכשירים שלכם',
   'onboarding.devices.description': 'ספרו לנו על המכשירים החשמליים שלכם כדי לקבל תחזיות מדויקות.',
   'onboarding.devices.helpText': 'הוספת המכשירים שלכם עוזרת לנו לחשב תחזיות צריכת אנרגיה מדויקות יותר. ככל שתוסיפו יותר מכשירים, התחזיות שלכם יהיו טובות יותר.',
@@ -17,20 +23,16 @@ export const onboardingTranslations = {
   'onboarding.devices.knownKwhPlaceholder': 'הזינו קוט"ש ידוע (אופציונלי)',
   'onboarding.devices.knownKwhHelp': 'אם אתם יודעים כמה קוט"ש המכשיר הזה צורך, הזינו כאן.',
   'onboarding.devices.addButton': 'הוסף מכשיר',
-  'onboarding.devices.yourDevicesTitle': 'המכשירים שלכם',
-  'onboarding.devices.deviceAge': 'גיל: {age} שנים',
-  'onboarding.devices.deviceRating': 'דירוג: {rating}',
-  'onboarding.devices.deviceKnownKwh': 'קוט"ש ידוע: {kwh}',
-  'onboarding.devices.removeButton': 'הסר',
   'onboarding.devices.continueButton': 'המשך',
+  'onboarding.devices.noDevices': 'עדיין לא נוספו מכשירים',
   'onboarding.devices.savingButton': 'שומר...',
   'onboarding.devices.noDevicesError': 'אנא הוסיפו לפחות מכשיר אחד כדי להמשיך.',
   'onboarding.devices.selectDeviceError': 'אנא בחרו מכשיר ואת הגיל שלו.',
   'onboarding.devices.validDeviceError': 'אנא בחרו מכשיר תקין.',
   'onboarding.devices.devicesSaved': 'המכשירים שלכם נשמרו בהצלחה.',
   'onboarding.devices.saveError': 'שמירת המכשירים נכשלה. אנא נסו שוב.',
-  
-  // Onboarding - File Upload
+
+  // File Upload
   'onboarding.upload.header': 'העלאת נתוני החשמל שלכם',
   'onboarding.upload.description': 'העלו את סיכום חשבון החשמל שלכם כדי לראות ניתוח צריכה מפורט ותחזיות.',
   'onboarding.upload.helpText': 'אנו מקבלים קבצי CSV עם עמודות לתאריך, שימוש בקוט"ש ועלות. הנתונים שלכם נשארים פרטיים ומשמשים רק ליצירת התחזיות שלכם.',
@@ -62,14 +64,12 @@ export const onboardingTranslations = {
   'onboarding.upload.csvPreviewColumnC': 'עמודה ג\'',
   'onboarding.upload.csvPreviewShowing': 'מציג {shown} מתוך {total} שורות',
 
-  // Onboarding
-  'onboarding.welcome': 'ברוכים הבאים ל-EnerGenius',
-  'onboarding.step1.title': 'הוסיפו את המכשירים שלכם',
-  'onboarding.step1.description': 'ספרו לנו על המכשירים החשמליים שלכם',
-  'onboarding.step2.title': 'העלו את הנתונים שלכם',
-  'onboarding.step2.description': 'העלו את חשבון החשמל לניתוח',
+  // Video Dialog
+  'onboarding.upload.videoDialog.title': 'כיצד להעלות את הנתונים שלך',
+  'onboarding.upload.videoDialog.description': 'סרטון זה מדגים כיצד למצוא ולהוריד את קובץ נתוני צריכת החשמל שלך מאתר האינטרנט של ספק החשמל.',
+
+  // General Actions
   'onboarding.continue': 'המשך',
   'onboarding.skip': 'דלג',
   'onboarding.complete': 'השלם הגדרה',
-  'onboarding.progress': 'שלב {current} מתוך {total}',
 };

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,36 +11,7 @@ import { HelpCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-
-// Common device types with typical power consumption
-const deviceOptions = [
-  { name: 'Refrigerator', type: 'Large Appliance', powerConsumption: 150, translationKey: 'devices.types.refrigerator' },
-  { name: 'Freezer', type: 'Large Appliance', powerConsumption: 200, translationKey: 'devices.types.freezer' },
-  { name: 'Washing Machine', type: 'Large Appliance', powerConsumption: 500, translationKey: 'devices.types.washingMachine' },
-  { name: 'Dryer', type: 'Large Appliance', powerConsumption: 3000, translationKey: 'devices.types.dryer' },
-  { name: 'Dishwasher', type: 'Large Appliance', powerConsumption: 1200, translationKey: 'devices.types.dishwasher' },
-  { name: 'Air Conditioner', type: 'Climate Control', powerConsumption: 1500, translationKey: 'devices.types.airConditioner' },
-  { name: 'Electric Heater', type: 'Climate Control', powerConsumption: 1500, translationKey: 'devices.types.electricHeater' },
-  { name: 'Water Heater', type: 'Large Appliance', powerConsumption: 4000, translationKey: 'devices.types.waterHeater' },
-  { name: 'Television', type: 'Electronics', powerConsumption: 100, translationKey: 'devices.types.television' },
-  { name: 'Computer', type: 'Electronics', powerConsumption: 200, translationKey: 'devices.types.computer' },
-  { name: 'Microwave', type: 'Kitchen Appliance', powerConsumption: 1000, translationKey: 'devices.types.microwave' },
-  { name: 'Electric Oven', type: 'Kitchen Appliance', powerConsumption: 2000, translationKey: 'devices.types.electricOven' },
-  { name: 'Coffee Maker', type: 'Kitchen Appliance', powerConsumption: 800, translationKey: 'devices.types.coffeeMaker' },
-  { name: 'Lighting (LED)', type: 'Lighting', powerConsumption: 10, translationKey: 'devices.types.lightingLED' },
-  { name: 'Lighting (CFL)', type: 'Lighting', powerConsumption: 15, translationKey: 'devices.types.lightingCFL' },
-  { name: 'Lighting (Incandescent)', type: 'Lighting', powerConsumption: 60, translationKey: 'devices.types.lightingIncandescent' },
-];
-
-// Age options for device dropdown
-const ageOptions = [
-  { label: '1 year', value: '1', translationKey: 'devices.age.1year' },
-  { label: '2 years', value: '2', translationKey: 'devices.age.2years' },
-  { label: '3 years', value: '3', translationKey: 'devices.age.3years' },
-  { label: '4 years', value: '4', translationKey: 'devices.age.4years' },
-  { label: '5 years', value: '5', translationKey: 'devices.age.5years' },
-  { label: '6+ years', value: '6', translationKey: 'devices.age.6plus' },
-];
+import { deviceOptions, ageOptions } from '@/lib/deviceOptions';
 
 export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) => {
   const { addDevice } = useDevices();
@@ -54,6 +24,8 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
     efficiencyRating: 'A' | 'B' | 'C';
     powerConsumption: number;
     knownKwh?: number;
+    translationKey: string;
+    categoryTranslationKey: string;
   }>>([]);
   
   const [currentDevice, setCurrentDevice] = useState('');
@@ -65,7 +37,6 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
   const handleAddDevice = () => {
     if (!currentDevice || !currentAge) {
       toast({
-        title: t('error.generic'),
         description: t('onboarding.devices.selectDeviceError'),
         variant: "destructive",
       });
@@ -76,7 +47,6 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
     
     if (!deviceInfo) {
       toast({
-        title: t('error.generic'),
         description: t('onboarding.devices.validDeviceError'),
         variant: "destructive",
       });
@@ -88,7 +58,9 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
       age: parseInt(currentAge),
       efficiencyRating: currentEfficiency,
       powerConsumption: deviceInfo.powerConsumption,
-      ...(currentKnownKwh ? { knownKwh: parseFloat(currentKnownKwh) } : {})
+      ...(currentKnownKwh ? { knownKwh: parseFloat(currentKnownKwh) } : {}),
+      translationKey: deviceInfo.translationKey,
+      categoryTranslationKey: deviceInfo.categoryTranslationKey,
     };
     
     setSelectedDevices([...selectedDevices, newDevice]);
@@ -106,10 +78,17 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
     setSelectedDevices(updatedDevices);
   };
 
+  const handleSkip = () => {
+    // Mark onboarding as skipped for this user
+    if (user) {
+      localStorage.setItem(`onboarding-${user.id}`, 'skipped');
+    }
+    onComplete();
+  };
+
   const handleComplete = async () => {
     if (selectedDevices.length === 0) {
       toast({
-        title: t('onboarding.devices.noDevicesError'),
         description: t('onboarding.devices.noDevicesError'),
         variant: "destructive",
       });
@@ -128,20 +107,20 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
           age: device.age,
           efficiencyRating: device.efficiencyRating,
           powerConsumption: device.powerConsumption,
-          knownKwh: device.knownKwh
+          knownKwh: device.knownKwh,
+          translationKey: deviceOptions.find(d => d.name === device.deviceName)?.translationKey || '',
+          categoryTranslationKey: deviceOptions.find(d => d.name === device.deviceName)?.categoryTranslationKey || '',
         })
       );
       
       await Promise.all(promises);
       
       toast({
-        title: t('onboarding.devices.devicesSaved'),
         description: t('onboarding.devices.devicesSaved'),
       });
     } catch (error) {
       console.error("Error saving devices:", error);
       toast({
-        title: t('error.generic'),
         description: t('onboarding.devices.saveError'),
         variant: "destructive",
       });
@@ -248,7 +227,7 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
           
           <div className="space-y-2">
             <div className="flex items-center">
-              <Label htmlFor="knownKwh">{t('onboarding.devices.knownKwhLabel')}</Label>
+              <Label htmlFor="knownKwh">{t('devices.knownKwhLabel')}</Label>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button className="tooltip-trigger" aria-label="Help">
@@ -256,54 +235,50 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
                   </button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p className="text-sm">{t('onboarding.devices.knownKwhHelp')}</p>
+                  <p className="text-sm">{t('devices.knownKwhHelp')}</p>
                 </TooltipContent>
               </Tooltip>
             </div>
             <Input
               id="knownKwh"
               type="number"
-              placeholder={t('onboarding.devices.knownKwhPlaceholder')}
-              min="0"
-              step="0.01"
               value={currentKnownKwh}
               onChange={(e) => setCurrentKnownKwh(e.target.value)}
+              min="0"
+              step="0.01"
+              placeholder={t('devices.knownKwhPlaceholder')}
               className="h-12"
             />
           </div>
           
-          <Button
+          <Button 
             onClick={handleAddDevice}
-            className="w-full h-12 mt-2"
+            className="w-full"
+            disabled={isLoading}
           >
-            {t('onboarding.devices.addButton')}
+            {isLoading ? t('devices.adding') : t('devices.addButton')}
           </Button>
         </CardContent>
-      </Card>
-
-      {selectedDevices.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-xl">{t('onboarding.devices.yourDevicesTitle')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
+        
+        {selectedDevices.length > 0 && (
+          <CardFooter className="flex-col space-y-4 px-6 pb-6 pt-0">
+            <h3 className="text-lg font-semibold w-full text-left">
+              {t('onboarding.devices.yourDevicesTitle')}
+            </h3>
+            <div className="space-y-3 w-full">
               {selectedDevices.map((device, index) => {
-                const deviceTranslationKey = deviceOptions.find(d => d.name === device.deviceName)?.translationKey;
+                const deviceInfo = deviceOptions.find(d => d.name === device.deviceName);
                 return (
-                  <div key={index} className="flex items-center justify-between p-3 bg-app-gray-50 rounded-md">
-                    <div>
-                      <p className="font-medium">{deviceTranslationKey ? t(deviceTranslationKey) : device.deviceName}</p>
-                      <p className="text-sm text-app-gray-600">
-                        {t('onboarding.devices.deviceAge').replace('{age}', device.age.toString())} • {t('onboarding.devices.deviceRating').replace('{rating}', device.efficiencyRating)}
-                        {device.knownKwh && ` • ${t('onboarding.devices.deviceKnownKwh').replace('{kwh}', device.knownKwh.toString())}`}
-                      </p>
+                  <div key={index} className="flex items-center justify-between rounded-md bg-muted/50 p-3">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">{t(device.translationKey, { defaultValue: device.deviceName })}</p>
+                      <p className="text-xs text-muted-foreground">{t(device.categoryTranslationKey, { defaultValue: deviceInfo?.type || 'Other' })}</p>
                     </div>
-                    <Button
-                      variant="ghost"
+                    <Button 
+                      variant="ghost" 
                       size="sm"
+                      className="text-destructive hover:text-destructive/90"
                       onClick={() => handleRemoveDevice(index)}
-                      className="text-app-gray-500 hover:text-destructive"
                     >
                       {t('onboarding.devices.removeButton')}
                     </Button>
@@ -311,19 +286,25 @@ export const DeviceSelectionForm = ({ onComplete }: { onComplete: () => void }) 
                 );
               })}
             </div>
-          </CardContent>
-          <CardFooter>
-            <Button
-              onClick={handleComplete}
-              className="w-full h-12"
-              variant="default"
-              disabled={isLoading}
-            >
-              {isLoading ? t('onboarding.devices.savingButton') : t('onboarding.devices.continueButton')}
-            </Button>
           </CardFooter>
-        </Card>
-      )}
+        )}
+      </Card>
+      
+      <div className="flex justify-between gap-4">
+        <Button
+          variant="outline"
+          onClick={handleSkip}
+          disabled={isLoading}
+        >
+          {t('common.skip', { defaultValue: 'Skip' })}
+        </Button>
+        <Button
+          onClick={handleComplete}
+          disabled={isLoading || selectedDevices.length === 0}
+        >
+          {isLoading ? t('onboarding.devices.savingButton') : t('onboarding.devices.continueButton')}
+        </Button>
+      </div>
     </div>
   );
 };

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,6 +9,7 @@ import { ForecastDevice } from '@/types/forecast';
 import { Device } from '@/types';
 import { Plus, Trash2 } from 'lucide-react';
 import { deviceOptions } from '@/lib/deviceOptions';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface DeviceUsageConfigProps {
   devices: ForecastDevice[];
@@ -28,6 +28,7 @@ export const DeviceUsageConfig = ({
   onAddDevice,
   showUsageControls = false
 }: DeviceUsageConfigProps) => {
+  const { t } = useLanguage();
   const [selectedDeviceToAdd, setSelectedDeviceToAdd] = React.useState<string>('');
 
   const handleAddNewDevice = () => {
@@ -42,7 +43,9 @@ export const DeviceUsageConfig = ({
       type: deviceInfo.type,
       age: 1,
       efficiencyRating: 'B',
-      powerConsumption: deviceInfo.powerConsumption
+      powerConsumption: deviceInfo.powerConsumption,
+      translationKey: deviceInfo.translationKey,
+      categoryTranslationKey: deviceInfo.categoryTranslationKey,
     };
 
     onAddDevice(newDevice);
@@ -53,18 +56,18 @@ export const DeviceUsageConfig = ({
     <div className="space-y-4">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
         <h3 className="text-lg font-semibold">
-          {showUsageControls ? 'Configure Usage Patterns' : 'Review & Modify Devices'}
+          {showUsageControls ? t('forecast.deviceUsage.configureUsagePatterns') : t('forecast.deviceUsage.reviewModifyDevices')}
         </h3>
         
         <div className="flex items-center gap-2">
           <Select value={selectedDeviceToAdd} onValueChange={setSelectedDeviceToAdd}>
             <SelectTrigger className="w-full sm:w-48">
-              <SelectValue placeholder="Add new device" />
+              <SelectValue placeholder={t('devices.addNew')} />
             </SelectTrigger>
             <SelectContent>
               {deviceOptions.map((device) => (
                 <SelectItem key={device.name} value={device.name}>
-                  {device.name}
+                  {t(device.translationKey)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -82,8 +85,8 @@ export const DeviceUsageConfig = ({
       {devices.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-8">
-            <p className="text-muted-foreground mb-4">No devices selected for forecast.</p>
-            <p className="text-sm text-center">Add devices using the dropdown above to start creating your forecast.</p>
+            <p className="text-muted-foreground mb-4">{t('forecast.deviceUsage.noDevicesSelectedForForecast')}</p>
+            <p className="text-sm text-center">{t('forecast.deviceUsage.addDevicesUsingDropdownAboveToStartCreatingYourForecast')}</p>
           </CardContent>
         </Card>
       ) : (
@@ -93,10 +96,10 @@ export const DeviceUsageConfig = ({
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
-                    <CardTitle className="text-base">{device.name}</CardTitle>
+                    <CardTitle className="text-base">{t(device.translationKey)} ({device.name})</CardTitle>
                     <CardDescription className="text-sm">
-                      {device.type} • {device.powerConsumption}W • Rating: {device.efficiencyRating}
-                      {device.knownKwh && ` • Known kWh: ${device.knownKwh}`}
+                      {t(device.categoryTranslationKey)} ({device.type}) • {device.powerConsumption}W • Rating: {device.efficiencyRating}
+                      {device.knownKwh && ` • ${t('devices.knownKwhLabel')}: ${device.knownKwh}`}
                     </CardDescription>
                   </div>
                   <Button
@@ -114,7 +117,7 @@ export const DeviceUsageConfig = ({
                 <CardContent className="pt-0">
                   <div className="grid grid-cols-1 gap-4">
                     <div className="space-y-3">
-                      <Label className="text-sm font-medium">Hours per Day</Label>
+                      <Label className="text-sm font-medium">{t('forecast.deviceUsage.hoursPerDay')}</Label>
                       <div className="space-y-2">
                         <Slider
                           value={[device.usage.hoursPerDay]}
@@ -129,13 +132,13 @@ export const DeviceUsageConfig = ({
                           className="w-full"
                         />
                         <div className="text-sm text-muted-foreground text-center">
-                          {device.usage.hoursPerDay} hours/day
+                          {device.usage.hoursPerDay} {t('forecast.deviceUsage.hoursPerDayUnit')}
                         </div>
                       </div>
                     </div>
 
                     <div className="space-y-3">
-                      <Label className="text-sm font-medium">Days per Week</Label>
+                      <Label className="text-sm font-medium">{t('forecast.deviceUsage.daysPerWeek')}</Label>
                       <div className="space-y-2">
                         <Slider
                           value={[device.usage.daysPerWeek]}
@@ -150,14 +153,14 @@ export const DeviceUsageConfig = ({
                           className="w-full"
                         />
                         <div className="text-sm text-muted-foreground text-center">
-                          {device.usage.daysPerWeek} days/week
+                          {device.usage.daysPerWeek} {t('forecast.deviceUsage.daysPerWeekUnit')}
                         </div>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label className="text-sm font-medium">Device Age (years)</Label>
+                        <Label className="text-sm font-medium">{t('forecast.deviceUsage.deviceAge')}</Label>
                         <Input
                           type="number"
                           value={device.age}
@@ -171,7 +174,7 @@ export const DeviceUsageConfig = ({
                       </div>
 
                       <div className="space-y-2">
-                        <Label className="text-sm font-medium">Efficiency Rating</Label>
+                        <Label className="text-sm font-medium">{t('forecast.deviceUsage.efficiencyRating')}</Label>
                         <Select
                           value={device.efficiencyRating}
                           onValueChange={(value: 'A' | 'B' | 'C') => 
@@ -182,9 +185,9 @@ export const DeviceUsageConfig = ({
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="A">A (Most Efficient)</SelectItem>
-                            <SelectItem value="B">B (Average)</SelectItem>
-                            <SelectItem value="C">C (Least Efficient)</SelectItem>
+                            <SelectItem value="A">{t('forecast.deviceUsage.a')}</SelectItem>
+                            <SelectItem value="B">{t('forecast.deviceUsage.b')}</SelectItem>
+                            <SelectItem value="C">{t('forecast.deviceUsage.c')}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -192,7 +195,7 @@ export const DeviceUsageConfig = ({
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label className="text-sm font-medium">Power Consumption (W)</Label>
+                        <Label className="text-sm font-medium">{t('forecast.deviceUsage.powerConsumption')}</Label>
                         <Input
                           type="number"
                           value={device.powerConsumption}
@@ -206,7 +209,7 @@ export const DeviceUsageConfig = ({
                       </div>
 
                       <div className="space-y-2">
-                        <Label className="text-sm font-medium">Known kWh (optional)</Label>
+                        <Label className="text-sm font-medium">{t('forecast.deviceUsage.knownKwh')}</Label>
                         <Input
                           type="number"
                           value={device.knownKwh || ''}
@@ -217,7 +220,7 @@ export const DeviceUsageConfig = ({
                           }
                           min={0}
                           step={0.1}
-                          placeholder="Enter known kWh"
+                          placeholder={t('forecast.deviceUsage.enterKnownKwh')}
                           className="w-full"
                         />
                       </div>

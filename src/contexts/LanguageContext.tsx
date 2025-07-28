@@ -1,8 +1,6 @@
-
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import { enTranslations } from '@/translations/en';
-import { heTranslations } from '@/translations/he';
-import { ruTranslations } from '@/translations/ru';
+import { useTranslation } from 'react-i18next';
+import { LoadingSpinner } from '@/components/ui-components/LoadingSpinner';
 
 // Define available languages
 export type Language = 'en' | 'he' | 'ru';
@@ -11,7 +9,7 @@ export type Language = 'en' | 'he' | 'ru';
 export type Direction = 'ltr' | 'rtl';
 
 // Language metadata
-interface LanguageInfo {
+export interface LanguageInfo {
   code: Language;
   name: string;
   nativeName: string;
@@ -22,22 +20,12 @@ interface LanguageInfo {
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string, fallback?: string) => string;
+  t: (key: string, vars?: Record<string, any>) => string;
   direction: Direction;
   isRTL: boolean;
   availableLanguages: LanguageInfo[];
   isLoading: boolean;
 }
-
-// Create context
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
-
-// Translations object
-const translations: Record<Language, Record<string, string>> = {
-  en: enTranslations,
-  he: heTranslations,
-  ru: ruTranslations,
-};
 
 // Language configurations
 const languageConfigs: Record<Language, LanguageInfo> = {
@@ -65,123 +53,68 @@ const languageConfigs: Record<Language, LanguageInfo> = {
 const LANGUAGE_STORAGE_KEY = 'energenius_language';
 const LANGUAGE_PREFERENCE_KEY = 'energenius_language_preference';
 
-// Detect browser language
-const detectBrowserLanguage = (): Language => {
-  const browserLang = navigator.language.split('-')[0];
-  const detectedLang = (Object.keys(languageConfigs) as Language[]).includes(browserLang as Language) 
-    ? (browserLang as Language) 
-    : 'en';
-  console.log(`Browser language detected: ${browserLang}, mapped to: ${detectedLang}`);
-  return detectedLang;
-};
-
-// Get initial language
-const getInitialLanguage = (): Language => {
-  // First check localStorage
-  const storedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-  if (storedLanguage && Object.keys(languageConfigs).includes(storedLanguage)) {
-    console.log(`Using stored language: ${storedLanguage}`);
-    return storedLanguage as Language;
-  }
-  
-  // Then check user preference (could be from backend/profile)
-  const userPreference = localStorage.getItem(LANGUAGE_PREFERENCE_KEY);
-  if (userPreference && Object.keys(languageConfigs).includes(userPreference)) {
-     console.log(`Using user preference language: ${userPreference}`);
-    return userPreference as Language;
-  }
-  
-  // Finally fallback to browser detection or English
-  const browserLang = detectBrowserLanguage();
-  console.log(`Using browser-detected language: ${browserLang}`);
-  return browserLang;
-};
+// Create context
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 // Provider component
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguage] = useState<Language>('en');
-  const [isLoading, setIsLoading] = useState(true);
+  const { i18n, t } = useTranslation();
+  
+  // Initialize language immediately from localStorage
+  const getInitialLanguage = (): Language => {
+    const storedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language;
+    return (storedLanguage && Object.keys(languageConfigs).includes(storedLanguage)) 
+      ? storedLanguage 
+      : (i18n.language as Language || 'en');
+  };
 
-  // Initialize language on mount
+  const [language, setLanguageState] = useState<Language>(getInitialLanguage);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Initialize language on mount if different from stored
   useEffect(() => {
-    const initialLanguage = getInitialLanguage();
-    console.log(`Initializing language context with: ${initialLanguage}`);
-    setLanguage(initialLanguage);
-    updateDocumentLanguage(initialLanguage);
-    setIsLoading(false);
+    const storedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language;
+    if (storedLanguage && storedLanguage !== language && Object.keys(languageConfigs).includes(storedLanguage)) {
+      handleSetLanguage(storedLanguage);
+    }
   }, []);
 
   // Update document and body classes for language/direction
   const updateDocumentLanguage = (lang: Language) => {
     const config = languageConfigs[lang];
-    
-    // Update document attributes
     document.documentElement.dir = config.direction;
     document.documentElement.lang = lang;
-    
-    // Update body classes for styling
     document.body.classList.remove('rtl', 'ltr');
     document.body.classList.add(config.direction);
-    
-    // Store language preference
-    localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
-    
-    console.log(`Language set to: ${config.nativeName} (${lang}) - Direction: ${config.direction}`);
-    console.log(`Document direction: ${document.documentElement.dir}`);
-    console.log(`Document language: ${document.documentElement.lang}`);
   };
 
   // Update language and store preference
-  const handleSetLanguage = (lang: Language) => {
+  const handleSetLanguage = async (lang: Language) => {
     if (lang === language) return;
     
-    console.log(`Changing language from ${language} to ${lang}`);
-    setLanguage(lang);
+    setLanguageState(lang);
+    await i18n.changeLanguage(lang);
     updateDocumentLanguage(lang);
-    
-    // Also store as user preference
+    localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
     localStorage.setItem(LANGUAGE_PREFERENCE_KEY, lang);
-  };
-
-  // Enhanced translation function with fallback
-  const t = (key: string, fallback?: string): string => {
-    const translation = translations[language]?.[key];
-    
-    if (translation) {
-      return translation;
-    }
-    
-    // Fallback to English
-    const englishFallback = translations.en[key];
-    if (englishFallback) {
-      console.warn(`Translation missing for key "${key}" in language "${language}", using English fallback`);
-      return englishFallback;
-    }
-    
-    // Use provided fallback or return the key itself
-    if (fallback) {
-      console.warn(`Translation missing for key "${key}", using provided fallback: "${fallback}"`);
-      return fallback;
-    }
-    
-    console.error(`Translation missing for key "${key}" in all languages`);
-    return key;
   };
 
   const currentConfig = languageConfigs[language];
 
+  const contextValue = {
+    language,
+    setLanguage: handleSetLanguage,
+    t,
+    direction: currentConfig.direction,
+    isRTL: currentConfig.direction === 'rtl',
+    availableLanguages: Object.values(languageConfigs),
+    isLoading
+  };
+
+  // Remove loading screen - language loads instantly now
+
   return (
-    <LanguageContext.Provider 
-      value={{ 
-        language, 
-        setLanguage: handleSetLanguage, 
-        t,
-        direction: currentConfig.direction,
-        isRTL: currentConfig.direction === 'rtl',
-        availableLanguages: Object.values(languageConfigs),
-        isLoading
-      }}
-    >
+    <LanguageContext.Provider value={contextValue}>
       {children}
     </LanguageContext.Provider>
   );
@@ -207,7 +140,5 @@ export const useRTLStyles = () => {
     marginRight: (value: string) => isRTL ? value : undefined,
     paddingLeft: (value: string) => isRTL ? undefined : value,
     paddingRight: (value: string) => isRTL ? value : undefined,
-    left: (value: string) => isRTL ? undefined : value,
-    right: (value: string) => isRTL ? value : undefined,
   };
 };

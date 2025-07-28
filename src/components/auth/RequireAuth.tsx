@@ -6,35 +6,34 @@ import LoadingPage from '@/pages/LoadingPage';
 export const RequireAuth = ({ children }: { children: React.ReactNode }) => {
   const { status, user } = useAuth();
   const location = useLocation();
-  const [isFirstLogin, setIsFirstLogin] = useState(false);
-  const [checkingFirstLogin, setCheckingFirstLogin] = useState(true);
 
-  // Check if this is the user's first login
-  useEffect(() => {
-    if (status === 'authenticated' && user) {
-      const hasCompletedOnboarding = localStorage.getItem(`onboarding-${user.id}`);
-      setIsFirstLogin(!hasCompletedOnboarding);
-      setCheckingFirstLogin(false);
-    } else if (status === 'unauthenticated') {
-      setCheckingFirstLogin(false);
-    }
-  }, [status, user]);
-
-  // Show loading while checking auth status
-  if (status === 'loading' || checkingFirstLogin) {
+  // Early return for loading state
+  if (status === 'loading') {
     return <LoadingPage />;
   }
 
-  // If not authenticated, redirect to login
+  // Early return for unauthenticated
   if (status === 'unauthenticated') {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // If first login and not already on onboarding page, redirect to onboarding
-  if (isFirstLogin && location.pathname !== '/onboarding') {
-    return <Navigate to="/onboarding" replace />;
+  // Check onboarding status once we have a user
+  if (user) {
+    const onboardingStatus = localStorage.getItem(`onboarding-${user.id}`);
+    const hasCompletedOnboarding = onboardingStatus === 'completed' || onboardingStatus === 'skipped';
+    const isOnOnboardingPage = location.pathname === '/onboarding';
+
+    // Redirect to onboarding if first login and not already there
+    if (!hasCompletedOnboarding && !isOnOnboardingPage) {
+      return <Navigate to="/onboarding" replace />;
+    }
+
+    // Redirect to home if completed onboarding but on onboarding page
+    if (hasCompletedOnboarding && isOnOnboardingPage) {
+      return <Navigate to="/" replace />;
+    }
   }
 
-  // Otherwise, render the protected route
+  // Render protected route
   return <>{children}</>;
 };

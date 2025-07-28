@@ -1,10 +1,11 @@
+
 import { authTranslations } from './auth/en';
-import { navigationTranslations } from './navigation/en';
+import { commonTranslations } from './common/en';
+import { homeTranslations } from './home/en';
 import { languageTranslations } from './language/en';
+import { navigationTranslations } from './navigation/en';
 import { onboardingTranslations } from './onboarding/en';
 import { devicesTranslations } from './devices/en';
-import { homeTranslations } from './home/en';
-import { commonTranslations } from './common/en';
 import { loadingTranslations } from './loading/en';
 import { notificationsTranslations } from './notifications/en';
 import { chartsTranslations } from './charts/en';
@@ -13,12 +14,12 @@ import { legalTranslations } from './legal/en';
 
 export const enTranslations = {
   ...authTranslations,
-  ...navigationTranslations,
+  ...commonTranslations,
+  ...homeTranslations,
   ...languageTranslations,
+  ...navigationTranslations,
   ...onboardingTranslations,
   ...devicesTranslations,
-  ...homeTranslations,
-  ...commonTranslations,
   ...loadingTranslations,
   ...notificationsTranslations,
   ...chartsTranslations,

@@ -22,4 +22,8 @@ export const authTranslations = {
   'auth.and': 'and',
   'auth.loginTab': 'Login',
   'auth.registerTab': 'Register',
+  // Reset Password
+  'auth.resetPassword.title': 'Reset Password',
+  'auth.resetPassword.description': 'Enter your email address and we\'ll send you a link to reset your password.',
+  'auth.resetPassword.sendButton': 'Send Reset Email',
 };

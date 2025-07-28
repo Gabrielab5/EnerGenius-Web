@@ -19,7 +19,7 @@ EnerGenius is an electricity optimization app designed for homeowners and renter
 - **State Management**: React Context API
 
 ### Backend (expected)
-- Django or FastAPI (for serving forecasts and historical consumption data)
+- FastAPI (for serving forecasts and historical consumption data)
 - PostgreSQL (as database)
 - Python ML Libraries (e.g., Prophet, LSTM for forecasting)
 
@@ -38,7 +38,6 @@ Make sure you have the following installed:
 
 ### Installation
 
-```bash
 # Clone the repo
 git clone https://github.com/your-username/EnerGenius.git
 cd EnerGenius
@@ -46,25 +45,19 @@ cd EnerGenius
 # Install dependencies
 bun install  # or npm install / yarn install
 
-
 # Start development server
 bun dev  # or npm run dev / yarn dev
 
-
-```
 
 > Make sure to also configure your backend and `.env` file with the proper API endpoints for user data and forecasts.
 
 ## 🧪 Testing
 
-```bash
 bun test  # or npm test / yarn test
-```
 
 ## 📂 Project Structure (Frontend)
 
 
-```
 EnerGenius/
 ├── components/         # Reusable UI components
 ├── pages/              # App pages (e.g., Dashboard, Login)
@@ -83,7 +76,6 @@ EnerGenius/
 The backend is expected to run an AI service that performs forecasting using uploaded electricity data and returns structured JSON for graphs. You can configure this under `/lib/utils.js` and invoke endpoints like `/api/forecast`.
 
 
-
 ## 🤝 Contributing
 
 Contributions are welcome! Please fork the repo and submit a PR with your changes. Don't forget to write clear commit messages and follow the project's coding style.
@@ -92,6 +84,5 @@ Contributions are welcome! Please fork the repo and submit a PR with your change
 
 MIT License.
 
----
 
 Built with passion to make homes smarter and greener. 🌍

@@ -10,12 +10,18 @@ import { useElectricityData } from '@/hooks/useElectricityData';
 import { ForecastDevice, ForecastData } from '@/types/forecast';
 import { Device } from '@/types';
 import { calculateTotalForecast, getDefaultUsagePattern } from '@/lib/forecastUtils';
+import { deviceOptions } from '@/lib/deviceOptions';
 import { DeviceUsageConfig } from './DeviceUsageConfig';
-import { ForecastResults } from './ForecastResults';
+//import { ForecastResults } from './ForecastResults';
+import { FinalForecastResults } from './FinalForecastResults';
 import { LoadingSpinner } from '@/components/ui-components/LoadingSpinner';
 import { toast } from '@/hooks/use-toast';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { useLanguage } from '@/contexts/LanguageContext';
+
+// Define a constant for the price per kWh (in NIS)
+const KWH_PRICE = 0.62;
 
 interface DeviceForecastDialogProps {
   open: boolean;
@@ -33,14 +39,21 @@ export const DeviceForecastDialog = ({ open, onOpenChange, onForecastSaved }: De
   const [forecastName, setForecastName] = useState('');
   const [isCalculating, setIsCalculating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const { t, isRTL } = useLanguage();
 
   // Initialize forecast devices from current devices when dialog opens
   useEffect(() => {
     if (open && devices.length > 0 && forecastDevices.length === 0) {
-      const initialDevices: ForecastDevice[] = devices.map(device => ({
-        ...device,
-        usage: getDefaultUsagePattern(device.name)
-      }));
+      const initialDevices: ForecastDevice[] = devices.map(device => {
+        const deviceInfo = deviceOptions.find(d => d.name === device.name);
+        const defaultUsage = getDefaultUsagePattern(device.name);
+        return {
+          ...device,
+          usage: defaultUsage,
+          translationKey: deviceInfo?.translationKey || '',
+          categoryTranslationKey: deviceInfo?.categoryTranslationKey || '',
+        };
+      });
       setForecastDevices(initialDevices);
       console.log('Initialized forecast devices from existing devices:', initialDevices);
     }
@@ -66,10 +79,14 @@ export const DeviceForecastDialog = ({ open, onOpenChange, onForecastSaved }: De
   };
 
   const handleAddDevice = (device: Device) => {
+    const deviceInfo = deviceOptions.find(d => d.name === device.name);
+    const defaultUsage = getDefaultUsagePattern(device.name);
     const newForecastDevice: ForecastDevice = {
       ...device,
       id: `forecast_${device.id}_${Date.now()}`,
-      usage: getDefaultUsagePattern(device.name)
+      usage: defaultUsage,
+      translationKey: deviceInfo?.translationKey || '',
+      categoryTranslationKey: deviceInfo?.categoryTranslationKey || '',
     };
     setForecastDevices(prev => [...prev, newForecastDevice]);
   };
@@ -77,16 +94,47 @@ export const DeviceForecastDialog = ({ open, onOpenChange, onForecastSaved }: De
   const calculateForecast = () => {
     setIsCalculating(true);
     try {
+      // Input validation
+      if (!forecastDevices || forecastDevices.length === 0) {
+        toast({
+          description: t('forecast.deviceUsage.addDevicesUsingDropdownAboveToStartCreatingYourForecast'),
+          variant: 'destructive',
+        });
+        setIsCalculating(false);
+        return;
+      }
+      // Ensure all required fields are present
+      for (const device of forecastDevices) {
+        if (!device.name || !device.powerConsumption || !device.usage || typeof device.usage.hoursPerDay !== 'number' || typeof device.usage.daysPerWeek !== 'number' || !device.efficiencyRating) {
+          toast({
+            description: t('forecast.deviceUsage.reviewModifyDevices'),
+            variant: 'destructive',
+          });
+          setIsCalculating(false);
+          return;
+        }
+      }
+      // Use robust utility for calculation
+      console.log('Calculating forecast with devices:', forecastDevices);
+      console.log('Using historical data:', electricityData);
       const forecast = calculateTotalForecast(forecastDevices, electricityData);
+      console.log('Forecast calculation result:', forecast);
+      // Output validation
+      if (!forecast || !forecast.projected || isNaN(forecast.projected.annualTotal.kwh) || isNaN(forecast.projected.annualTotal.price)) {
+        toast({
+          description: 'Forecast calculation failed. Please check your device data.',
+          variant: 'destructive',
+        });
+        setIsCalculating(false);
+        return;
+      }
       setForecastData(forecast);
       setCurrentStep(3);
-      console.log('Calculated forecast with historical data:', forecast);
     } catch (error) {
       console.error('Error calculating forecast:', error);
       toast({
-        title: "Error",
-        description: "Failed to calculate forecast. Please try again.",
-        variant: "destructive",
+        description: 'Failed to calculate forecast. Please try again.',
+        variant: 'destructive',
       });
     } finally {
       setIsCalculating(false);
@@ -97,7 +145,6 @@ export const DeviceForecastDialog = ({ open, onOpenChange, onForecastSaved }: De
     if (!user || !forecastData || !forecastName.trim()) {
       if (!forecastName.trim()) {
         toast({
-          title: "Error",
           description: "Please enter a name for your forecast.",
           variant: "destructive",
         });
@@ -129,7 +176,6 @@ export const DeviceForecastDialog = ({ open, onOpenChange, onForecastSaved }: De
       await setDoc(doc(db, "users", user.id, "forecasts", scenarioId), scenario);
       
       toast({
-        title: "Success",
         description: "Forecast scenario saved successfully.",
       });
       
@@ -142,7 +188,6 @@ export const DeviceForecastDialog = ({ open, onOpenChange, onForecastSaved }: De
     } catch (error) {
       console.error('Error saving forecast:', error);
       toast({
-        title: "Error",
         description: "Failed to save forecast scenario.",
         variant: "destructive",
       });
@@ -165,10 +210,10 @@ export const DeviceForecastDialog = ({ open, onOpenChange, onForecastSaved }: De
   }, [open]);
 
   const steps = [
-    { title: "Review Devices", description: "Modify your current device setup" },
-    { title: "Configure Usage", description: "Set usage patterns for each device" },
-    { title: "Name Forecast", description: "Give your forecast a name" },
-    { title: "View Results", description: "See your projected electricity consumption" }
+    { title: t('forecast.dialog.reviewDevices'), description: t('forecast.dialog.reviewDevicesDesc') },
+    { title: t('forecast.dialog.configureUsage'), description: t('forecast.dialog.configureUsageDesc') },
+    { title: t('forecast.dialog.nameForecast'), description: t('forecast.dialog.nameForecastDesc') },
+    { title: t('forecast.dialog.viewResults'), description: t('forecast.dialog.viewResultsDesc') }
   ];
 
   // Show loading if devices are still loading
@@ -177,10 +222,10 @@ export const DeviceForecastDialog = ({ open, onOpenChange, onForecastSaved }: De
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="w-[95vw] max-w-[95vw] sm:max-w-2xl lg:max-w-4xl h-[90vh] max-h-[90vh] flex flex-col">
           <DialogHeader className="flex-shrink-0 text-center">
-            <DialogTitle className="text-base sm:text-lg">Device-Based Electricity Forecast</DialogTitle>
+            <DialogTitle className="text-base sm:text-lg">{t('forecast.dialog.title')}</DialogTitle>
           </DialogHeader>
           <div className="flex items-center justify-center flex-1">
-            <LoadingSpinner size="lg" message="Loading your devices..." />
+            <LoadingSpinner size="lg" message={t('devices.loadingDevices')} />
           </div>
         </DialogContent>
       </Dialog>
@@ -190,10 +235,10 @@ export const DeviceForecastDialog = ({ open, onOpenChange, onForecastSaved }: De
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[95vw] max-w-[95vw] sm:max-w-2xl lg:max-w-4xl h-[90vh] max-h-[90vh] flex flex-col">
-        <DialogHeader className="flex-shrink-0 text-center">
-          <DialogTitle className="text-base sm:text-lg">Device-Based Electricity Forecast</DialogTitle>
+        <DialogHeader className={`flex-shrink-0 ${isRTL ? 'text-right' : 'text-left'}`}>
+          <DialogTitle className="text-base sm:text-lg">{t('forecast.dialog.title')}</DialogTitle>
           <DialogDescription className="text-xs sm:text-sm">
-            Create a forecast based on your device changes and usage patterns
+            {t('forecast.dialog.subtitle')}
           </DialogDescription>
         </DialogHeader>
 
@@ -246,33 +291,21 @@ export const DeviceForecastDialog = ({ open, onOpenChange, onForecastSaved }: De
 
           {currentStep === 2 && (
             <div className="space-y-4 text-center">
-              <h3 className="text-base sm:text-lg font-semibold">Name Your Forecast</h3>
               <div className="space-y-2">
-                <Label htmlFor="forecastName" className="text-sm">Forecast Name</Label>
+                <Label htmlFor="forecastName" className="text-sm">{t('forecast.dialog.forecastName')}</Label>
                 <Input
                   id="forecastName"
                   value={forecastName}
                   onChange={(e) => setForecastName(e.target.value)}
-                  placeholder="Enter a name for your forecast"
+                  placeholder={t('forecast.dialog.enterForecastName')}
                   className="w-full"
                 />
               </div>
-              <Card>
-                <CardHeader className="text-center">
-                  <CardTitle className="text-sm sm:text-base">Forecast Summary</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-xs sm:text-sm text-muted-foreground">
-                    <p>{forecastDevices.length} device{forecastDevices.length !== 1 ? 's' : ''} configured</p>
-                    <p>Ready to calculate consumption forecast</p>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           )}
 
           {currentStep === 3 && forecastData && (
-            <ForecastResults forecastData={forecastData} />
+            <FinalForecastResults forecastData={forecastData} />
           )}
 
           {isCalculating && (
@@ -292,7 +325,7 @@ export const DeviceForecastDialog = ({ open, onOpenChange, onForecastSaved }: De
               className="w-full sm:w-auto text-sm"
               size="sm"
             >
-              Back
+              {t('forecast.dialog.back')}
             </Button>
           )}
           
@@ -309,7 +342,7 @@ export const DeviceForecastDialog = ({ open, onOpenChange, onForecastSaved }: De
               className="w-full sm:w-auto text-sm"
               size="sm"
             >
-              {currentStep === 2 ? 'Calculate Forecast' : 'Next'}
+              {currentStep === 2 ? t('forecast.dialog.calculateForecast') : t('forecast.dialog.next')}
             </Button>
           )}
 
@@ -320,7 +353,7 @@ export const DeviceForecastDialog = ({ open, onOpenChange, onForecastSaved }: De
               className="w-full sm:w-auto text-sm"
               size="sm"
             >
-              {isSaving ? 'Saving...' : 'Save Forecast'}
+              {isSaving ? t('forecast.dialog.saving') : t('forecast.dialog.saveForecast')}
             </Button>
           )}
         </DialogFooter>

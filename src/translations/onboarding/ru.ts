@@ -1,5 +1,12 @@
 export const onboardingTranslations = {
-  // Onboarding translations 
+  // Onboarding Welcome
+  'onboarding.welcome.title': 'Добро пожаловать в EnerGenius',
+  'onboarding.welcome.subtitle': 'Давайте настроим отслеживание потребления электроэнергии',
+  'onboarding.welcome.getStarted': 'Начать',
+  'onboarding.welcome.skip': 'Пропустить настройку',
+  'onboarding.progress': 'Шаг {current} из {total}',
+
+  // Device Selection
   'onboarding.devices.header': 'Выберите ваши устройства',
   'onboarding.devices.description': 'Расскажите нам о ваших электроприборах, чтобы получать точные прогнозы.',
   'onboarding.devices.helpText': 'Добавление устройств помогает нам точнее рассчитывать прогнозы энергопотребления. Чем больше устройств вы добавите, тем точнее будут прогнозы.',
@@ -28,8 +35,8 @@ export const onboardingTranslations = {
   'onboarding.devices.validDeviceError': 'Пожалуйста, выберите корректное устройство.',
   'onboarding.devices.devicesSaved': 'Ваши устройства были успешно сохранены.',
   'onboarding.devices.saveError': 'Не удалось сохранить ваши устройства. Пожалуйста, попробуйте еще раз.',
-  
-  // Onboarding - File Upload
+
+  // File Upload
   'onboarding.upload.header': 'Загрузите ваши данные об электроэнергии',
   'onboarding.upload.description': 'Загрузите сводку из вашего счета за электроэнергию, чтобы увидеть подробный анализ потребления и прогнозы.',
   'onboarding.upload.helpText': 'Мы принимаем файлы CSV со столбцами: дата, потребление в кВтч и стоимость. Ваши данные остаются конфиденциальными и используются только для создания прогнозов.',
@@ -49,7 +56,6 @@ export const onboardingTranslations = {
   'onboarding.upload.year': 'Год: {year}',
   'onboarding.upload.lastUpload': 'Последняя загрузка: {date}',
   'onboarding.upload.uploadMultipleButton': 'Загрузить {count} файлов',
-  'onboarding.upload.continueButton': 'Продолжить',
   'onboarding.upload.uploadSuccess': 'Извлечено {rows} строк из файла {fileName} за {year} год.',
   'onboarding.upload.fileAdded': 'Добавлен файл {fileName} за {year} год. Извлечено {rows} строк.',
   'onboarding.upload.multipleFilesSuccess': 'Успешно загружено {count} файлов.',
@@ -61,14 +67,14 @@ export const onboardingTranslations = {
   'onboarding.upload.csvPreviewColumnC': 'Столбец C',
   'onboarding.upload.csvPreviewShowing': 'Показано {shown} из {total} строк',
 
-  // Onboarding
-  'onboarding.welcome': 'Добро пожаловать в EnerGenius',
-  'onboarding.step1.title': 'Добавьте ваши устройства',
-  'onboarding.step1.description': 'Расскажите нам о ваших электроприборах',
-  'onboarding.step2.title': 'Загрузите ваши данные',
-  'onboarding.step2.description': 'Загрузите счет за электричество для анализа',
+  // Video Dialog
+  'onboarding.upload.videoDialog.title': 'Как загрузить ваши данные',
+  'onboarding.upload.videoDialog.description': 'Это видео демонстрирует, как найти и загрузить файл с данными о потреблении электроэнергии с веб-сайта вашего поставщика.',
+
+  // Completion & General Actions
+  'onboarding.complete.title': 'Настройка завершена!',
+  'onboarding.complete.subtitle': 'Вы готовы начать отслеживать потребление электроэнергии',
+  'onboarding.complete.finish': 'Перейти к панели управления',
   'onboarding.continue': 'Продолжить',
   'onboarding.skip': 'Пропустить',
-  'onboarding.complete': 'Завершить настройку',
-  'onboarding.progress': 'Шаг {current} из {total}',
 };

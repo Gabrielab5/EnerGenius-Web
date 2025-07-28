@@ -80,13 +80,23 @@ export function calculateTotalForecast(
   const projectedMonthlyTotals: Record<string, { kwh: number; price: number }> = {};
   const currentDate = new Date();
   
+  // Calculate monthly projections based on device usage patterns
   for (let i = 0; i < 12; i++) {
     const date = new Date(currentDate.getFullYear(), currentDate.getMonth() + i + 1, 1);
     const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     
+    // Sum the monthlyKwh for all devices for this month
+    let monthKwh = 0;
+    let monthCost = 0;
+    devices.forEach(device => {
+      const consumption = calculateDeviceConsumption(device, avgPrice);
+      monthKwh += consumption.monthlyKwh;
+      monthCost += consumption.monthlyKwh * avgPrice;
+    });
+    
     projectedMonthlyTotals[monthKey] = {
-      kwh: totalAnnualKwh / 12,
-      price: totalAnnualCost / 12
+      kwh: monthKwh,
+      price: monthCost
     };
   }
   
@@ -108,6 +118,31 @@ export function calculateTotalForecast(
     annualTotal: { kwh: totalAnnualKwh, price: totalAnnualCost }
   });
   
+  // Calculate comparison values with proper number handling
+  const historicalKwh = historical.annualTotal.kwh || 0;
+  const projectedKwh = totalAnnualKwh || 0;
+  const historicalPrice = historical.annualTotal.price || 0;
+  const projectedPrice = totalAnnualCost || 0;
+  
+  const kwhDifference = projectedKwh - historicalKwh;
+  const priceDifference = projectedPrice - historicalPrice;
+  const percentageChange = (historicalKwh > 0) ? (kwhDifference / historicalKwh) * 100 : 0;
+  
+  const comparison = {
+    kwhDifference,
+    priceDifference,
+    percentageChange
+  };
+  
+  // Debug logging for comparison values
+  console.log('=== COMPARISON DEBUG ===');
+  console.log('Historical kWh:', historicalKwh);
+  console.log('Projected kWh:', projectedKwh);
+  console.log('kWh Difference:', kwhDifference);
+  console.log('Percentage Change:', percentageChange);
+  console.log('Final comparison object:', comparison);
+  console.log('========================');
+  
   return {
     historical,
     projected: {
@@ -117,7 +152,8 @@ export function calculateTotalForecast(
         price: totalAnnualCost
       }
     },
-    deviceBreakdown
+    deviceBreakdown,
+    comparison
   };
 }
 
@@ -126,17 +162,18 @@ export function calculateTotalForecast(
  */
 export function getDefaultUsagePattern(deviceType: string): { hoursPerDay: number; daysPerWeek: number } {
   const patterns: Record<string, { hoursPerDay: number; daysPerWeek: number }> = {
-    'Air Conditioner': { hoursPerDay: 8, daysPerWeek: 7 },
-    'Washing Machine': { hoursPerDay: 1, daysPerWeek: 4 },
-    'Refrigerator': { hoursPerDay: 24, daysPerWeek: 7 },
-    'Television': { hoursPerDay: 6, daysPerWeek: 7 },
+    'Air Conditioner': { hoursPerDay: 6, daysPerWeek: 5 },
+    'Washing Machine': { hoursPerDay: 1.5, daysPerWeek: 3 },
+    'Refrigerator': { hoursPerDay: 8, daysPerWeek: 7 }, // Compressor run time
+    'Television': { hoursPerDay: 4, daysPerWeek: 7 },
     'Computer': { hoursPerDay: 8, daysPerWeek: 5 },
-    'Microwave': { hoursPerDay: 0.5, daysPerWeek: 7 },
-    'Dishwasher': { hoursPerDay: 1, daysPerWeek: 4 },
-    'Water Heater': { hoursPerDay: 3, daysPerWeek: 7 },
-    'Lighting': { hoursPerDay: 6, daysPerWeek: 7 },
-    'Oven': { hoursPerDay: 1, daysPerWeek: 4 }
+    'Microwave': { hoursPerDay: 0.25, daysPerWeek: 5 },
+    'Dishwasher': { hoursPerDay: 1, daysPerWeek: 3 },
+    'Water Heater': { hoursPerDay: 2, daysPerWeek: 7 },
+    'Lighting': { hoursPerDay: 5, daysPerWeek: 7 },
+    'Oven': { hoursPerDay: 1, daysPerWeek: 3 }
   };
   
-  return patterns[deviceType] || { hoursPerDay: 4, daysPerWeek: 7 };
+  // A more conservative default for unknown devices
+  return patterns[deviceType] || { hoursPerDay: 1, daysPerWeek: 3 };
 }

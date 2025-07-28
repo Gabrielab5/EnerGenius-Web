@@ -22,4 +22,8 @@ export const authTranslations = {
   'auth.and': 'ו',
   'auth.loginTab': 'התחברות',
   'auth.registerTab': 'הרשמה',
+  // Reset Password
+  'auth.resetPassword.title': 'איפוס סיסמה',
+  'auth.resetPassword.description': 'הכניסו את כתובת האימייל שלכם ונשלח לכם קישור לאיפוס הסיסמה.',
+  'auth.resetPassword.sendButton': 'שלח מייל איפוס',
 };

@@ -12,6 +12,8 @@ export interface Device {
   efficiencyRating: 'A' | 'B' | 'C';
   powerConsumption: number; // in watts
   knownKwh?: number; // Optional known kilowatt-hour consumption
+  translationKey?: string;
+  categoryTranslationKey?: string;
 }
 
 export interface ConsumptionData {

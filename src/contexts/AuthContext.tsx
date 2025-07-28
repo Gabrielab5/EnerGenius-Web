@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { 
   createUserWithEmailAndPassword,
@@ -7,6 +6,7 @@ import {
   signInWithPopup,
   signOut as firebaseSignOut,
   onAuthStateChanged,
+  sendPasswordResetEmail,
   User as FirebaseUser
 } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
@@ -14,6 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { AuthStatus, User } from '@/types';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { useLanguage } from '@/hooks/use-language';
 
 interface AuthContextType {
   user: User | null;
@@ -22,6 +23,7 @@ interface AuthContextType {
   signUp: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -47,6 +49,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [status, setStatus] = useState<AuthStatus>('loading');
   const { toast } = useToast();
+  const { t } = useLanguage();
   const googleProvider = new GoogleAuthProvider();
   const navigate = useNavigate();
   const location = useLocation();
@@ -71,30 +74,52 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
+    let isMounted = true;
+    let userDocumentPromise: Promise<void> | null = null;
+
     // Subscribe to auth state changes
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        // Create user document in Firestore if it doesn't exist
-        await createUserDocument(firebaseUser);
-        
-        const formattedUser = formatUser(firebaseUser);
-        setUser(formattedUser);
-        setStatus('authenticated');
-      } else {
-        setUser(null);
-        setStatus('unauthenticated');
+      try {
+        if (!isMounted) return;
+
+        if (firebaseUser) {
+          // Format user immediately for faster UI updates
+          const formattedUser = formatUser(firebaseUser);
+          if (isMounted) {
+            setUser(formattedUser);
+            setStatus('authenticated');
+          }
+
+          // Create user document asynchronously without blocking auth state
+          userDocumentPromise = createUserDocument(firebaseUser).catch(error => {
+            console.error("Error creating user document:", error);
+          });
+        } else {
+          if (isMounted) {
+            setUser(null);
+            setStatus('unauthenticated');
+          }
+        }
+      } catch (error) {
+        console.error("Auth state change error:", error);
+        if (isMounted) {
+          setStatus('unauthenticated');
+        }
       }
     });
 
     // Cleanup subscription on unmount
-    return () => unsubscribe();
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
   }, []);
 
   const handleAuthSuccess = (userId: string) => {
-    // Check if user has completed onboarding
-    const hasCompletedOnboarding = localStorage.getItem(`onboarding-${userId}`);
+    // Check if user has completed onboarding from cache
+    const hasCompletedOnboarding = localStorage.getItem(`onboarding-${userId}`) === 'completed';
     
-    // Redirect to onboarding if first login, otherwise to home
+    // Use immediate navigation without awaiting
     if (!hasCompletedOnboarding) {
       navigate('/onboarding');
     } else {
@@ -108,19 +133,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       
       toast({
-        title: "Success!",
-        description: "Signed in successfully.",
+        description: t('notifications.auth.signInSuccessDescription'),
       });
 
-      // Wait a tick to ensure Firebase auth state has updated
-      setTimeout(() => {
-        handleAuthSuccess(userCredential.user.uid);
-      }, 0);
+      handleAuthSuccess(userCredential.user.uid);
     } catch (error) {
       setStatus('unauthenticated');
       toast({
-        title: "Error",
-        description: "Failed to sign in. Please check your credentials.",
+        description: t('notifications.auth.signInError'),
         variant: "destructive",
       });
       throw error;
@@ -132,23 +152,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setStatus('loading');
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       
-      // Create user document in Firestore
-      await createUserDocument(userCredential.user);
+      // Create user document asynchronously
+      createUserDocument(userCredential.user).catch(console.error);
       
       toast({
-        title: "Success!",
-        description: "Account created successfully.",
+        description: t('notifications.auth.signUpSuccessDescription'),
       });
 
-      // Wait a tick to ensure Firebase auth state has updated
-      setTimeout(() => {
-        handleAuthSuccess(userCredential.user.uid);
-      }, 0);
+      handleAuthSuccess(userCredential.user.uid);
     } catch (error) {
       setStatus('unauthenticated');
       toast({
-        title: "Error",
-        description: "Failed to create account. Please try again.",
+        description: t('notifications.auth.signUpError'),
         variant: "destructive",
       });
       throw error;
@@ -160,23 +175,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setStatus('loading');
       const userCredential = await signInWithPopup(auth, googleProvider);
       
-      // Create user document in Firestore
-      await createUserDocument(userCredential.user);
+      // Create user document asynchronously
+      createUserDocument(userCredential.user).catch(console.error);
       
       toast({
-        title: "Success!",
-        description: "Signed in with Google successfully.",
+        description: t('notifications.auth.googleSignInSuccessDescription'),
       });
 
-      // Wait a tick to ensure Firebase auth state has updated
-      setTimeout(() => {
-        handleAuthSuccess(userCredential.user.uid);
-      }, 0);
+      handleAuthSuccess(userCredential.user.uid);
     } catch (error) {
       setStatus('unauthenticated');
       toast({
-        title: "Error",
-        description: "Failed to sign in with Google.",
+        description: t('notifications.auth.googleSignInError'),
         variant: "destructive",
       });
       throw error;
@@ -188,19 +198,68 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await firebaseSignOut(auth);
       
       toast({
-        title: "Signed out",
-        description: "You have been signed out successfully.",
+        description: t('notifications.auth.signOutSuccessDescription'),
       });
 
-      // Redirect to login page after sign out
+      // Ensure state updates are processed before navigation
+      await Promise.resolve();
       navigate('/login');
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to sign out.",
+        description: t('notifications.auth.signOutError'),
         variant: "destructive",
       });
-      throw error;
+    }
+  };
+
+  const resetPassword = async (email: string, retryCount = 0): Promise<boolean> => {
+    const maxRetries = 2;
+    
+    try {
+      console.log('Attempting to send password reset email to:', email, `(attempt ${retryCount + 1})`);
+      
+      // Remove the actionCodeSettings to avoid domain whitelisting issues
+      await sendPasswordResetEmail(auth, email);
+      
+      console.log('Password reset email sent successfully');
+      toast({
+        description: `${t('notifications.auth.resetPasswordSuccessDescription')} Please check your spam folder if you don't see it in your inbox.`,
+        duration: 8000,
+      });
+      
+      return true;
+    } catch (error: any) {
+      console.error('Password reset error:', error);
+      console.error('Error code:', error.code);
+      console.error('Error message:', error.message);
+      
+      // Retry logic for network errors
+      if (retryCount < maxRetries && (error.code === 'auth/network-request-failed' || !error.code)) {
+        console.log(`Retrying password reset... (${retryCount + 1}/${maxRetries})`);
+        await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1))); // Exponential backoff
+        return resetPassword(email, retryCount + 1);
+      }
+      
+      let errorMessage = t('notifications.auth.resetPasswordError');
+      
+      // Handle specific Firebase errors
+      if (error.code === 'auth/user-not-found') {
+        errorMessage = `${t('notifications.auth.userNotFoundError')} Please check your email address or create a new account.`;
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = t('notifications.auth.invalidEmailError');
+      } else if (error.code === 'auth/too-many-requests') {
+        errorMessage = 'Too many reset attempts. Please wait 15 minutes before trying again.';
+      } else if (error.code === 'auth/unauthorized-continue-uri') {
+        errorMessage = 'Email service configuration issue. Please contact support.';
+      }
+      
+      toast({
+        description: errorMessage,
+        variant: 'destructive',
+        duration: 6000,
+      });
+      
+      return false;
     }
   };
 
@@ -212,7 +271,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         signIn,
         signUp,
         signInWithGoogle,
-        signOut
+        signOut,
+        resetPassword
       }}
     >
       {children}

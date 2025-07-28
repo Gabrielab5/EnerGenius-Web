@@ -16,10 +16,11 @@ export const LanguageLoader = ({ children, fallback }: LanguageLoaderProps) => {
       <div className="min-h-screen flex items-center justify-center">
         <LoadingSpinner 
           size="lg" 
-          message={t('loading.initializing')} 
+          message={t('loading.initializing', { defaultValue: 'Initializing application...' })} 
         />
       </div>
     );
   }
+
   return <>{children}</>;
 };

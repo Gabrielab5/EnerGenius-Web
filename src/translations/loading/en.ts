@@ -1,3 +1,4 @@
+
 export const loadingTranslations = {
   // Loading Page
   'loading.pleaseWait': 'Please wait',

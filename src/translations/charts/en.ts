@@ -9,9 +9,29 @@ export const chartsTranslations = {
   'charts.costAnalysis': 'Cost Analysis',
   'charts.forecastComparison': 'Forecast Comparison',
   
-  // Chart Descriptions
-  'charts.dailyConsumption.description': 'Daily electricity usage and costs by month',
+  // New Section-Specific Translations
+  'charts.monthlyOverview.title': 'Monthly Overview',
   'charts.monthlyOverview.description': 'Monthly electricity consumption and cost trends',
+  'charts.dailyConsumption.title': 'Daily Consumption',
+  'charts.dailyConsumption.description': 'Daily electricity usage and costs by month',
+  'charts.noMonthlyData': 'No monthly data available',
+  'charts.noDailyData': 'No daily data available',
+  
+  // Analytics Stats Translations
+  'analytics.stats.annualTotal': 'Annual Total',
+  'analytics.stats.monthlyAverage': 'Monthly Average',
+  'analytics.stats.dailyAverage': 'Daily Average',
+  'analytics.stats.highestMonth': 'Highest Month',
+  'analytics.stats.totalCost': 'total cost',
+  'analytics.stats.avgCost': 'avg cost',
+  
+  // Analytics Page Translations
+  'analytics.page.title': 'Electricity Analytics',
+  'analytics.page.description': 'Comprehensive analysis of your electricity consumption',
+  'analytics.error.noData': 'No Data Available',
+  'analytics.error.message': 'No electricity consumption data found. Please upload your electricity bill data first.',
+  
+  // Chart Descriptions (keeping existing ones that don't conflict)
   'charts.annualSummary.description': 'Annual summary of electricity consumption',
   'charts.hourlyPattern.description': 'Average usage pattern by hour of day',
   'charts.deviceBreakdown.description': 'Monthly consumption by device type',

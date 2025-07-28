@@ -14,6 +14,8 @@ export interface ForecastDevice {
   powerConsumption: number; // in watts
   usage: DeviceUsage;
   knownKwh?: number;
+  translationKey?: string;
+  categoryTranslationKey?: string;
 }
 
 export interface DeviceConsumptionResult {
@@ -51,4 +53,9 @@ export interface ForecastData {
     annualTotal: { kwh: number; price: number };
   };
   deviceBreakdown: Record<string, DeviceConsumptionResult & { deviceName: string }>;
+  comparison: {
+    kwhDifference: number;
+    priceDifference: number;
+    percentageChange: number;
+  };
 }

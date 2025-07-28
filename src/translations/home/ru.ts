@@ -43,6 +43,17 @@ export const homeTranslations = {
   'home.consumption': 'Текущее потребление',
   'home.cost': 'Текущая стоимость',
   'home.efficiency': 'Оценка эффективности',
-  'home.noData': 'Данные отсутствуют. Загрузите счет за электричество для начала работы.',
+  'home.noData': 'Нет данных. Загрузите свой счет за электричество, чтобы начать.',
   'home.getStarted': 'Начать',
+
+  'home.tips.deviceSpecific.title': 'Советы по конкретным устройствам',
+  'home.tips.deviceSpecific.description': 'Рекомендации для ваших самых энергоемких устройств.',
+  'home.tips.general.title': 'Общие советы по экономии',
+  'home.tips.general.description': 'Общие стратегии, которые помогут вам экономить энергию.',
+
+  // Dashboard translations
+  'dashboard.monthlyOverview.title': 'Ежемесячный обзор',
+  'dashboard.monthlyOverview.description': 'Тенденции месячного потребления электроэнергии и стоимости',
+  'dashboard.dailyConsumption.title': 'Дневное потребление',
+  'dashboard.dailyConsumption.description': 'Ежедневное потребление электроэнергии и расходы по месяцам',
 };

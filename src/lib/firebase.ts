@@ -1,7 +1,7 @@
 
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, enableNetwork, disableNetwork } from 'firebase/firestore';
 
 // Your Firebase configuration
 const firebaseConfig = {
@@ -20,6 +20,33 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase Authentication and get a reference to the service
 export const auth = getAuth(app);
-// Initialize Firestore
+
+// Configure auth settings for better performance
+auth.useDeviceLanguage();
+
+// Initialize Firestore with optimized settings
 export const db = getFirestore(app);
+
+// Enable offline persistence and faster loading
+if (typeof window !== 'undefined') {
+  // Add connection state listener for better performance
+  let isOnline = navigator.onLine;
+  
+  const handleOnline = () => {
+    if (!isOnline) {
+      enableNetwork(db).catch(console.error);
+      isOnline = true;
+    }
+  };
+  
+  const handleOffline = () => {
+    if (isOnline) {
+      disableNetwork(db).catch(console.error);
+      isOnline = false;
+    }
+  };
+  
+  window.addEventListener('online', handleOnline);
+  window.addEventListener('offline', handleOffline);
+}
 export default app;

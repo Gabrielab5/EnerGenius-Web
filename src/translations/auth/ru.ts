@@ -1,5 +1,6 @@
+
 export const authTranslations = {
-'auth.loginHeader': 'Добро пожаловать в EnerGenius',
+  'auth.loginHeader': 'Добро пожаловать в EnerGenius',
   'auth.loginSubheader': 'Войдите, чтобы отслеживать и прогнозировать потребление электроэнергии',
   'auth.emailLabel': 'Электронная почта',
   'auth.emailPlaceholder': 'Введите ваш email',
@@ -20,4 +21,8 @@ export const authTranslations = {
   'auth.and': 'и',
   'auth.loginTab': 'Вход',
   'auth.registerTab': 'Регистрация',
+  // Reset Password
+  'auth.resetPassword.title': 'Сброс пароля',
+  'auth.resetPassword.description': 'Введите ваш email и мы отправим вам ссылку для сброса пароля.',
+  'auth.resetPassword.sendButton': 'Отправить письмо',
 };

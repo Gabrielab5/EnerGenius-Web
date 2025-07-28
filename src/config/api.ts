@@ -4,9 +4,9 @@
  */
 
 export const API_ENDPOINTS = {
-  XLSX_TO_TEXT: 'https://xlsxtotext-160356915851.us-central1.run.app',
-  ELECTRICITY_ANALYSIS: 'https://electricalculation-160356915851.europe-west1.run.app',
-  ELECTRICITY_FORECAST_AI: 'https://electricforcastai-160356915851.us-central1.run.app',
+  XLSX_TO_TEXT: process.env.REACT_APP_XLSX_TO_TEXT_API as string,
+  ELECTRICITY_ANALYSIS: process.env.REACT_APP_ELECTRICITY_ANALYSIS_API as string,
+  ELECTRICITY_FORECAST_AI: process.env.REACT_APP_ELECTRICITY_FORECAST_AI_API as string,
 } as const;
 
 export type ApiEndpoint = keyof typeof API_ENDPOINTS;

@@ -11,7 +11,7 @@ export const forecastTranslations = {
   // Forecast Results
   'forecast.results.title': 'Результаты прогноза',
   'forecast.results.summary': 'Сводка прогноза',
-  'forecast.results.projectedAnnualKwh': 'Прогнозируемое годовое потребление',
+  'forecast.results.projectedAnnualKwh': 'Прогнозируемое годовое потребление',
   'forecast.results.projectedAnnualCost': 'Прогнозируемая годовая стоимость',
   'forecast.results.kWhChange': 'Изменение кВтч',
   'forecast.results.costImpact': 'Влияние на стоимость',
@@ -19,7 +19,7 @@ export const forecastTranslations = {
   'forecast.results.savings': 'Экономия',
   'forecast.results.perYear': 'в год',
   'forecast.results.vsHistorical': 'по сравнению с историческими данными',
-  'forecast.results.change': 'изменение',
+'forecast.results.change': 'изменение',
   'forecast.results.monthlyConsumptionComparison': 'Сравнение месячного потребления',
   'forecast.results.historicalVsProjectedElectricityUsage': 'Историческое и прогнозируемое потребление электроэнергии',
   'forecast.results.deviceConsumptionBreakdown': 'Разбивка потребления по устройствам',
@@ -152,5 +152,6 @@ export const forecastTranslations = {
   'forecast.card.daysUnit': 'дней',
   'forecast.card.monthlyKwh': 'Месячное кВтч',
   'forecast.card.knownKwh': 'Известное кВтч',
+  'forecast.card.monthlyCost': 'Месячная стоимость',
   'forecast.card.notApplicable': 'Н/Д',
 };

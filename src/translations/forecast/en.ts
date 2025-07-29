@@ -188,7 +188,7 @@ export const forecastTranslations = {
   'forecast.dialog.saveForecast': 'Save Forecast',
   'forecast.dialog.saving': 'Saving...',
   'forecast.card.deleteForecastTitle': 'Delete Forecast',
-  'forecast.card.deleteForecastDescription': 'Are you sure you want to delete \"{forecastName}\"? This action cannot be undone.',
+  'forecast.card.deleteForecastDescription': 'Are you sure you want to delete "{forecastName}"? This action cannot be undone.',
   'forecast.card.cancel': 'Cancel',
   'forecast.card.delete': 'Delete',
   'forecast.card.annualKwh': 'Annual kWh',
@@ -203,6 +203,7 @@ export const forecastTranslations = {
   'forecast.card.daysPerWeek': 'Days/Week',
   'forecast.card.daysUnit': 'days',
   'forecast.card.monthlyKwh': 'Monthly kWh',
+  'forecast.card.monthlyCost': 'Monthly Cost',
   'forecast.card.knownKwh': 'Known kWh',
   'forecast.card.notApplicable': 'N/A',
 };

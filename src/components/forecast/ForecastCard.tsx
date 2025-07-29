@@ -140,7 +140,7 @@ export const ForecastCard = ({ forecast, onDelete }: ForecastCardProps) => {
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-4 gap-2 text-center">
+                  <div className="grid grid-cols-5 gap-2 text-center text-xs">
                     <div className="space-y-1">
                       <div className="text-xs text-muted-foreground">{t('forecast.card.dailyUsage')}</div>
                       <div>{device.usage.hoursPerDay} {t('forecast.card.hoursPerDayUnit')}</div>
@@ -159,6 +159,12 @@ export const ForecastCard = ({ forecast, onDelete }: ForecastCardProps) => {
                       <div className="text-xs text-muted-foreground">{t('forecast.card.monthlyCost')}</div>
                       <div>
                         {t('forecast.units.currency')}{(((device.powerConsumption / 1000) * device.usage.hoursPerDay * device.usage.daysPerWeek * 4.33) * 0.6).toFixed(2)}
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="text-xs text-muted-foreground">{t('forecast.card.yearlyCost')}</div>
+                      <div>
+                        {t('forecast.units.currency')}{(((device.powerConsumption / 1000) * device.usage.hoursPerDay * device.usage.daysPerWeek * 4.33) * 0.6 * 12).toFixed(2)}
                       </div>
                     </div>
                   </div>

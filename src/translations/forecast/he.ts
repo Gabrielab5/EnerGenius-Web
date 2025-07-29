@@ -155,5 +155,6 @@ export const forecastTranslations = {
   'forecast.card.monthlyKwh': 'קוט"ש חודשי',
   'forecast.card.knownKwh': 'קוט"ש ידוע',
   'forecast.card.monthlyCost': 'עלות חודשית',
+  'forecast.card.yearlyCost': 'עלות שנתית',
   'forecast.card.notApplicable': 'לא רלוונטי',
 };

@@ -12,7 +12,6 @@ import { Device } from '@/types';
 import { calculateTotalForecast, getDefaultUsagePattern } from '@/lib/forecastUtils';
 import { deviceOptions } from '@/lib/deviceOptions';
 import { DeviceUsageConfig } from './DeviceUsageConfig';
-//import { ForecastResults } from './ForecastResults';
 import { FinalForecastResults } from './FinalForecastResults';
 import { LoadingSpinner } from '@/components/ui-components/LoadingSpinner';
 import { toast } from '@/hooks/use-toast';
@@ -20,7 +19,7 @@ import { doc, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useLanguage } from '@/contexts/LanguageContext';
 
-// Define a constant for the price per kWh (in NIS)
+// Define a constant for the price per kWh in Israel (in NIS)
 const KWH_PRICE = 0.62;
 
 interface DeviceForecastDialogProps {
@@ -275,6 +274,7 @@ export const DeviceForecastDialog = ({ open, onOpenChange, onForecastSaved }: De
               onDeviceUpdate={handleDeviceUpdate}
               onRemoveDevice={handleRemoveDevice}
               onAddDevice={handleAddDevice}
+              showAddDevice={false}
             />
           )}
 
@@ -286,6 +286,7 @@ export const DeviceForecastDialog = ({ open, onOpenChange, onForecastSaved }: De
               onRemoveDevice={handleRemoveDevice}
               onAddDevice={handleAddDevice}
               showUsageControls={true}
+              showAddDevice={true}
             />
           )}
 

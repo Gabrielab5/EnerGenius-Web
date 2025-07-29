@@ -18,6 +18,7 @@ interface DeviceUsageConfigProps {
   onRemoveDevice: (deviceId: string) => void;
   onAddDevice: (device: Device) => void;
   showUsageControls?: boolean;
+  showAddDevice?: boolean;
 }
 
 export const DeviceUsageConfig = ({
@@ -26,7 +27,8 @@ export const DeviceUsageConfig = ({
   onDeviceUpdate,
   onRemoveDevice,
   onAddDevice,
-  showUsageControls = false
+  showUsageControls = false,
+  showAddDevice = true
 }: DeviceUsageConfigProps) => {
   const { t } = useLanguage();
   const [selectedDeviceToAdd, setSelectedDeviceToAdd] = React.useState<string>('');
@@ -59,6 +61,7 @@ export const DeviceUsageConfig = ({
           {showUsageControls ? t('forecast.deviceUsage.configureUsagePatterns') : t('forecast.deviceUsage.reviewModifyDevices')}
         </h3>
         
+        {showAddDevice && (
         <div className="flex items-center gap-2">
           <Select value={selectedDeviceToAdd} onValueChange={setSelectedDeviceToAdd}>
             <SelectTrigger className="w-full sm:w-48">
@@ -80,8 +83,9 @@ export const DeviceUsageConfig = ({
             <Plus className="h-4 w-4" />
           </Button>
         </div>
+        )}
       </div>
-
+      
       {devices.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-8">

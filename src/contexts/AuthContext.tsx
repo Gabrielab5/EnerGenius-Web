@@ -75,14 +75,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     let isMounted = true;
-    let userDocumentPromise: Promise<void> | null = null;
-
+    let authTimeout: NodeJS.Timeout;
+    
     // Subscribe to auth state changes
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      // Clear any pending timeout
+      if (authTimeout) clearTimeout(authTimeout);
+      
+      // Set a timeout for auth state updates to prevent hanging
+      authTimeout = setTimeout(() => {
+        if (isMounted && !firebaseUser) {
+          setStatus('unauthenticated');
+        }
+      }, 5000);
+
       try {
         if (!isMounted) return;
 
         if (firebaseUser) {
+          clearTimeout(authTimeout);
           // Format user immediately for faster UI updates
           const formattedUser = formatUser(firebaseUser);
           if (isMounted) {
@@ -91,8 +102,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           }
 
           // Create user document asynchronously without blocking auth state
-          userDocumentPromise = createUserDocument(firebaseUser).catch(error => {
-            console.error("Error creating user document:", error);
+          createUserDocument(firebaseUser).catch(error => {
+            // Silently handle user document creation errors to avoid console spam
+            if (error.code !== 'permission-denied') {
+              console.warn("User document creation delayed:", error.code);
+            }
           });
         } else {
           if (isMounted) {
@@ -101,7 +115,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           }
         }
       } catch (error) {
-        console.error("Auth state change error:", error);
+        if (error.code !== 'auth/network-request-failed') {
+          console.error("Auth state change error:", error);
+        }
         if (isMounted) {
           setStatus('unauthenticated');
         }
@@ -111,6 +127,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Cleanup subscription on unmount
     return () => {
       isMounted = false;
+      if (authTimeout) clearTimeout(authTimeout);
       unsubscribe();
     };
   }, []);

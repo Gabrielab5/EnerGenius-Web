@@ -80,23 +80,44 @@ export function calculateTotalForecast(
   const projectedMonthlyTotals: Record<string, { kwh: number; price: number }> = {};
   const currentDate = new Date();
   
-  // Calculate monthly projections based on device usage patterns
+   // Get historical monthly data to understand seasonal patterns
+  const historicalMonthlyData = historicalData?.monthly_totals || {};
+  const historicalMonths = Object.keys(historicalMonthlyData);
+  
+  // Calculate seasonal factors from historical data
+  const seasonalFactors: Record<number, number> = {};
+  if (historicalMonths.length > 0) {
+    // Calculate average monthly consumption
+    const totalHistoricalKwh = Object.values(historicalMonthlyData).reduce((sum, month) => sum + month.kwh, 0);
+    const avgMonthlyKwh = totalHistoricalKwh / historicalMonths.length;
+    
+    // Calculate seasonal factors for each month (1-12)
+    historicalMonths.forEach(monthKey => {
+      const monthData = historicalMonthlyData[monthKey];
+      const monthNumber = parseInt(monthKey.split('-')[1]); // Extract month from YYYY-MM format
+      const seasonalFactor = avgMonthlyKwh > 0 ? monthData.kwh / avgMonthlyKwh : 1;
+      seasonalFactors[monthNumber] = seasonalFactor;
+    });
+  }
+  
+  // Calculate base monthly consumption from devices
+  const baseMonthlyKwh = totalAnnualKwh / 12;
+  const baseMonthlyPrice = totalAnnualCost / 12;
+  
+  // Apply seasonal patterns to projected monthly data
   for (let i = 0; i < 12; i++) {
     const date = new Date(currentDate.getFullYear(), currentDate.getMonth() + i + 1, 1);
     const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-    
-    // Sum the monthlyKwh for all devices for this month
-    let monthKwh = 0;
-    let monthCost = 0;
-    devices.forEach(device => {
-      const consumption = calculateDeviceConsumption(device, avgPrice);
-      monthKwh += consumption.monthlyKwh;
-      monthCost += consumption.monthlyKwh * avgPrice;
-    });
+    const monthNumber = date.getMonth() + 1;
+
+    // Apply seasonal factor if available, otherwise use base consumption
+    const seasonalFactor = seasonalFactors[monthNumber] || 1;
+    const adjustedKwh = baseMonthlyKwh * seasonalFactor;
+    const adjustedPrice = baseMonthlyPrice * seasonalFactor;
     
     projectedMonthlyTotals[monthKey] = {
-      kwh: monthKwh,
-      price: monthCost
+      kwh: adjustedKwh,
+      price: adjustedPrice
     };
   }
   

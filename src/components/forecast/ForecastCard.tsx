@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ForecastScenario } from '@/types/forecast';
-import { Trash2, TrendingUp, TrendingDown, ChevronDown, ChevronUp, Zap } from 'lucide-react';
+import { Trash2, TrendingUp, TrendingDown, ChevronDown, ChevronUp, Zap, Calendar } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast } from '@/hooks/use-toast';
-import { format } from 'date-fns';
+import { format, addMonths} from 'date-fns';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface ForecastCardProps {
   forecast: ForecastScenario;
@@ -19,6 +20,33 @@ export const ForecastCard = ({ forecast, onDelete }: ForecastCardProps) => {
   const { comparison, annualTotal, monthlyTotals } = forecast.projections;
   const isIncrease = comparison.kwhDifference >= 0;
   const [isDevicesOpen, setIsDevicesOpen] = useState(false);
+  const [isChartOpen, setIsChartOpen] = useState(false);
+
+  // Calculate monthly cost data for the next 12 months
+  const monthlyChartData = useMemo(() => {
+    const currentDate = new Date();
+    const data = [];
+    
+    // Calculate total monthly cost based on all devices
+    const totalMonthlyCost = forecast.devices.reduce((total, device) => {
+      const monthlyKwh = (device.powerConsumption / 1000) * device.usage.hoursPerDay * device.usage.daysPerWeek * 4.33;
+      const monthlyCost = monthlyKwh * 0.6; // 0.6 ILS per kWh
+      return total + monthlyCost;
+    }, 0);
+
+    for (let i = 0; i < 12; i++) {
+      const monthDate = addMonths(currentDate, i);
+      const monthName = format(monthDate, 'MMM yyyy', { locale: language === 'he' ? undefined : undefined });
+      
+      data.push({
+        month: monthName,
+        cost: totalMonthlyCost,
+        formattedCost: `${t('forecast.units.currency')}${totalMonthlyCost.toFixed(2)}`
+      });
+    }
+    
+    return data;
+  }, [forecast.devices, language, t]);
 
   const handleDelete = () => {
     onDelete(forecast.id);
@@ -170,6 +198,65 @@ export const ForecastCard = ({ forecast, onDelete }: ForecastCardProps) => {
                   </div>
                 </div>
               ))}
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
+                
+        <Collapsible open={isChartOpen} onOpenChange={setIsChartOpen}>
+          <CollapsibleTrigger asChild>
+            <Button variant="outline" className="w-full justify-between bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/50 dark:hover:bg-blue-900">
+              <span className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                {t('forecast.card.monthlyForecast')}
+              </span>
+              <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isChartOpen ? 'rotate-180' : ''}`} />
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="py-4">
+            <div className="space-y-3">
+              <div className={`text-sm text-muted-foreground ${isRTL ? 'text-right' : 'text-left'}`}>
+                {t('forecast.card.monthlyForecastDescription')}
+              </div>
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={monthlyChartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted-foreground))" opacity={0.3} />
+                    <XAxis 
+                      dataKey="month" 
+                      tick={{ fontSize: 12, fill: 'hsl(var(--foreground))' }}
+                      axisLine={{ stroke: 'hsl(var(--border))' }}
+                      tickLine={{ stroke: 'hsl(var(--border))' }}
+                    />
+                    <YAxis 
+                      tick={{ fontSize: 12, fill: 'hsl(var(--foreground))' }}
+                      axisLine={{ stroke: 'hsl(var(--border))' }}
+                      tickLine={{ stroke: 'hsl(var(--border))' }}
+                      tickFormatter={(value) => `${t('forecast.units.currency')}${value.toFixed(0)}`}
+                    />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: 'hsl(var(--background))',
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '6px',
+                        color: 'hsl(var(--foreground))'
+                      }}
+                      formatter={(value: number) => [
+                        `${t('forecast.units.currency')}${value.toFixed(2)}`,
+                        t('forecast.card.monthlyCost')
+                      ]}
+                      labelStyle={{ color: 'hsl(var(--foreground))' }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="cost" 
+                      stroke="hsl(var(--primary))" 
+                      strokeWidth={3}
+                      dot={{ fill: 'hsl(var(--primary))', strokeWidth: 2, r: 4 }}
+                      activeDot={{ r: 6, stroke: 'hsl(var(--primary))', strokeWidth: 2 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </CollapsibleContent>
         </Collapsible>

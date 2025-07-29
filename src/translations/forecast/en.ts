@@ -206,5 +206,7 @@ export const forecastTranslations = {
   'forecast.card.monthlyCost': 'Monthly Cost',
   'forecast.card.knownKwh': 'Known kWh',
   'forecast.card.yearlyCost': 'Yearly Cost',
+  'forecast.card.monthlyForecast': 'Monthly Cost Forecast',
+  'forecast.card.monthlyForecastDescription': 'Predicted monthly costs for the next 12 months',
   'forecast.card.notApplicable': 'N/A',
 };

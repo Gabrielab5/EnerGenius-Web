@@ -47,31 +47,46 @@ const HomePage = () => {
       if (electricityData && user) {
         try {
           setLoadingTips(true);
-          // Always fetch tips for the current language
-          const tipsResponse = await getElectricityTips(user.id, language);
-          if (tipsResponse && tipsResponse.success && tipsResponse.tips) {
-            setTips(tipsResponse.tips);
-            console.log("Loaded tips for language:", language);
-          } else {
-            // fallback: try to fetch from Firestore
+          console.log("Fetching tips for language:", language);
+          
+          try {
+            // Try to fetch tips from API first
+            const tipsResponse = await getElectricityTips(user.id, language);
+            if (tipsResponse && tipsResponse.success && tipsResponse.tips) {
+              setTips(tipsResponse.tips);
+              console.log("✅ Loaded tips from API for language:", language);
+              return;
+            }
+          } catch (apiError) {
+            console.log("❌ API failed, trying Firestore fallback:", apiError.message);
+            
+            // If API fails, try Firestore fallback
             const existingTips = await fetchElectricityTipsFromFirestore(user.id);
             if (existingTips && existingTips.tips) {
               setTips(existingTips.tips);
-              console.log("Loaded tips from Firestore");
-            } else {
-              setTips(null);
-              console.log("No tips found");
+              console.log("✅ Loaded cached tips from Firestore");
+              toast({
+                description: "Using cached tips - API temporarily unavailable",
+                variant: "default",
+              });
+              return;
             }
           }
+
+           // If both API and Firestore fail, show no tips
+          setTips(null);
+          console.log("⚠️ No tips available from API or Firestore");
+
         } catch (error) {
           console.error('Failed to fetch tips:', error);
+          setTips(null);
         } finally {
           setLoadingTips(false);
         }
       }
     };
     fetchTips();
-  }, [electricityData, user, language]);
+  }, [electricityData, user, language, toast]);
 
   const handleAnalysisRequest = async () => {
     if (!user) {
@@ -137,20 +152,44 @@ const HomePage = () => {
         description: t('home.generatingTips'),
       });
       
-      const tipsResponse = await getElectricityTips(user.id, language);
-      
-      if (tipsResponse.success) {
-        setTips(tipsResponse.tips);
-        toast({
-          description: t('home.tipsSuccess'),
-        });
-      } else {
-        throw new Error("Tips generation failed");
+    try {
+        const tipsResponse = await getElectricityTips(user.id, language);
+        
+        if (tipsResponse && tipsResponse.success && tipsResponse.tips) {
+          setTips(tipsResponse.tips);
+          toast({
+            description: t('home.tipsSuccess'),
+          });
+        } else {
+          throw new Error("API returned unsuccessful response");
+        }
+      } catch (apiError) {
+        console.error("API failed, trying Firestore fallback:", apiError);
+        
+        // Try to get existing tips from Firestore as fallback
+        const existingTips = await fetchElectricityTipsFromFirestore(user.id);
+        if (existingTips && existingTips.tips) {
+          setTips(existingTips.tips);
+          toast({
+            description: "API unavailable - showing cached tips instead",
+            variant: "default",
+          });
+        } else {
+          throw new Error("No tips available from API or cache");
+        }
       }
     } catch (error) {
       console.error("Failed to generate new tips:", error);
+      
+      let errorMessage = t('home.tipsError');
+      if (error.message.includes('HTML') || error.message.includes('service may be down')) {
+        errorMessage = "Tips service is temporarily unavailable. Please try again later.";
+      } else if (error.message.includes('timeout') || error.message.includes('AbortError')) {
+        errorMessage = "Request timed out. Please check your connection and try again.";
+      }
+      
       toast({
-        description: t('home.tipsError'),
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

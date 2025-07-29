@@ -22,31 +22,44 @@ export const ForecastCard = ({ forecast, onDelete }: ForecastCardProps) => {
   const [isDevicesOpen, setIsDevicesOpen] = useState(false);
   const [isChartOpen, setIsChartOpen] = useState(false);
 
-  // Calculate monthly cost data for the next 12 months
+  
   const monthlyChartData = useMemo(() => {
-    const currentDate = new Date();
     const data = [];
+    // Use the backend forecast data which accounts for seasonal patterns and historical data
+    const monthlyData = monthlyTotals || {};
+    const monthKeys = Object.keys(monthlyData).sort();
     
-    // Calculate total monthly cost based on all devices
-    const totalMonthlyCost = forecast.devices.reduce((total, device) => {
-      const monthlyKwh = (device.powerConsumption / 1000) * device.usage.hoursPerDay * device.usage.daysPerWeek * 4.33;
-      const monthlyCost = monthlyKwh * 0.6; // 0.6 ILS per kWh
-      return total + monthlyCost;
-    }, 0);
-
-    for (let i = 0; i < 12; i++) {
-      const monthDate = addMonths(currentDate, i);
-      const monthName = format(monthDate, 'MMM yyyy', { locale: language === 'he' ? undefined : undefined });
-      
-      data.push({
-        month: monthName,
-        cost: totalMonthlyCost,
-        formattedCost: `${t('forecast.units.currency')}${totalMonthlyCost.toFixed(2)}`
+    if (monthKeys.length > 0) {
+      // Use actual backend forecast data
+      monthKeys.forEach(monthKey => {
+        const monthData = monthlyData[monthKey];
+        data.push({
+          month: monthKey,
+          cost: monthData.price,
+          kwh: monthData.kwh,
+          formattedCost: `${t('forecast.units.currency')}${monthData.price.toFixed(2)}`
+        });      
       });
-    }
-    
+      } else {
+      // Fallback: generate next 12 months with estimated data if no backend data available
+      const currentDate = new Date();
+      for (let i = 0; i < 12; i++) {
+        const monthDate = addMonths(currentDate, i);
+        const monthKey = format(monthDate, 'yyyy-MM');
+        const monthName = format(monthDate, 'MMM yyyy');
+        
+        // Use annual total divided by 12 as fallback
+        const estimatedMonthlyCost = annualTotal.price / 12;
+        
+        data.push({
+          month: monthName,
+          cost: estimatedMonthlyCost,
+          formattedCost: `${t('forecast.units.currency')}${estimatedMonthlyCost.toFixed(2)}`
+        });
+      }
+    }   
     return data;
-  }, [forecast.devices, language, t]);
+  }, [monthlyTotals, annualTotal, language, t]);
 
   const handleDelete = () => {
     onDelete(forecast.id);

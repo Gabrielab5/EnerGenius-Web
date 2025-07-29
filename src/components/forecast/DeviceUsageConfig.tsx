@@ -7,11 +7,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Slider } from '@/components/ui/slider';
 import { ForecastDevice } from '@/types/forecast';
 import { Device } from '@/types';
-import { Plus, Trash2, HelpCircle} from 'lucide-react';
-import { deviceOptions, deviceRanges } from '@/lib/deviceOptions';
+import { Plus, Trash2 } from 'lucide-react';
+import { deviceOptions } from '@/lib/deviceOptions';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { toast } from '@/hooks/use-toast';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface DeviceUsageConfigProps {
   devices: ForecastDevice[];
@@ -53,9 +51,6 @@ export const DeviceUsageConfig = ({
     };
 
     onAddDevice(newDevice);
-    toast({
-      description: `${t(deviceInfo.translationKey)} added! Now you're welcome to configure it.`,
-    });
     setSelectedDeviceToAdd('');
   };
 
@@ -204,23 +199,7 @@ export const DeviceUsageConfig = ({
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <div className="flex items-center gap-1">
-                          <Label className="text-sm font-medium">{t('forecast.deviceUsage.powerConsumption')}</Label>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <button type="button" className="text-muted-foreground hover:text-foreground">
-                                  <HelpCircle className="h-3 w-3" />
-                                </button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p className="text-xs">
-                                  {deviceRanges[device.name as keyof typeof deviceRanges]?.powerRange || 'Typical range varies by model'}
-                                </p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </div>
+                        <Label className="text-sm font-medium">{t('forecast.deviceUsage.powerConsumption')}</Label>
                         <Input
                           type="number"
                           value={device.powerConsumption}
@@ -234,23 +213,7 @@ export const DeviceUsageConfig = ({
                       </div>
 
                       <div className="space-y-2">
-                        <div className="flex items-center gap-1">
-                          <Label className="text-sm font-medium">{t('forecast.deviceUsage.knownKwh')}</Label>
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <button type="button" className="text-muted-foreground hover:text-foreground">
-                                  <HelpCircle className="h-3 w-3" />
-                                </button>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p className="text-xs">
-                                  {deviceRanges[device.name as keyof typeof deviceRanges]?.kwhRange || 'Typical usage varies by frequency'}
-                                </p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </div>
+                        <Label className="text-sm font-medium">{t('forecast.deviceUsage.knownKwh')}</Label>
                         <Input
                           type="number"
                           value={device.knownKwh || ''}

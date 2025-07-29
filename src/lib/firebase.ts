@@ -27,19 +27,26 @@ auth.useDeviceLanguage();
 // Initialize Firestore with optimized settings
 export const db = getFirestore(app);
 
-// Optimize Firebase connection settings
+// Enable offline persistence and faster loading
 if (typeof window !== 'undefined') {
-    // Simple connection health check without aggressive network management
-  const connectionHealthCheck = () => {
-    try {
-      // Let Firebase handle its own network state management
-      console.log('Firebase connection initialized');
-    } catch (error) {
-      console.warn('Firebase connection warning:', error);
+  // Add connection state listener for better performance
+  let isOnline = navigator.onLine;
+  
+  const handleOnline = () => {
+    if (!isOnline) {
+      enableNetwork(db).catch(console.error);
+      isOnline = true;
     }
   };
   
-// Run health check once
-  connectionHealthCheck();
+  const handleOffline = () => {
+    if (isOnline) {
+      disableNetwork(db).catch(console.error);
+      isOnline = false;
+    }
+  };
+  
+  window.addEventListener('online', handleOnline);
+  window.addEventListener('offline', handleOffline);
 }
 export default app;

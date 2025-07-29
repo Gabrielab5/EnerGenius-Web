@@ -284,7 +284,15 @@ const HomePage = () => {
               className="w-full"
               size="sm"
             >
-              <Lightbulb className="h-4 w-4 mr-2" /> {t('home.generateNewTips')}
+              {generatingNewTips ? (
+                <>
+                  <LoadingSpinner size="sm" /> {t('home.generatingTips')}
+                </>
+              ) : (
+                <>
+                  <Lightbulb className="h-4 w-4 mr-2" /> {t('home.generateNewTips')}
+                </>
+              )}
             </Button>
           </div>
         </div>

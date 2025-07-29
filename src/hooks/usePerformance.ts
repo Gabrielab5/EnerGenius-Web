@@ -8,7 +8,7 @@ export const usePerformance = () => {
     
     console.log = (...args) => {
       const message = args.join(' ');
-      // Filter out development environment noise
+      // Filter out UTS logs and other third-party noise
       if (
         message.includes('[UTS]') ||
         message.includes('[fp]') ||
@@ -16,10 +16,7 @@ export const usePerformance = () => {
         message.includes('[pc]') ||
         message.includes('[_fbp_c]') ||
         message.includes('[pcu]') ||
-        message.includes('No NF on page') ||
-        message.includes('Failed to send message to') ||
-        message.includes('DataCloneError') ||
-        message.includes('Firebase connection initialized')
+        message.includes('No NF on page')
       ) {
         return;
       }
@@ -40,13 +37,8 @@ export const usePerformance = () => {
 
     // Add error handling for message channel errors
     const handleError = (event: ErrorEvent) => {
-      if (
-        event.message.includes('message channel closed') ||
-        event.message.includes('DataCloneError') ||
-        event.message.includes('Failed to send message to') ||
-        event.message.includes('postMessage')
-      ) {
-        // Suppress development environment errors
+      if (event.message.includes('message channel closed')) {
+        // Suppress this error as it's from browser extensions
         event.preventDefault();
         return false;
       }
@@ -55,9 +47,7 @@ export const usePerformance = () => {
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
       if (
         event.reason?.message?.includes('message channel closed') ||
-        event.reason?.message?.includes('deferred DOM Node could not be resolved') ||
-        event.reason?.message?.includes('DataCloneError') ||
-        event.reason?.message?.includes('auth/unauthorized-domain')
+        event.reason?.message?.includes('deferred DOM Node could not be resolved')
       ) {
         // Suppress these errors as they're from browser extensions
         event.preventDefault();

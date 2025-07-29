@@ -166,14 +166,24 @@ const HomePage = () => {
       } catch (apiError) {
         console.error("API failed, trying Firestore fallback:", apiError);
         
+         // Check if error is due to API returning HTML (service down)
+        const isApiDown = apiError.message.includes('HTML instead of JSON') || apiError.message.includes('service may be down');
+
         // Try to get existing tips from Firestore as fallback
         const existingTips = await fetchElectricityTipsFromFirestore(user.id);
         if (existingTips && existingTips.tips) {
           setTips(existingTips.tips);
-          toast({
-            description: "API unavailable - showing cached tips instead",
-            variant: "default",
-          });
+           if (isApiDown) {
+            toast({
+              description: "Tips service is temporarily unavailable. Showing your last generated tips.",
+              variant: "default",
+            });
+          } else {
+            toast({
+              description: "API unavailable - showing cached tips instead",
+              variant: "default",
+            });
+          }
         } else {
           throw new Error("No tips available from API or cache");
         }

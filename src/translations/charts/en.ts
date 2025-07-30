@@ -60,10 +60,12 @@ export const chartsTranslations = {
   'charts.legend.offPeak': 'Off-Peak',
   
   // Tooltip Labels
+  'charts.tooltip.price': 'Price',
   'charts.tooltip.usage': 'Usage',
   'charts.tooltip.cost': 'Cost',
   'charts.tooltip.date': 'Date',
   'charts.tooltip.time': 'Time',
+  'charts.tooltip.hour': 'Hour',
   'charts.tooltip.device': 'Device',
   'charts.tooltip.monthlyConsumption': 'Monthly Consumption',
   'charts.tooltip.dailyAverage': 'Daily Average',

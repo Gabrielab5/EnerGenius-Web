@@ -5,6 +5,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { MonthlyConsumptionData } from '@/types';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { LoadingSpinner } from '@/components/ui-components/LoadingSpinner';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface AnnualConsumptionChartProps {
   monthlyForecast?: MonthlyConsumptionData[];
@@ -13,6 +14,7 @@ interface AnnualConsumptionChartProps {
 
 // Custom tooltip component
 const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
+  const { t } = useLanguage();
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     
@@ -20,12 +22,12 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>)
       <div className="bg-white p-3 border border-app-gray-200 rounded-md shadow-lg">
         <p className="font-medium">{label}</p>
         <p className="text-primary">
-          <span className="font-medium">Usage: </span>
-          {data.kwh} kWh
+          <span className="font-medium">{t('charts.tooltip.usage')}: </span>
+          {data.kwh}  {t('charts.units.kwh')}
         </p>
         {(data.price_ils) && (
           <p className="text-app-green-600">
-            <span className="font-medium">Price: </span>
+            <span className="font-medium">{t('charts.tooltip.price')}: </span>
             ₪{data.price_ils.toFixed(2)}
           </p>
         )}

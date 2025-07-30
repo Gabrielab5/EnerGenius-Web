@@ -61,9 +61,11 @@ export const chartsTranslations = {
   
   // Tooltip Labels
   'charts.tooltip.usage': 'צריכה',
+  'charts.tooltip.price': 'מחיר',
   'charts.tooltip.cost': 'עלות',
   'charts.tooltip.date': 'תאריך',
   'charts.tooltip.time': 'זמן',
+  'charts.tooltip.hour': 'שעה',
   'charts.tooltip.device': 'מכשיר',
   'charts.tooltip.monthlyConsumption': 'צריכה חודשית',
   'charts.tooltip.dailyAverage': 'ממוצע יומי',

@@ -3,6 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileText, X } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface UploadedFile {
   file: File;
@@ -17,6 +18,7 @@ interface MultipleFilesListProps {
 }
 
 export const MultipleFilesList = ({ files, onRemoveFile }: MultipleFilesListProps) => {
+  const { t } = useLanguage();
   const groupedFiles = files.reduce((acc, file, index) => {
     const year = file.year;
     if (!acc[year]) {
@@ -35,12 +37,12 @@ export const MultipleFilesList = ({ files, onRemoveFile }: MultipleFilesListProp
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Uploaded Files ({files.length})</CardTitle>
+        <CardTitle className="text-lg">{t('upload.files.uploadedFiles')} ({files.length})</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {Object.entries(groupedFiles).map(([year, yearFiles]) => (
           <div key={year} className="space-y-2">
-            <h4 className="font-medium text-sm text-app-gray-700">Year {year}</h4>
+            <h4 className="font-medium text-sm text-app-gray-700">{`${t('upload.files.year')} ${year}`}</h4>
             <div className="space-y-2">
               {yearFiles.map((file) => (
                 <div key={file.originalIndex} className="flex items-center justify-between p-3 bg-app-gray-50 rounded-lg">

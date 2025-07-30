@@ -106,4 +106,12 @@ export const commonTranslations = {
   'common.days.Thu': 'Thu',
   'common.days.Fri': 'Fri',
   'common.days.Sat': 'Sat',
+
+// Upload files
+  'upload.files.uploadedFiles': 'Uploaded Files',
+  'upload.files.year': 'Year',
+  
+  // Dashboard insights
+  'dashboard.insights.title': 'AI Insights',
+  'dashboard.insights.description': 'Smart observations about your energy usage',
 };

@@ -108,4 +108,12 @@ export const devicesTranslations = {
   'onboarding.devices.removeButton': 'Удалить',
   'onboarding.devices.continueButton': 'Продолжить',
   'onboarding.devices.savingButton': 'Сохранение...',
+
+   // Device summary
+  'devices.summary.title': 'Сводка устройств',
+  'devices.summary.description': 'Разбивка ваших устройств по типу',
+  'devices.summary.loading': 'Загрузка данных устройств...',
+  'devices.summary.noDevices': 'Устройства еще не добавлены.',
+  'devices.summary.addDevicesHint': 'Добавьте устройства на странице настроек.',
+  'devices.summary.deviceCount': 'устройство(а)',
 };

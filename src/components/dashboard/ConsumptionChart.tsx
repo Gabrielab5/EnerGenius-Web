@@ -6,8 +6,10 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import { LoadingSpinner } from '@/components/ui-components/LoadingSpinner';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { CircleDollarSign } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
+  const { t } = useLanguage();
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     
@@ -15,12 +17,12 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>)
       <div className="bg-white p-3 border border-app-gray-200 rounded-md shadow-lg">
         <p className="font-medium">{label}</p>
         <p className="text-primary">
-          <span className="font-medium">Usage: </span>
+          <span className="font-medium">{t('charts.tooltip.usage')}:</span>
           {data.kwh} kWh
         </p>
         {(data.cost || data.price_ils) && (
           <p className="text-app-green-600">
-            <span className="font-medium">Price: </span>
+            <span className="font-medium">{t('charts.tooltip.price')}: </span>
             {data.price_ils ? `₪${data.price_ils.toFixed(2)}` : `$${data.cost.toFixed(2)}`}
           </p>
         )}

@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, TooltipProps } from 'recharts';
 import { ChartContainer, ChartTooltip } from '@/components/ui/chart';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 type HourlyData = {
   hour: number;
@@ -16,19 +17,20 @@ interface HourlyConsumptionChartProps {
 
 // Custom tooltip component
 const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
+  const { t } = useLanguage();
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     
     return (
       <div className="bg-white p-3 border border-app-gray-200 rounded-md shadow-lg">
-        <p className="font-medium">{`Hour: ${label}`}</p>
+        <p className="font-medium">{`${t('charts.tooltip.hour')}:${label}`}</p>
         <p className="text-primary">
-          <span className="font-medium">Usage: </span>
+          <span className="font-medium">{t('charts.tooltip.usage')}:</span>
           {data.kwh} kWh
         </p>
         {data.price_ils !== undefined && (
           <p className="text-app-green-600">
-            <span className="font-medium">Price: </span>
+            <span className="font-medium">{t('charts.tooltip.price')}:</span>
             ₪{data.price_ils.toFixed(2)}
           </p>
         )}

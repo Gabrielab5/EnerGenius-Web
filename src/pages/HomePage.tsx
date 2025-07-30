@@ -285,9 +285,9 @@ const HomePage = () => {
               size="sm"
             >
               {generatingNewTips ? (
-                <>
-                  <LoadingSpinner size="sm" /> {t('home.generatingTips')}
-                </>
+               <div className="flex justify-center">
+                  <LoadingSpinner size="sm" />
+                </div>
               ) : (
                 <>
                   <Lightbulb className="h-4 w-4 mr-2" /> {t('home.generateNewTips')}

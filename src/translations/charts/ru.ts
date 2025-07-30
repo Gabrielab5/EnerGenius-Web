@@ -62,11 +62,13 @@ export const chartsTranslations = {
   // Tooltip Labels
   'charts.tooltip.usage': 'Потребление',
   'charts.tooltip.cost': 'Стоимость',
+  'charts.tooltip.price': 'Цена',
   'charts.tooltip.date': 'Дата',
   'charts.tooltip.time': 'Время',
   'charts.tooltip.device': 'Устройство',
   'charts.tooltip.monthlyConsumption': 'Месячное потребление',
   'charts.tooltip.dailyAverage': 'Среднесуточное',
+  'charts.tooltip.hour': 'Час',
   'charts.tooltip.totalCost': 'Общая стоимость',
   
   // Interactive Messages

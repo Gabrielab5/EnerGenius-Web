@@ -3,6 +3,7 @@ import { initReactI18next } from 'react-i18next';
 import { enTranslations } from '@/translations/en';
 import { heTranslations } from '@/translations/he';
 import { ruTranslations } from '@/translations/ru';
+import { getInitialLanguage } from '@/contexts/LanguageContext';
 
 i18n
   .use(initReactI18next)
@@ -18,7 +19,7 @@ i18n
         translation: ruTranslations,
       },
     },
-    lng: 'en', // default language
+    lng: getInitialLanguage(), 
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false,

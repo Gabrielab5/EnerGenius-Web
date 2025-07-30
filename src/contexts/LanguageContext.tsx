@@ -51,31 +51,55 @@ const languageConfigs: Record<Language, LanguageInfo> = {
 
 // Storage keys
 const LANGUAGE_STORAGE_KEY = 'energenius_language';
-const LANGUAGE_PREFERENCE_KEY = 'energenius_language_preference';
 
 // Create context
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+// Centralized language detection logic - single source of truth
+export const getInitialLanguage = (): Language => {
+  try {
+    // Check localStorage first
+    const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language;
+    if (stored && Object.keys(languageConfigs).includes(stored)) {
+      console.log(`Using stored language preference: ${stored}`);
+      return stored;
+    }
+
+    // Detect from browser
+    const browserLang = navigator.language.toLowerCase();
+    console.log(`Browser language detected: ${browserLang}`);
+    
+    if (browserLang.startsWith('he')) {
+      console.log('Setting language to Hebrew based on browser locale');
+      return 'he';
+    }
+    if (browserLang.startsWith('ru')) {
+      console.log('Setting language to Russian based on browser locale');
+      return 'ru';
+    }
+    
+    console.log('Defaulting to English');
+    return 'en';
+  } catch (error) {
+    console.error('Error detecting language, defaulting to English:', error);
+    return 'en';
+  }
+};
 
 // Provider component
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const { i18n, t } = useTranslation();
-  
-  // Initialize language immediately from localStorage
-  const getInitialLanguage = (): Language => {
-    const storedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language;
-    return (storedLanguage && Object.keys(languageConfigs).includes(storedLanguage)) 
-      ? storedLanguage 
-      : (i18n.language as Language || 'en');
-  };
 
   const [language, setLanguageState] = useState<Language>(getInitialLanguage);
   const [isLoading, setIsLoading] = useState(false);
 
   // Initialize language on mount if different from stored
   useEffect(() => {
-    const storedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language;
-    if (storedLanguage && storedLanguage !== language && Object.keys(languageConfigs).includes(storedLanguage)) {
-      handleSetLanguage(storedLanguage);
+      const initialLang = getInitialLanguage();
+    if (initialLang !== language) {
+      handleSetLanguage(initialLang);
+    } else {
+      // Ensure document properties are set correctly even if language doesn't change
+      updateDocumentLanguage(language);
     }
   }, []);
 
@@ -96,7 +120,6 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     await i18n.changeLanguage(lang);
     updateDocumentLanguage(lang);
     localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
-    localStorage.setItem(LANGUAGE_PREFERENCE_KEY, lang);
   };
 
   const currentConfig = languageConfigs[language];

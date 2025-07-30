@@ -108,4 +108,12 @@ export const devicesTranslations = {
   'onboarding.devices.removeButton': 'הסר',
   'onboarding.devices.continueButton': 'המשך',
   'onboarding.devices.savingButton': 'שומר...',
+
+  // Device summary
+  'devices.summary.title': 'סיכום מכשירים',
+  'devices.summary.description': 'פירוט המכשירים שלך לפי סוג',
+  'devices.summary.loading': 'טוען נתוני מכשירים...',
+  'devices.summary.noDevices': 'עדיין לא נוספו מכשירים.',
+  'devices.summary.addDevicesHint': 'הוסף מכשירים בדף ההגדרות.',
+  'devices.summary.deviceCount': 'מכשיר(ים)',
 };

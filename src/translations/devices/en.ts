@@ -108,4 +108,12 @@ export const devicesTranslations = {
   'onboarding.devices.removeButton': 'Remove',
   'onboarding.devices.continueButton': 'Continue',
   'onboarding.devices.savingButton': 'Saving...',
+
+   // Device summary
+  'devices.summary.title': 'Device Summary',
+  'devices.summary.description': 'Breakdown of your devices by type',
+  'devices.summary.loading': 'Loading device data...',
+  'devices.summary.noDevices': 'No devices added yet.',
+  'devices.summary.addDevicesHint': 'Add devices in the Settings page.',
+  'devices.summary.deviceCount': 'device(s)',
 };

@@ -36,7 +36,7 @@ export const ForecastHistoryDialog = ({ open, onOpenChange, refreshTrigger }: Fo
         <div className="mt-4 overflow-y-auto">
           {isLoading ? (
             <div className="flex items-center justify-center py-8">
-              <LoadingSpinner size="md" message="Loading forecasts..." />
+              <LoadingSpinner size="md" message={t('forecast.saved.loadingForecasts')} />
             </div>
           ) : forecasts.length === 0 ? (
             <Card>

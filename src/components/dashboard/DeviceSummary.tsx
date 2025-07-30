@@ -4,12 +4,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { PieChart, Pie, Cell, Legend, ResponsiveContainer, Tooltip } from 'recharts';
 import { useDevices } from '@/contexts/DeviceContext';
 import { LoadingSpinner } from '@/components/ui-components/LoadingSpinner';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export const DeviceSummary = () => {
   const { devices, isLoading } = useDevices();
+  const { t } = useLanguage();
 
   if (isLoading) {
-    return <LoadingSpinner message="Loading device data..." />;
+    return <LoadingSpinner message={t('loading.deviceData')} />;
   }
 
    // Defensive check to ensure devices is an array
@@ -42,14 +44,14 @@ export const DeviceSummary = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl">Device Summary</CardTitle>
-        <CardDescription>Breakdown of your devices by type</CardDescription>
+        <CardTitle className="text-xl">{t('devices.summary.title')}</CardTitle>
+        <CardDescription>{t('devices.summary.description')}</CardDescription>
       </CardHeader>
       <CardContent>
         {safeDevices.length === 0 ? (
           <div className="text-center py-8">
-            <p className="text-app-gray-500">No devices added yet.</p>
-            <p className="text-sm mt-2">Add devices in the Settings page.</p>
+            <p className="text-app-gray-500">{t('devices.summary.noDevices')}</p>
+            <p className="text-sm mt-2">{t('devices.summary.noDevicesDescription')}</p>
           </div>
         ) : (
           <div className="h-60">
@@ -72,7 +74,7 @@ export const DeviceSummary = () => {
                 <Tooltip
                   formatter={(value: number, name: string, props: any) => {
                     const item = props.payload;
-                    return [`${value}W • ${item.count} device(s)`, name];
+                    return [`${value}W • ${item.count}  ${t('devices.summary.deviceCount')}`, name];
                   }}
                 />
                 <Legend layout="vertical" verticalAlign="middle" align="right" />
